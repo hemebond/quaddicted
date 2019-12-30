@@ -1,0 +1,151 @@
+- model: maps.tag
+  pk: 1
+  fields:
+    name: castle
+    map:
+    - 2
+- model: maps.tag
+  pk: 2
+  fields:
+    name: drake
+    map:
+    - 1
+- model: maps.tag
+  pk: 3
+  fields:
+    name: egypt
+    map:
+    - 1
+- model: maps.tag
+  pk: 4
+  fields:
+    name: exploration
+    map:
+    - 3
+- model: maps.tag
+  pk: 5
+  fields:
+    name: fs
+    map:
+    - 2
+- model: maps.tag
+  pk: 6
+  fields:
+    name: ikblue
+    map:
+    - 2
+- model: maps.tag
+  pk: 7
+  fields:
+    name: medieval
+    map:
+    - 1
+- model: maps.tag
+  pk: 8
+  fields:
+    name: mixtex
+    map:
+    - 1
+- model: maps.tag
+  pk: 9
+  fields:
+    name: no monsters
+    map:
+    - 3
+- model: maps.tag
+  pk: 10
+  fields:
+    name: nonlinear
+    map:
+    - 2
+- model: maps.tag
+  pk: 11
+  fields:
+    name: parkour
+    map:
+    - 3
+- model: maps.tag
+  pk: 12
+  fields:
+    name: puzzles
+    map:
+    - 3
+- model: maps.tag
+  pk: 13
+  fields:
+    name: skybox
+    map:
+    - 2
+    - 3
+- model: maps.tag
+  pk: 14
+  fields:
+    name: small
+    map:
+    - 1
+- model: maps.tag
+  pk: 15
+  fields:
+    name: super secret
+    map:
+    - 2
+- model: maps.tag
+  pk: 16
+  fields:
+    name: aztec
+    map:
+    - 4
+- model: maps.tag
+  pk: 17
+  fields:
+    name: underground
+    map:
+    - 4
+- model: maps.tag
+  pk: 18
+  fields:
+    name: outdoors
+    map:
+    - 4
+- model: maps.tag
+  pk: 19
+  fields:
+    name: huge
+    map:
+    - 4
+- model: maps.tag
+  pk: 20
+  fields:
+    name: swamp
+    map:
+    - 4
+- model: maps.tag
+  pk: 21
+  fields:
+    name: temple
+    map:
+    - 4
+- model: maps.tag
+  pk: 22
+  fields:
+    name: mustplay
+    map:
+    - 4
+- model: maps.tag
+  pk: 23
+  fields:
+    name: boss
+    map:
+    - 4
+- model: maps.tag
+  pk: 24
+  fields:
+    name: green
+    map:
+    - 4
+- model: maps.tag
+  pk: 25
+  fields:
+    name: planetquake-motw
+    map:
+    - 4

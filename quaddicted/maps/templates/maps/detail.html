@@ -1,0 +1,349 @@
+{% extends "maps/base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<section class="row">
+	<div class="col">
+		<h1 class="title is-1">{{ map }}</h1>
+	</div>
+</section>
+
+<!-- screenshot carousel -->
+<section class="row">
+	<div class="col">
+		<div id="screenshots" class="carousel slide carousel-fade mb-3">
+			<ol class="carousel-indicators">
+				{% if map.screenshots.count > 1 %}
+					{% for x in map.screenshots.all %}
+				<li data-target="#screenshots"
+				    data-slide-to="{{ forloop.counter0 }}"
+				    {% if forloop.first %}class="active"{% endif %}>
+				</li>
+					{% endfor %}
+				{% endif %}
+			</ol>
+			<div class="carousel-inner">
+			{% for x in map.screenshots.all %}
+				<div class="carousel-item{% if forloop.first %} active{% endif %} bg-dark" style="max-height: 576px">
+					<img src="/media/{{ x }}" class="d-block m-auto" style="max-height: 576px">
+				</div>
+			{% empty %}
+				<div class="carousel-item active">
+					<img src="{% static '/1024x576.png' %}" class="d-block w-100">
+				</div>
+			{% endfor %}
+			</div>
+
+			{% if map.screenshots.count > 1 %}
+			<a class="carousel-control-prev"
+			   href="#screenshots"
+			   role="button"
+			   data-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="sr-only">Previous</span>
+			</a>
+			<a class="carousel-control-next"
+			   href="#screenshots"
+			   role="button"
+			   data-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="sr-only">Next</span>
+			</a>
+			{% endif %}
+		</div>
+	</div>
+</section>
+
+
+<div class="row">
+	<!-- left column -->
+	<div class="col-lg-8">
+		<!-- map listing details -->
+		<section class="card mb-3">
+			<h5 class="card-header">{{ map.name }}</h5>
+			<div class="card-body">
+				<dl class="row">
+					<dt class="col-md-4">Authors</dt>
+					<dd class="col-md-8 text-right">
+					{% for author in map.authors.all %}
+						<a href="{% url 'maps:index' %}?author={{ author.id }}" title="Show only this users maps">{{ author }}</a>{% if not forloop.last %}, {% endif %}
+					{% endfor %}
+					</dd>
+
+					<dt class="col-sm-4">Created</dt>
+					<dd class="col-sm-8 text-right"><time datetime="{{ map.created }}">{{ map.created }}</time></dd>
+
+				{%  if map.modified %}
+					<dt class="col-sm-4">Modified</dt>
+					<dd class="col-sm-8 text-right"><time datetime="{{ map.modified }}">{{ map.modified }}</time></dd>
+				{%  endif %}
+
+					<dt class="col-sm-4">Homepage</dt>
+					<dd class="col-sm-8 text-right">{{ map.homepage }}</dd>
+
+				{% if map.urls.all %}
+					<dt class="col-sm-4">Additional Links</dt>
+					<dd class="col-sm-8 text-right">
+						<ul class="list-unstyled mb-0">
+						{% for u in map.urls.all %}
+							<li><a href="{{ u.url }}">{{ u.name }}</a></li>
+						{% endfor %}
+						</ul>
+					</dd>
+				{% endif %}
+
+					<dt class="col-sm-4">Type</dt>
+					<dd class="col-sm-8 text-right">{{ map.map_type|default:'map'|capfirst }}</dd>
+				</dl>
+
+
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Filename</th>
+							<th>Date</th>
+							<th class="text-right">Download</th>
+						</tr>
+					</thead>
+				{% for package in map.packages.all %}
+					<tbody>
+						<tr>
+							<td>
+								<a data-toggle="collapse"
+								   href="#package{{ forloop.counter }}"
+								   role="button"
+								   aria-controls="#package{{ forloop.counter }}"
+								   title="Show details">{{ package.name }}</a>
+							</td>
+							<td>{{ package.created }}</td>
+							<td class="text-right"><a class="btn btn-primary" href="{{ package.file.url }}">Download</a></td>
+						</tr>
+						<tr class="collapse" id="package{{ forloop.counter }}">
+							<td colspan="3">
+								<dl class="row">
+									<dt class="col-sm-3">SHA256 Hash</dt>
+									<dd class="col-sm-9 text-right"><small>{{ package.hash }}</small></dd>
+
+									<dt class="col-sm-3">Size</dt>
+									<dd class="col-sm-9 text-right">{{ package.file.size|filesizeformat }}</dd>
+								</dl>
+							</td>
+						</tr>
+					</tbody>
+				{% endfor %}
+				</table>
+
+				<div class="text-right">
+					<a class="btn bg-danger text-white" href=""><span class="icon"><i class="fas fa-flag"></i></span></a>
+				</div>
+			</div>
+		</section>
+
+		<!-- map listing description -->
+		<section class="card mb-3">
+			<h5 class="card-header">Description</h5>
+			<div class="card-body">{% lorem p %}</div>
+		</section>
+
+		<!-- comments -->
+		<section class="card mb-3 map-comments" id="comments">
+			<h5 class="card-header">Comments</h5>
+			<div class="card-body">
+
+			{% if user.is_authenticated %}
+				<div class="row">
+					<div class="col-sm-2"></div>
+					<div class="col-sm-10">
+
+						<form action="{% url 'maps:comment' map.id %}" method="POST">
+							{% csrf_token %}
+							<div class="form-group">
+								<label for="id_name">Name</label>
+								<input type="text" class="form-control" id="id_name" name="name" maxlength="32">
+							</div>
+
+							<div class="form-group">
+								<label for="id_comment">Comment</label>
+								<textarea class="form-control" id="id_comment" name="comment" rows="3"></textarea>
+							</div>
+							<div style="display: none">{{ form.honeypot }}</div>
+							{{ form.timestamp }}
+							{{ form.security_hash }}
+							<input type="hidden" name="next" value="{% url 'maps:detail' map.id %}#comments" />
+							<button type="submit" class="btn btn-primary mb-2">Add comment</button>
+						</form>
+
+					</div>
+				</div>
+			{% else %}
+				<p>Please <a href="{% url 'auth_login' %}">log in</a> to leave a comment.</p>
+			{% endif %}
+
+			{% for comment in map.comments.all %}
+				<article class="row mb-3" id="c{{ comment.id }}">
+					<div class="col-sm-2">
+						<img class="img-thumbnail img-responsive user-photo" src="{% static 'avatar_2x.png' %}">
+					</div>
+
+					<div class="col-sm-10">
+						<div class="card">
+							<div class="card-header">
+								<strong>{{ comment.user_name }}</strong>
+								<time class="text-muted small" datetime="{{ comment.submit_date }}">commented <a href="#{{ comment.id }}">{{ comment.submit_date|timesince }} ago</a></time>
+								<span class="text-muted float-right">
+									{% for s in '   ' %}
+									<i class="text-warning fa fa-star"></i>
+									{% endfor %}
+								</span>
+							</div>
+							<div class="card-body">
+								{{ comment.comment }}
+
+								<div class="text-right text-sm">
+									<a class="btn bg-danger btn-sm text-white" href="/comments/flag/{{ comment.id }}/"><span class="icon"><i class="fas fa-exclamation-circle"></i></span></a>
+									<a class="btn bg-danger btn-sm text-white" href="/comments/flag/{{ comment.id }}/"><span class="icon"><i class="fas fa-trash"></i></span></a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</article>
+			{% endfor %}
+
+			</div>
+		</section>
+	</div>
+
+	<!-- right column -->
+	<div class="col-lg-4">
+		<section class="card mb-3">
+			<h5 class="card-header">Rating</h5>
+			<div class="card-body">
+				<dl class="row">
+					<dt class="col-sm-4">Average</dt>
+					<dd class="col-sm-8 text-right">
+					{% if map.rating|default:4 %}
+					{%  for n in "    " %}
+						<span class="icon"><i class="fas fa-heart"></i></span>
+					{%  endfor %}
+						<noscript>{{ map.rating }}</noscript>
+					{% endif %}
+					</dd>
+
+					<dt class="col-sm-4">You</dt>
+					<dd class="col-sm-8 text-right">
+					{% if map.rating|default:4 %}
+					{%  for n in "   " %}
+						<span class="icon"><i class="fas fa-heart"></i></span>
+					{%  endfor %}
+						<noscript>{{ map.rating }}</noscript>
+					{% endif %}
+					</dd>
+				</dl>
+			</div>
+		</section>
+
+		<section class="card mb-3">
+			<h5 class="card-header">Tags</h5>
+			<div class="card-body">
+				<p>
+				{% for tag in map.tags.all %}
+					<a class="btn btn-light btn-sm mb-1" href="{% url 'maps:index' %}?tag={{ tag.id }}">{{ tag }}</a>
+				{% endfor %}
+					<a href="" class="btn btn-light btn-sm mb-1" title="Suggest a new tag">
+						<i class="fas fa-plus"></i>
+					</a>
+				</p>
+			</div>
+		</section>
+
+	{% if map.demos or user.is_authenticated %}
+		<section class="card">
+			<h5 class="card-header">Demos</h5>
+			<div class="card-body">
+				{% if map.demos %}
+				<table class="table table-sm">
+					<thead>
+						<tr>
+							<th>Player</th>
+							<th>Skill</th>
+							<th>Length</th>
+							<th>Protocol</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+				{% for demo in map.demos.all %}
+						<tr>
+							<td>{{ demo.player }}</td>
+							<td>{{ demo.skill }}</td>
+							<td>{{ demo.length }}</td>
+							<td>{{ demo.protocol }}</td>
+							<td>{{ demo.date|date:'Y-m-d' }}</td>
+						</tr>
+				{% endfor %}
+					</tbody>
+				</table>
+				{% else %}
+				<p>No demos</p>
+				{% endif %}
+
+				{% if user.is_authenticated %}
+				<form action="" method="POST">
+					<div class="form-group">
+						<label for="id_demo_skill">Skill</label>
+						<select class="form-control" id="id_demo_skill" name="demo_skill">
+							<option value="0">Easy</option>
+							<option value="1">Normal</option>
+							<option value="2">Hard</option>
+							<option value="3">Nightmare</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="id_demo_file">Demo (.dz) file</label>
+						<input type="file" class="form-control-file" id="id_demo_file" name="demo_file">
+					</div>
+
+					<button type="submit" class="btn btn-primary mb-2">Upload demo</button>
+				</form>
+				{% endif %}
+			</div>
+		</section>
+	{% endif %}
+
+	{% if map.package %}
+		<section class="card">
+			<h5 class="card-header">Files</h5>
+			<div class="card-body">
+				<table class="table table-sm">
+					<thead>
+						<tr>
+							<th>File</th>
+							<th>Size</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+				{% for file in map.files.all %}
+						<tr>
+							<td>{{ file.name }}</td>
+							<td>{{ file.size }}</td>
+							<td>{{ file.timestamp|date:'Y-m-d' }}</td>
+						</tr>
+				{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</section>
+	{% endif %}
+	</div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+	<script>
+		$('.carousel').carousel();
+	</script>
+{% endblock %}

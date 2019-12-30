@@ -1,0 +1,449 @@
+# {
+#  "filename": [
+#   "drysorrow.zip"
+#  ],
+#  "files": {
+#   "drysorrow.txt": {
+#    "size": 1083,
+#    "timestamp": "2011-01-29T11:18:56.000Z"
+#   },
+#   "gfx/": {
+#    "size": 0,
+#    "timestamp": "2011-01-28T18:12:40.000Z"
+#   },
+#   "gfx/env/": {
+#    "size": 0,
+#    "timestamp": "2011-01-28T18:13:24.000Z"
+#   },
+#   "gfx/env/ozymandias_bk.tga": {
+#    "size": 786971,
+#    "timestamp": "2002-10-31T22:21:14.000Z"
+#   },
+#   "maps/": {
+#    "size": 0,
+#    "timestamp": "2011-01-28T18:42:24.000Z"
+#   },
+#   "maps/drysorrow.bsp": {
+#    "size": 2938568,
+#    "timestamp": "2011-01-28T18:37:12.000Z"
+#   }
+#  },
+#  "filesize": 2876,
+#  "install": {
+#   "extract": "{quake}/drake/"
+#  },
+#  "json_version": "2019.12.24-13.03",
+#  "sha256": "20c6a05f7c63a15f063f05a65ffbea62e4d194d5a54a0924264fe61c98bcf181",
+#  "tags": [
+#   "author=Dustin \"Tronyn\" Geeraert",
+#   "commandline=-game drake",
+#   "dependency=drake",
+#   "game=quake",
+#   "releasedate=2011-01-29",
+#   "tag=drake",
+#   "tag=egypt",
+#   "tag=medieval",
+#   "tag=mixtex",
+#   "tag=small",
+#   "title=Dry Sorrow"
+#  ],
+#  "urls": [
+#   "https://www.quaddicted.com/filebase/drysorrow.zip",
+#   "https://www.quaddicted.com/files/by-sha256/2/20c6a05f7c63a15f063f05a65ffbea62e4d194d5a54a0924264fe61c98bcf181/drysorrow.zip"
+#  ]
+# }
+
+- model: maps.map
+  pk: 1
+  fields:
+    name: Dry Sorrow
+    file_name: drysorrow
+    file_size: 2876
+    file_hash: 20c6a05f7c63a15f063f05a65ffbea62e4d194d5a54a0924264fe61c98bcf181
+    release_date: 2011-01-29
+    rating: 2.1
+    map_type: null
+- model: maps.screenshot
+  pk: null
+  fields:
+    image: maps/screenshots/eeaa54f2e1c0156de552a87326c927d4bd962033891d920ca9fd61a21b9c7b1f.jpg
+    map: 1
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: drysorrow.txt
+    size: 1083
+    timestamp: 2011-01-29 11:18:56+00:00
+    map: 1
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: gfx/env/ozymandias_bk.tga
+    size: 786971
+    timestamp: 2002-10-31 22:21:14+00:00
+    map: 1
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/drysorrow.bsp
+    size: 2938568
+    timestamp: 2011-01-28 18:37:12+00:00
+    map: 1
+
+
+- model: maps.map
+  pk: 2
+  fields:
+    name: One Thousand Cuts
+    file_name: 1000cuts1a
+    file_size: 10396
+    file_hash: 20c6a05f7c63a15f063f05a65ffbea62e4d194d5a54a0924264fe61c98bcf181
+    release_date: 2014-08-15
+    rating: 4.4
+    map_type: null
+- model: maps.mapurls
+  pk: null
+  fields:
+    name: Author's writeup
+    url: http://www.simonoc.com/pages/design/sp/1000cuts.htm
+    map: 2
+- model: maps.screenshot
+  pk: null
+  fields:
+    image: maps/screenshots/a05f5ba2d31ef96b1f1285ee9329108b8251886848394379a41717228370f6b5.jpg
+    map: 2
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: 1000cuts1a_readme.txt
+    size: 4
+    timestamp: 2014-08-15
+    map: 2
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: pak0.pak
+    size: 36291
+    timestamp: 2014-08-15
+    map: 2
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: pak1.pak
+    size: 381
+    timestamp: 2014-08-15
+    map: 2
+
+
+
+- model: maps.map
+  pk: 3
+  fields:
+    name: Explore Jam 1
+    file_name: explorejam1
+    file_size: 5512
+    file_hash: c023b6683089a851b1777523cd632d15
+    release_date: 2016-03-01
+    rating: 4.3
+    map_type: null
+- model: maps.mapurls
+  pk: null
+  fields:
+    name: func_msgboard
+    url: http://www.celephais.net/board/view_thread.php?id=61295
+    map: 3
+- model: maps.screenshot
+  pk: null
+  fields:
+    image: maps/screenshots/44a1413452b1bcbcfd66ce78dea07007f4ddce6edd877063c966a274b60fad35.jpg
+    map: 3
+- model: maps.screenshot
+  pk: null
+  fields:
+    image: maps/screenshots/cb89f1738583c0b2da5fbeee4168dccc4de7c352c91041224b359031a1033344.jpg
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: explorejam1_readme.txt
+    size: 3
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: gfx/env/moonhigh_bk.tga
+    size: 1025
+    timestamp: 2014-03-19
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: gfx/env/moonhigh_dn.tga
+    size: 1025
+    timestamp: 2014-03-19
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: gfx/env/moonhigh_ft.tga
+    size: 1025
+    timestamp: 2014-03-19
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: gfx/env/moonhigh_lf.tga
+    size: 1025
+    timestamp: 2014-03-19
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: gfx/env/moonhigh_rt.tga
+    size: 1025
+    timestamp: 2014-03-19
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: gfx/env/moonhigh_up.tga
+    size: 1025
+    timestamp: 2015-10-28
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: gfx/env/morose_bk.tga
+    size: 769
+    timestamp: 2006-01-23
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: gfx/env/morose_dn.tga
+    size: 769
+    timestamp: 2006-01-23
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: gfx/env/morose_ft.tga
+    size: 769
+    timestamp: 2006-01-23
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: gfx/env/morose_lf.tga
+    size: 769
+    timestamp: 2006-01-23
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: gfx/env/morose_rt.tga
+    size: 769
+    timestamp: 2006-01-23
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: gfx/env/morose_up.tga
+    size: 769
+    timestamp: 2006-01-23
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/b_batt0.bsp
+    size: 7
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/b_batt1.bsp
+    size: 7
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/b_bh10.bsp
+    size: 7
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/b_bh100.bsp
+    size: 8
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/b_bh25.bsp
+    size: 9
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/b_nail0.bsp
+    size: 6
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/b_nail1.bsp
+    size: 7
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/b_rock0.bsp
+    size: 7
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/b_rock1.bsp
+    size: 8
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/b_shell0.bsp
+    size: 6
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/b_shell1.bsp
+    size: 9
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/explorejam1_pulsar.bsp
+    size: 1063
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/explorejam1_pulsar.lit
+    size: 546
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/explorejam1_pulsar.map
+    size: 659
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/explorejam1_sock.bsp
+    size: 1440
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/explorejam1_sock.lit
+    size: 503
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: maps/explorejam1_sock.map
+    size: 783
+    timestamp: 2016-03-01
+    map: 3
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: runjumpexplore1.jpg
+    size: 216
+    timestamp: 2016-03-01
+    map: 3
+
+
+
+- model: maps.map
+  pk: 4
+  fields:
+    name: The Castle of Koohoo
+    file_name: koohoo
+    file_size: 2226
+    file_hash: d743648c6b245859adde93c0c24af4d9
+    release_date: 2001-03-25
+    rating: 4.5
+    map_type: null
+- model: maps.mapurls
+  pk: null
+  fields:
+    name: Ethereal Hell
+    url: http://www.electricescape.com/etherealhell/reviews/17-april-2001/koohoo.php
+    map: 4
+- model: maps.mapurls
+  pk: null
+  fields:
+    name: Retroquake
+    url: http://retroquake.planetquake.gamespy.com/blog/?p=106
+    map: 4
+- model: maps.mapurls
+  pk: null
+  fields:
+    name: TEAMShambler
+    url: /webarchive/teamshambler.planetquake.gamespy.com/rev010325.html
+    map: 4
+- model: maps.mapurls
+  pk: null
+  fields:
+    name: Ten Four
+    url: http://tenfourmaps.telefragged.com/php/review.php?gameid=q1&amp;amp;levid=koohoo
+    map: 4
+- model: maps.mapurls
+  pk: null
+  fields:
+    name: "Tronyn's Top 10: Elder World"
+    url: /webarchive/underworld.planetquake.gamespy.com/tronynqexpo08a4.html
+    map: 4
+- model: maps.mapurls
+  pk: null
+  fields:
+    name: Underworldfan's
+    url: /webarchive/underworld.planetquake.gamespy.com/qclassics.html
+    map: 4
+- model: maps.screenshot
+  pk: null
+  fields:
+    image: maps/screenshots/1c30822266fbc22d8aabb1b1f914596da4345a84cc426101ee25b26446f698d1.jpg
+    map: 4
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: koohoo/koohoo.txt
+    size: 5
+    timestamp: 2003-09-10
+    map: 4
+- model: maps.mapfile
+  pk: null
+  fields:
+    name: koohoo/pak0.pak
+    size: 5121
+    timestamp: 2001-03-24
+    map: 4

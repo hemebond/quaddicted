@@ -1,0 +1,161 @@
+{% extends "maps/base.html" %}
+
+{% block content %}
+
+<section class="row">
+	<div class="col">
+		<h1 class="title is-1">{{ map }}</h1>
+	</div>
+</section>
+
+
+<section class="row">
+	<div class="col-lg-8">
+		<div id="screenshots" class="carousel slide carousel-fade mb-3">
+			<ol class="carousel-indicators">
+				{% for x in map.screenshots.all %}
+				<li data-target="#screenshots"
+					data-slide-to="{{ forloop.counter0 }}"
+					{% if forloop.first %}class="active"{% endif %}>
+				</li>
+				{% endfor %}
+			</ol>
+			<div class="carousel-inner">
+			{% for x in map.screenshots.all %}
+				<div class="carousel-item{% if forloop.first %} active{% endif %}">
+					<img src="/media/{{ x }}" class="d-block w-100 img-fluid">
+				</div>
+			{% endfor %}
+			</div>
+
+			<a class="carousel-control-prev" href="#screenshots" role="button" data-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="sr-only">Previous</span>
+			</a>
+			<a class="carousel-control-next" href="#screenshots" role="button" data-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="sr-only">Next</span>
+			</a>
+		</div>
+	</div>
+
+	<div class="col-lg-4">
+		<section>
+			{% lorem p %}
+		</section>
+		<section>
+			<dl class="row">
+				<dt class="col-sm-4">Authors</dt>
+				<dd class="col-sm-8">
+				{% for author in map.authors.all %}
+				<a href="{% url 'index' %}?author={{ author.id }}" title="Show only this users maps">{{ author }}</a>{% if not forloop.last %}, {% endif %}
+				{% endfor %}
+				</dd>
+
+				{% comment %}
+				<dt class="col-sm-4">File Size</dt>
+				<dd class="col-sm-8">{{ map.file_size }}</dd>
+				{% endcomment %}
+
+				<dt class="col-sm-4">Release Date</dt>
+				<dd class="col-sm-8"><time datetime="{{ map.release_date }}">{{ map.release_date }}</time></dd>
+
+{% if map.urls %}
+				<dt class="col-sm-4">Additional Links</dt>
+				<dd class="col-sm-8">
+					<ul class="list-unstyled mb-0">
+						{% for u in map.urls.all %}
+						<li><a href="{{ u.url }}">{{ u.name }}</a></li>
+						{% endfor %}
+					</ul>
+				</dd>
+{% endif %}
+
+				<dt class="col-sm-4">Type</dt>
+				<dd class="col-sm-8">{{ map.map_type }}</dd>
+			</dl>
+		</section>
+
+		<section>
+			{% for tag in map.tags.all %}
+			<a class="btn btn-primary btn-sm mb-1" href="{% url 'index' %}?tag={{ tag.id }}">{{ tag }}</a>
+			{% endfor %}
+			<a href="" class="btn btn-primary btn-sm mb-1" title="Suggest a new tag">
+				<i class="fas fa-plus"></i>
+			</a>
+		</section>
+	</div>
+</section>
+
+
+<section class="row">
+	<div class="col-lg-8">
+		<section class="card mt-3 mb-3 shadow bg-secondary text-white">
+			<div class="card-body">
+				<h3>{{ map.file_name }} <a class="float-right btn btn-light" href="">Download</a></h3>
+				<p>
+					<small class="text-white">{{ map.file_hash }}</small>
+				</p>
+			</div>
+		</section>
+	</div>
+</section>
+
+<article class="row">
+	<div class="col-lg-8">
+
+		{% for comment in "       " %}
+		<article class="card mb-3">
+			<div class="card-header">
+				<strong>myusername</strong>
+				<span class="text-muted float-right">
+					{% for s in '   ' %}
+					<i class="text-warning fa fa-star"></i>
+					{% endfor %}
+				</span>
+			</div>
+			<div class="card-body">
+				{% lorem %}
+			</div>
+		</article>
+		{% endfor %}
+
+	</div>
+
+	<div class="col-lg-4">
+		<section class="card">
+			<div class="card-body">
+				<a href="{{ map.homepage|default:'/' }}" class="btn btn-primary w-100">Homepage <i class="fa fa-external-link-alt"></i></a>
+			</div>
+		</section>
+
+		<section class="card">
+			<div class="card-header">
+				<h2>File List</h2>
+			</div>
+
+			<div class="card-body">
+				<table class="table table-sm">
+					<thead>
+						<tr>
+							<th>File</th>
+							<th>Size</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+				{% for file in map.files.all %}
+						<tr>
+							<td>{{ file.name }}</td>
+							<td>{{ file.size }}</td>
+							<td>{{ file.timestamp|date:'Y-m-d' }}</td>
+						</tr>
+				{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</section>
+	</div>
+</article>
+
+{% endblock %}

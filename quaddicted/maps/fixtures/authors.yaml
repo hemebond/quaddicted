@@ -1,0 +1,28 @@
+#
+# Authors
+#
+- model: maps.author
+  pk: 1
+  fields:
+    name: Dustin "Tronyn" Geeraert
+    map:
+    - 1
+- model: maps.author
+  pk: 2
+  fields:
+    name: sock
+    map:
+      - 2
+      - 3
+- model: maps.author
+  pk: 3
+  fields:
+    name: PuLSaR
+    map:
+      - 3
+- model: maps.author
+  pk: 4
+  fields:
+    name: Vondur
+    map:
+      - 4
