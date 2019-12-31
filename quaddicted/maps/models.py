@@ -87,8 +87,8 @@ def mappackage_upload_to(instance, filename):
 
 class MapPackage(models.Model):
 	file = models.FileField(upload_to=mappackage_upload_to, unique=True)
-	name = models.CharField(max_length=128, blank=True, null=True)
-	hash = models.CharField(max_length=64, blank=True, null=True, unique=True) # a sha256 hex hash of this file
+	file_name = models.CharField(max_length=128, blank=True, null=True)
+	file_hash = models.CharField(max_length=64, blank=True, null=True, unique=True) # a sha256 hex hash of this file
 	created = models.DateField(default=datetime.now)
 	map = models.ForeignKey(Map, related_name='packages', on_delete=models.CASCADE, blank=True, null=True)
 
@@ -124,7 +124,7 @@ def mappackage_pre_save(sender, instance, *args, **kwargs):
 
 class Tag(models.Model):
 	name = models.CharField(max_length=32, unique=True)
-	maps = models.ManyToManyField(Map)
+	maps = models.ManyToManyField(Map, related_name='tags')
 
 	def __str__(self):
 		return self.name

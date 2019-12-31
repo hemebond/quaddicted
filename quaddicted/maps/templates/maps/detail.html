@@ -115,7 +115,7 @@
 								   href="#package{{ forloop.counter }}"
 								   role="button"
 								   aria-controls="#package{{ forloop.counter }}"
-								   title="Show details">{{ package.name }}</a>
+								   title="Show details">{{ package.file_name }}</a>
 							</td>
 							<td>{{ package.created }}</td>
 							<td class="text-right"><a class="btn btn-primary" href="{{ package.file.url }}">Download</a></td>
@@ -124,7 +124,7 @@
 							<td colspan="3">
 								<dl class="row">
 									<dt class="col-sm-3">SHA256 Hash</dt>
-									<dd class="col-sm-9 text-right"><small>{{ package.hash }}</small></dd>
+									<dd class="col-sm-9 text-right"><small>{{ package.file_hash }}</small></dd>
 
 									<dt class="col-sm-3">Size</dt>
 									<dd class="col-sm-9 text-right">{{ package.file.size|filesizeformat }}</dd>
@@ -147,7 +147,9 @@
 			<div class="card-body">{% lorem p %}</div>
 		</section>
 
-		<!-- comments -->
+		<!--
+			Comments
+		-->
 		<section class="card mb-3 map-comments" id="comments">
 			<h5 class="card-header">Comments</h5>
 			<div class="card-body">
@@ -180,7 +182,6 @@
 			{% else %}
 				<p>Please <a href="{% url 'auth_login' %}">log in</a> to leave a comment.</p>
 			{% endif %}
-
 			{% for comment in map.comments.all %}
 				<article class="row mb-3" id="c{{ comment.id }}">
 					<div class="col-sm-2">

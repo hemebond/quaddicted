@@ -27,7 +27,7 @@ class ScreenshotAdmin(admin.ModelAdmin):
 
 @admin.register(MapPackage)
 class MapPackageAdmin(admin.ModelAdmin):
-	list_display = ('name', 'hash')
+	list_display = ('file_name', 'file_hash')
 
 
 @admin.register(MapFile)
