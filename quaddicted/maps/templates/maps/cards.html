@@ -6,7 +6,7 @@
 {%     if map_list %}
 <section class="row">
 	<div class="col">
-		<h1>Cards</h1>
+		<h1 class="text-center">Maps</h1>
 
 		<form class="form-inline" action="" method="get">
 			<div class="form-group mr-2 mb-2">
@@ -46,7 +46,23 @@
 
 						<p class="card-text">
 {%         for tag in map.tags.all %}
-							<a class="badge badge-light" href="?tag={{ tag.id }}">{{ tag }}</a>
+							<div class="btn-group btn-group-sm mb-1">
+							{% if tag.id in tag_list %}
+								<a href="?tag={{ tag.id }}{{ qs_wo_tags }}"
+								   class="btn btn-secondary">
+									{{ tag }}
+								</a>
+							{% else %}
+								<a href="?tag={{ tag.id }}{{ qs_wo_tags }}"
+								   class="btn btn-light">
+									{{ tag }}
+								</a>
+								<a href="?{{ qs }}&tag={{ tag.id }}"
+								   class="btn btn-light">
+									<i class="fas fa-plus"></i>
+								</a>
+							{% endif %}
+							</div>
 {%         endfor %}
 						</p>
 					</div>
