@@ -25,7 +25,7 @@
 {%     for map in map_list %}
 			<div class="col-4 mb-3">
 				<div class="card h-100">
-					<a href="{% url 'detail' map.id %}">
+					<a href="{% url 'maps:detail' map.id %}">
 						{% if map.screenshots.all %}
 						<img src="{{ map.screenshots.all.0.thumbnail.url }}" class="card-img-top" style="max-height: 195.75px">
 						{% else %}
@@ -34,7 +34,7 @@
 					</a>
 					<div class="card-body">
 						<h5 class="card-text">
-							<a href="{% url 'detail' map.id %}" class="text-reset">
+							<a href="{% url 'maps:detail' map.id %}" class="text-reset">
 								{{ map.name }}
 							</a>
 						</h5>
@@ -52,7 +52,7 @@
 					</div>
 					<div class="card-footer">
 						<p class="card-text">
-							<time datetime="{{ map.release_date }}">{{ map.release_date }}</time>
+							<time datetime="{{ map.created }}">{{ map.created }}</time>
 						</p>
 					</div>
 				</div>
