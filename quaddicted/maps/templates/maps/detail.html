@@ -1,6 +1,7 @@
 {% extends "maps/base.html" %}
 
 {% load static %}
+{% load comments %}
 
 {% block content %}
 
@@ -153,36 +154,43 @@
 		<section class="card mb-3 map-comments" id="comments">
 			<h5 class="card-header">Comments</h5>
 			<div class="card-body">
-
-			{% if user.is_authenticated %}
 				<div class="row">
 					<div class="col-sm-2"></div>
 					<div class="col-sm-10">
-
-						<form action="{% url 'maps:comment' map.id %}" method="POST">
-							{% csrf_token %}
+					{% get_comment_form for map as form %}
+						<form action="{% comment_form_target %}" method="POST">
+						{% csrf_token %}
+						{% if not user.is_authenticated %}
 							<div class="form-group">
-								<label for="id_name">Name</label>
-								<input type="text" class="form-control" id="id_name" name="name" maxlength="32">
+								<label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+								<input type="text"
+								       class="form-control"
+								       id="{{ form.name.id_for_label }}"
+								       name="{{ form.name.html_name }}"
+								       maxlength="32"
+								       value="{% if form.name.value %}{{ form.name.value }}{% endif %}">
 							</div>
-
+						{% endif %}
 							<div class="form-group">
-								<label for="id_comment">Comment</label>
-								<textarea class="form-control" id="id_comment" name="comment" rows="3"></textarea>
+								<label for="{{ form.comment.id_for_label }}">{{ form.comment.label }}</label>
+								<textarea class="form-control"
+								          id="{{ form.comment.id_for_label }}"
+								          name="{{ form.comment.html_name }}"
+								          rows="3">{% if form.comment.value %}{{ form.comment.value }}{% endif %}</textarea>
 							</div>
-							<div style="display: none">{{ form.honeypot }}</div>
+							<div class="d-none">{{ form.honeypot }}</div>
+							{{ form.content_type }}
+							{{ form.object_pk }}
 							{{ form.timestamp }}
 							{{ form.security_hash }}
 							<input type="hidden" name="next" value="{% url 'maps:detail' map.id %}#comments" />
 							<button type="submit" class="btn btn-primary mb-2">Add comment</button>
 						</form>
-
 					</div>
 				</div>
-			{% else %}
-				<p>Please <a href="{% url 'auth_login' %}">log in</a> to leave a comment.</p>
-			{% endif %}
-			{% for comment in map.comments.all %}
+
+			{% get_comment_list for map as comments %}
+			{% for comment in comments reversed %}
 				<article class="row mb-3" id="c{{ comment.id }}">
 					<div class="col-sm-2">
 						<img class="img-thumbnail img-responsive user-photo" src="{% static 'avatar_2x.png' %}">
@@ -259,7 +267,6 @@
 			</div>
 		</section>
 
-	{% if map.demos or user.is_authenticated %}
 		<section class="card">
 			<h5 class="card-header">Demos</h5>
 			<div class="card-body">
@@ -311,7 +318,6 @@
 				{% endif %}
 			</div>
 		</section>
-	{% endif %}
 
 	{% if map.package %}
 		<section class="card">

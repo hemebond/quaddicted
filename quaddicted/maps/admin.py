@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Map, Tag, MapFile, Screenshot, Author, MapPackage, Demo, Comment
+from .models import Map, Tag, MapFile, Screenshot, Author, MapPackage, Demo
 
 @admin.register(Map)
 class MapAdmin(admin.ModelAdmin):
@@ -12,7 +12,6 @@ class MapAdmin(admin.ModelAdmin):
 
 admin.site.register(Tag)
 admin.site.register(Author)
-admin.site.register(Comment)
 
 @admin.register(Demo)
 class DemoAdmin(admin.ModelAdmin):

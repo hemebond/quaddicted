@@ -213,38 +213,3 @@ class Demo(models.Model):
 	description = models.CharField(max_length=256, blank=True, null=True)
 	package = models.ForeignKey(MapPackage, on_delete=models.CASCADE)
 	video_url = models.URLField(blank=True, null=True)
-
-
-class Comment(models.Model):
-	map = models.ForeignKey(Map, related_name="comments", on_delete=models.CASCADE)
-	user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
-	user_name = models.CharField(max_length=32, blank=True, null=True)
-	comment = models.TextField()
-	submit_date = models.DateTimeField(default=None, db_index=True)
-
-	def __str__(self):
-		return "%s: %s..." % (self.name, self.comment[:50])
-
-	def save(self, *args, **kwargs):
-		if self.submit_date is None:
-			self.submit_date = timezone.now()
-		super().save(*args, **kwargs)
-
-	@property
-	def name(self):
-		# user_id is magically available if user is set
-		if self.user_id:
-			return self.user.get_username()
-
-		return self.user_name
-
-	@name.setter
-	def name(self, val):
-		if self.user_id:
-			raise AttributeError(_("This comment was posted by an authenticated "
-								   "user and thus the name is read-only."))
-		self.user_name = val
-
-
-class CommentFlag(models.Model):
-	pass

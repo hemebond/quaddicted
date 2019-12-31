@@ -3,10 +3,13 @@ from django.http import HttpResponse, Http404, QueryDict
 from django.template import loader
 from django.db.models import Q
 from django.utils.http import urlencode
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_POST
 
 import json
 
 from .models import Map
+from .forms import CommentForm
 
 
 def index(request, template):
@@ -98,14 +101,21 @@ def cards(request):
 
 def detail(request, map_id):
 	map = get_object_or_404(Map, pk=map_id)
+
+	# if request.method == 'POST':
+	# 	form = CommentForm(request.POST)
+
+	# 	if form.is_valid():
+	# 		form.save()
+	# 		return redirect(map)
+	# 	else:
+	# 		print('form not vlaid')
+	# else:
+	# 	form = CommentForm()
+
 	return render(request, 'maps/detail.html', {'map': map})
 
 
 def steam(request, map_id):
 	map = get_object_or_404(Map, pk=map_id)
 	return render(request, 'maps/steam.html', {'map': map})
-
-
-def comment(request, map_id):
-	map = get_object_or_404(Map, pk=map_id)
-	return render(request, 'maps/detail.html', {'map': map})

@@ -41,7 +41,10 @@ INSTALLED_APPS = [
 
     'maps.apps.MapsConfig',
     'imagekit',
+    'django_comments',
 ]
+
+COMMENTS_APP = 'maps'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
