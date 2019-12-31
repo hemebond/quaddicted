@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'maps.apps.MapsConfig',
     'imagekit',
     'django_comments',
+    'taggit',
 ]
 
 COMMENTS_APP = 'maps'

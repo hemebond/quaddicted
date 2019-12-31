@@ -25,9 +25,14 @@ def index(request, template):
 	except KeyError:
 		tags = []
 
+	# for tag in tags:
+		# try:
+		# 	# map_list = map_list.filter(tags=int(tag))
+		# except:
+		# 	pass
 	for tag in tags:
 		try:
-			map_list = map_list.filter(tags=int(tag))
+			map_list = map_list.filter(taggits__slug=tag).distinct()
 		except:
 			pass
 
@@ -78,7 +83,7 @@ def index(request, template):
 
 	context = {
 		'map_list': map_list,
-		'tag_list': list(map(lambda i: int(i), tags)), # list of tags filtered for
+		'tag_list': tags, # list of tags filtered for
 		'search_term': search_term,
 
 		'sort_fields': sort_fields,

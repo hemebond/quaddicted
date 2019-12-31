@@ -2,6 +2,7 @@ import os
 import json
 import yaml
 from pathlib import Path
+from django.utils.text import slugify
 
 all_authors = {
 	# name: [maps...]
@@ -17,6 +18,9 @@ all_packages = [
 	# created
 	# map
 ]
+
+taggit_tag_names = {}
+all_taggits = {}
 
 all_screenshots = []
 
@@ -55,6 +59,8 @@ for root, dirs, files in os.walk('.'):
 
 				if tag_name == 'tag':
 					all_tags.setdefault(tag_value, []).append(map_pk)
+					# taggit requires unique slugs
+					all_taggits.setdefault(slugify(tag_value), []).append(map_pk)
 					continue
 
 				if tag_name == 'game':
@@ -108,7 +114,9 @@ for root, dirs, files in os.walk('.'):
 				'fields': fields
 			})
 
+
 print(yaml.dump(map_list))
+
 
 for pk, (tag_name, tag_maps) in enumerate(all_tags.items()):
 	print(yaml.dump([{
@@ -120,7 +128,28 @@ for pk, (tag_name, tag_maps) in enumerate(all_tags.items()):
 		}
 	}]))
 
-# print(all_tags)
+
+for pk, (tag_name, tag_maps) in enumerate(all_taggits.items()):
+	print(yaml.dump([{
+		'model': 'taggit.tag',
+		'pk': pk,
+		'fields': {
+			'name': tag_name,
+			'slug': tag_name,
+		}
+	}]))
+
+	for tm in tag_maps:
+		print(yaml.dump([{
+			'model': 'taggit.taggeditem',
+			'pk': None,
+			'fields': {
+				'tag': pk,
+				'content_type': ['maps', 'map'],
+				'object_id': tm,
+			}
+		}]))
+
 
 for pk, (author_name, author_maps) in enumerate(all_authors.items()):
 	print(yaml.dump([{
@@ -131,7 +160,7 @@ for pk, (author_name, author_maps) in enumerate(all_authors.items()):
 			'maps': author_maps
 		}
 	}]))
-# print(all_authors)
+
 
 for pk, package in enumerate(all_packages):
 	print(yaml.dump([{

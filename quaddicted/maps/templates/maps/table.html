@@ -1,5 +1,6 @@
 {% extends "maps/base.html" %}
 {% load static %}
+{% load map_extras %}
 
 {% block content %}
 {%     if map_list %}
@@ -56,19 +57,20 @@
 					</td>
 					<td>{{ map.num_reviews|default:'0' }}</td>
 					<td>
-{%             for tag in map.tags.all %}
+
+{%             for tag in map.taggits.all %}
 						<div class="btn-group btn-group-sm mb-1">
-						{% if tag.id in tag_list %}
-							<a href="?tag={{ tag.id }}{{ qs_wo_tags }}"
+						{% if tag.slug|inlist:tag_list %}
+							<a href="?tag={{ tag.slug }}{{ qs_wo_tags }}"
 							   class="btn btn-secondary">
 								{{ tag }}
 							</a>
 						{% else %}
-							<a href="?tag={{ tag.id }}{{ qs_wo_tags }}"
+							<a href="?tag={{ tag.slug }}{{ qs_wo_tags }}"
 							   class="btn btn-primary">
 								{{ tag }}
 							</a>
-							<a href="?{{ qs }}&tag={{ tag.id }}"
+							<a href="?{{ qs }}&tag={{ tag.slug }}"
 							   class="btn btn-primary">
 								<i class="fas fa-plus"></i>
 							</a>

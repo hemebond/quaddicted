@@ -13,6 +13,7 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFit
 
 from django.contrib.auth.models import User
+from taggit.managers import TaggableManager
 
 
 # Receive the pre_delete signal and delete the file associated with the model instance.
@@ -69,6 +70,8 @@ class Map(models.Model):
 	game = models.CharField(max_length=2, choices=GAME_CHOICES, default=QUAKE1)
 	homepage = models.URLField(blank=True, null=True)
 	published = models.BooleanField(default=False) # should the map be visible
+
+	taggits = TaggableManager()
 
 	def __str__(self):
 		return self.name

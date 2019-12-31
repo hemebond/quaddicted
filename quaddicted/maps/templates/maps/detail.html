@@ -267,6 +267,20 @@
 			</div>
 		</section>
 
+		<section class="card mb-3">
+			<h5 class="card-header">Taggits</h5>
+			<div class="card-body">
+				<p>
+				{% for tag in map.taggits.all %}
+					<a class="btn btn-light btn-sm mb-1" href="{% url 'maps:index' %}?tag={{ tag.slug }}">{{ tag }}</a>
+				{% endfor %}
+					<a href="" class="btn btn-light btn-sm mb-1" title="Suggest a new tag">
+						<i class="fas fa-plus"></i>
+					</a>
+				</p>
+			</div>
+		</section>
+
 		<section class="card">
 			<h5 class="card-header">Demos</h5>
 			<div class="card-body">
