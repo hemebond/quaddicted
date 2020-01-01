@@ -69,7 +69,7 @@
 					<dt class="col-md-4">Authors</dt>
 					<dd class="col-md-8 text-right">
 					{% for author in package.authors.all %}
-						<a href="{% url 'packages:index' %}?author={{ author.id }}" title="Show only this users packages">{{ author }}</a>{% if not forloop.last %}, {% endif %}
+						<a href="{% url 'packages:list' %}?author={{ author.id }}" title="Show only this users packages">{{ author }}</a>{% if not forloop.last %}, {% endif %}
 					{% endfor %}
 					</dd>
 
@@ -219,21 +219,7 @@
 			<div class="card-body">
 				<p>
 				{% for tag in package.tags.all %}
-					<a class="btn btn-light btn-sm mb-1" href="{% url 'packages:index' %}?tag={{ tag.id }}">{{ tag }}</a>
-				{% endfor %}
-					<a href="" class="btn btn-light btn-sm mb-1" title="Suggest a new tag">
-						<i class="fas fa-plus"></i>
-					</a>
-				</p>
-			</div>
-		</section>
-
-		<section class="card mb-3">
-			<h5 class="card-header">Taggits</h5>
-			<div class="card-body">
-				<p>
-				{% for tag in package.taggits.all %}
-					<a class="btn btn-light btn-sm mb-1" href="{% url 'packages:index' %}?tag={{ tag.slug }}">{{ tag }}</a>
+					<a class="btn btn-light btn-sm mb-1" href="{% url 'packages:list' %}?tag={{ tag.id }}">{{ tag }}</a>
 				{% endfor %}
 					<a href="" class="btn btn-light btn-sm mb-1" title="Suggest a new tag">
 						<i class="fas fa-plus"></i>

@@ -6,9 +6,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Quake Maps</title>
 		<link rel="stylesheet"
-			href="{% static 'maps/ext/bootstrap-4.4.1-dist/css/bootstrap.min.css' %}" />
+			href="{% static 'ext/bootstrap-4.4.1-dist/css/bootstrap.min.css' %}" />
 		<link rel="stylesheet"
-				href="{% static 'maps/ext/fontawesome-free-5.12.0-web/css/all.min.css' %}" />
+				href="{% static 'ext/fontawesome-free-5.12.0-web/css/all.min.css' %}" />
 		<style type="text/css">
 		.navbar {
 			background-color: #544D3D;
@@ -16,8 +16,8 @@
 		.panel {
 			position:relative;
 		}
-		.map-comments .card > .card-header:after,
-		.map-comments .card > .card-header:before {
+		.package-comments .card > .card-header:after,
+		.package-comments .card > .card-header:before {
 			position:absolute;
 			top:11px;left:-16px;
 			right:100%;
@@ -29,13 +29,13 @@
 			border-style:solid solid outset;
 			pointer-events:none;
 		}
-		.map-comments .card > .card-header:after {
+		.package-comments .card > .card-header:after {
 			border-width:7px;
 			border-right-color:#f7f7f7;
 			margin-top:1px;
 			margin-left:2px;
 		}
-		.map-comments .card > .card-header:before {
+		.package-comments .card > .card-header:before {
 			border-right-color:#ddd;
 			border-width:8px;
 		}
@@ -74,7 +74,7 @@
 						<a class="nav-link" href="#">News</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/maps/">Maps</a>
+						<a class="nav-link" href="{% url 'packages:list' %}">Packages</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="#">Wiki</a>
@@ -103,8 +103,8 @@
 				</section>
 			{% endblock %}
 		</div>
-		<script src="{% static 'maps/ext/jquery-3.0.0.slim.min.js' %}"></script>
-		<script src="{% static 'maps/ext/bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js' %}"></script>
+		<script src="{% static 'ext/jquery-3.0.0.slim.min.js' %}"></script>
+		<script src="{% static 'ext/bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js' %}"></script>
 		{% block javascript %}{% endblock %}
 	</body>
 </html>
