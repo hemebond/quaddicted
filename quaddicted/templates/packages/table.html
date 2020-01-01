@@ -27,10 +27,10 @@
 		<table class="table" id="package-list-table">
 			<thead>
 				<tr>
-					<th><a href="?sort={{ sort_fields.0 }}{{ qs_wo_sort }}">Title</a></th>
+					<th><a href="?{{ qs_sort_by }}{{ sort_fields.name }}">Title</a></th>
 					<th>Author(s)</th>
-					<th><a href="?sort={{ sort_fields.1 }}{{ qs_wo_sort }}">Date</a></th>
-					<th><a href="?sort={{ sort_fields.2 }}{{ qs_wo_sort }}">Rating</a></th>
+					<th><a href="?{{ qs_sort_by }}{{ sort_fields.created }}">Date</a></th>
+					<th><a href="?{{ qs_sort_by }}{{ sort_fields.rating }}">Rating</a></th>
 					<th>Comments</th>
 					<th>Tags</th>
 				</tr>
@@ -60,17 +60,17 @@
 
 {%             for tag in package.tags.all %}
 						<div class="btn-group btn-group-sm mb-1">
-						{% if tag.slug|inlist:tag_list %}
-							<a href="?tag={{ tag.slug }}{{ qs_wo_tags }}"
+						{% if tag.slug in tag_list %}
+							<a href="?{{ qs_filter_tag }}{{ tag.slug }}"
 							   class="btn btn-secondary">
 								{{ tag }}
 							</a>
 						{% else %}
-							<a href="?tag={{ tag.slug }}{{ qs_wo_tags }}"
+							<a href="?{{ qs_filter_tag }}{{ tag.slug }}"
 							   class="btn btn-primary">
 								{{ tag }}
 							</a>
-							<a href="?{{ qs }}&tag={{ tag.slug }}"
+							<a href="?{{ qs_append_tag }}{{ tag.slug }}"
 							   class="btn btn-primary">
 								<i class="fas fa-plus"></i>
 							</a>

@@ -10,40 +10,18 @@
 		<link rel="stylesheet"
 				href="{% static 'ext/fontawesome-free-5.12.0-web/css/all.min.css' %}" />
 		<style type="text/css">
-		.navbar {
-			background-color: #544D3D;
-		}
-		.panel {
-			position:relative;
-		}
-		.package-comments .card > .card-header:after,
-		.package-comments .card > .card-header:before {
-			position:absolute;
-			top:11px;left:-16px;
-			right:100%;
-			width:0;
-			height:0;
-			display:block;
-			content:" ";
-			border-color:transparent;
-			border-style:solid solid outset;
-			pointer-events:none;
-		}
-		.package-comments .card > .card-header:after {
-			border-width:7px;
-			border-right-color:#f7f7f7;
-			margin-top:1px;
-			margin-left:2px;
-		}
-		.package-comments .card > .card-header:before {
-			border-right-color:#ddd;
-			border-width:8px;
-		}
-		.navbar {
-			border-bottom-width: 3px !important;
-			border-bottom-color: #CCCC99;
-		}
+			.navbar {
+				background-color: #544D3D;
+				border-bottom-width: 3px !important;
+				border-bottom-color: #CCCC99;
+			}
+			.panel {
+				position:relative;
+			}
 		</style>
+
+{% block css %}{% endblock %}
+
 	</head>
 	<body>
 		<nav class="navbar navbar-expand-lg navbar-dark border-bottom mb-3">
@@ -67,14 +45,14 @@
 					<img src="{% static 'top.png' %}" alt="">
 				</a>
 				<ul class="navbar-nav justify-content-center">
-					<li class="nav-item active">
-						<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+					<li class="nav-item {% if active_section == 'home' %}active{% endif %}">
+						<a class="nav-link" href="#">Home {% if active_section == 'home' %}<span class="sr-only">(current)</span>{% endif %}</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="#">News</a>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="{% url 'packages:list' %}">Packages</a>
+					<li class="nav-item {% if active_section == 'packages' %}active{% endif %}">
+						<a class="nav-link" href="{% url 'packages:list' %}">Packages {% if active_section == 'packages' %}<span class="sr-only">(current)</span>{% endif %}</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="#">Wiki</a>
@@ -89,6 +67,7 @@
 			</div>
 			</div>
 		</nav>
+
 		<div class="container">
 			{% block content %}
 				<section class="row">
@@ -103,6 +82,7 @@
 				</section>
 			{% endblock %}
 		</div>
+
 		<script src="{% static 'ext/jquery-3.0.0.slim.min.js' %}"></script>
 		<script src="{% static 'ext/bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js' %}"></script>
 		{% block javascript %}{% endblock %}

@@ -3,8 +3,37 @@
 {% load static %}
 {% load comments %}
 
-{% block content %}
 
+
+{% block css %}
+		<style type="text/css">
+			.package-comments .card > .card-header:after,
+			.package-comments .card > .card-header:before {
+				position:absolute;
+				top:11px;left:-16px;
+				right:100%;
+				width:0;
+				height:0;
+				display:block;
+				content:" ";
+				border-color:transparent;
+				border-style:solid solid outset;
+				pointer-events:none;
+			}
+			.package-comments .card > .card-header:after {
+				border-width:7px;
+				border-right-color:#f7f7f7;
+				margin-top:1px;
+				margin-left:2px;
+			}
+			.package-comments .card > .card-header:before {
+				border-right-color:#ddd;
+				border-width:8px;
+			}
+		</style>
+{% endblock %}
+
+{% block content %}
 <section class="row">
 	<div class="col">
 		<h1 class="title is-1">{{ package }}</h1>
