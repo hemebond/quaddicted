@@ -22,8 +22,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('maps/', include('maps.urls')),
-    path('packages/', include('packages.urls')),
+    path('packages/', include('quaddicted_packages.urls')),
     path('comments/', include('django_comments.urls')),
 ]
 

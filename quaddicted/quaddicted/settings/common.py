@@ -39,14 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
-    'maps.apps.MapsConfig',
-    'packages.apps.PackagesConfig',
+    'quaddicted_packages',
+    'quaddicted_comments',
     'imagekit',
     'django_comments',
     'taggit',
 ]
 
-COMMENTS_APP = 'maps'
+COMMENTS_APP = 'quaddicted_comments'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
