@@ -24,14 +24,6 @@ author_names = {}
 tag_packages = {}
 tag_names = {}
 
-all_packages = [
-	# file
-	# file_name
-	# file_hash
-	# created
-	# map
-]
-
 taggit_tag_names = {}
 
 all_screenshots = []
@@ -40,10 +32,11 @@ package_list = []
 
 package_pk = 0
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+SRC_DIR = Path(__file__).resolve().parent
+BASE_DIR = SRC_DIR.parent
 MEDIA_DIR = Path(BASE_DIR.joinpath('media'))
 
-for root, dirs, files in os.walk('.'):
+for root, dirs, files in os.walk(SRC_DIR.joinpath('json')):
 	for file in files:
 		if file.endswith('.json'):
 			package_pk += 1
@@ -127,7 +120,7 @@ for root, dirs, files in os.walk('.'):
 				})
 
 			package_list.append({
-				'model': 'packages.package',
+				'model': 'quaddicted_packages.package',
 				'pk': package_pk,
 				'fields': fields
 			})
@@ -152,7 +145,7 @@ for pk, (tag_slug, tag_maps) in enumerate(tag_packages.items()):
 			'pk': None,
 			'fields': {
 				'tag': pk,
-				'content_type': ['packages', 'package'],
+				'content_type': ['quaddicted_packages', 'package'],
 				'object_id': package_id,
 			}
 		}]))
@@ -160,7 +153,7 @@ for pk, (tag_slug, tag_maps) in enumerate(tag_packages.items()):
 
 for pk, (author_username, author_fullname) in enumerate(author_names.items()):
 	print(yaml.dump([{
-		'model': 'packages.author',
+		'model': 'quaddicted_packages.author',
 		'pk': pk,
 		'fields': {
 			'username': author_username,
@@ -172,7 +165,7 @@ for pk, (author_username, author_fullname) in enumerate(author_names.items()):
 
 for pk, screenshot in enumerate(all_screenshots):
 	print(yaml.dump([{
-		'model': 'packages.screenshot',
+		'model': 'quaddicted_packages.screenshot',
 		'pk': pk,
 		'fields': screenshot,
 	}]))
