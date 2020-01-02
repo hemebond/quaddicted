@@ -41,27 +41,51 @@
 
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<div class="text-lg-center mx-lg-auto">
-				<a class="navbar-brand d-none d-lg-inline-block" href="#">
+				<a class="navbar-brand d-none d-lg-inline-block" href="/">
 					<img src="{% static 'top.png' %}" alt="">
 				</a>
 				<ul class="navbar-nav justify-content-center">
 					<li class="nav-item {% if active_section == 'home' %}active{% endif %}">
-						<a class="nav-link" href="#">Home {% if active_section == 'home' %}<span class="sr-only">(current)</span>{% endif %}</a>
+						<a class="nav-link" href="/">Home
+							{% if active_section == 'home' %}
+								<span class="sr-only">(current)</span>
+							{% endif %}
+						</a>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#">News</a>
+					<li class="nav-item {% if active_section == 'news' %}active{% endif %}">
+						<a class="nav-link" href="/news/">News
+							{% if active_section == 'news' %}
+								<span class="sr-only">(current)</span>
+							{% endif %}
+						</a>
 					</li>
 					<li class="nav-item {% if active_section == 'packages' %}active{% endif %}">
-						<a class="nav-link" href="{% url 'packages:list' %}">Packages {% if active_section == 'packages' %}<span class="sr-only">(current)</span>{% endif %}</a>
+						<a class="nav-link" href="{% url 'packages:list' %}">Packages
+							{% if active_section == 'packages' %}
+								<span class="sr-only">(current)</span>
+							{% endif %}
+						</a>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#">Wiki</a>
+					<li class="nav-item {% if active_section == 'wiki' %}active{% endif %}">
+						<a class="nav-link" href="/wiki/">Wiki
+							{% if active_section == 'wiki' %}
+								<span class="sr-only">(current)</span>
+							{% endif %}
+						</a>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#">Forum</a>
+					<li class="nav-item {% if active_section == 'forum' %}active{% endif %}">
+						<a class="nav-link" href="/forum/">Forum
+							{% if active_section == 'forum' %}
+								<span class="sr-only">(current)</span>
+							{% endif %}
+						</a>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#">Help</a>
+					<li class="nav-item {% if active_section == 'help' %}active{% endif %}">
+						<a class="nav-link" href="/help/">Help
+							{% if active_section == 'help' %}
+								<span class="sr-only">(current)</span>
+							{% endif %}
+						</a>
 					</li>
 				</ul>
 			</div>

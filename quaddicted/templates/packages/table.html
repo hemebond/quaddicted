@@ -1,12 +1,14 @@
-{% extends "packages/base.html" %}
+{% extends "base.html" %}
+
+
 {% load static %}
+{% load quaddicted_tags %}
+
 
 {% block content %}
-{%     if package_list %}
-
 <section class="row">
 	<div class="col">
-		<h1 class="text-center">Maps</h1>
+		<h1 class="text-center">Packages</h1>
 
 		<form class="form-inline" action="" method="get">
 			<div class="form-group mr-2 mb-2">
@@ -16,20 +18,21 @@
 				       class="form-control"
 				       data-table="package-list-table"
 				       placeholder="Filter/Search"
-				       value="{% if search_term %}{{ search_term }}{% endif %}">
+				       value="{% if filtered_term %}{{ filtered_term }}{% endif %}">
 			</div>
 			<noscript>
 				<button type="submit" class="btn btn-primary mb-2">Search</button>
 			</noscript>
 		</form>
 
+{%     if package_list %}
 		<table class="table" id="package-list-table">
 			<thead>
 				<tr>
-					<th><a href="?{{ qs_sort_by }}{{ sort_fields.name }}">Title</a></th>
+					<th><a href="?{% sort_by querydict sort_fields.name %}">Title</a></th>
 					<th>Author(s)</th>
-					<th><a href="?{{ qs_sort_by }}{{ sort_fields.created }}">Date</a></th>
-					<th><a href="?{{ qs_sort_by }}{{ sort_fields.rating }}">Rating</a></th>
+					<th><a href="?{% sort_by querydict sort_fields.created %}">Date</a></th>
+					<th><a href="?{% sort_by querydict sort_fields.rating %}">Rating</a></th>
 					<th>Comments</th>
 					<th>Tags</th>
 				</tr>
@@ -40,7 +43,7 @@
 					<td><a href="{% url 'packages:detail' package.file_hash %}">{{ package.name }}</a></td>
 					<td>
 {%             for author in package.authors.all %}
-						<a href="?author={{ author.username }}" title="Show only this users maps">{{ author }}</a>{% if not forloop.last %}, {% endif %}
+						<a href="?{% filter_by_author querydict author.username %}" title="Show only this users maps">{{ author }}</a>{% if not forloop.last %}, {% endif %}
 {%             endfor %}
 					</td>
 					<td>{{ package.created }}</td>
@@ -59,19 +62,15 @@
 
 {%             for tag in package.tags.all %}
 						<div class="btn-group btn-group-sm mb-1">
-						{% if tag.slug in tag_list %}
-							<a href="?{{ qs_filter_tag }}{{ tag.slug }}"
-							   class="btn btn-secondary">
-								{{ tag }}
+						{% if tag.slug in filtered_tags %}
+							<a href="?{% filter_del_tag querydict tag.slug %}"
+							   class="btn btn-warning">
+								<i class="fas fa-times"></i> {{ tag }}
 							</a>
 						{% else %}
-							<a href="?{{ qs_filter_tag }}{{ tag.slug }}"
+							<a href="?{% filter_add_tag querydict tag.slug %}"
 							   class="btn btn-primary">
-								{{ tag }}
-							</a>
-							<a href="?{{ qs_append_tag }}{{ tag.slug }}"
-							   class="btn btn-primary">
-								<i class="fas fa-plus"></i>
+								<i class="fas fa-plus"></i> {{ tag }}
 							</a>
 						{% endif %}
 						</div>
@@ -81,16 +80,11 @@
 {%         endfor %}
 			</tbody>
 		</table>
-	</div>
-</section>
-
 {% else %}
-<section class="section">
-	<div class="container">
 		<p>No maps available</p>
+{% endif %}
 	</div>
 </section>
-{% endif %}
 
 {% endblock %}
 

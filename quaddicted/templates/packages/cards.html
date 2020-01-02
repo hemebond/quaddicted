@@ -1,6 +1,32 @@
-{% extends "packages/base.html" %}
+{% extends "base.html" %}
 
 {% load static %}
+
+
+{% block css %}
+<style type="text/css">
+	.card > a {
+		display: block;
+		width: 100%;
+		position: relative;
+		height: 0;
+		padding: 56.25% 0 0 0;
+		overflow: hidden;
+	}
+	.card > a > img {
+		position: absolute;
+		display: block;
+		max-width: 100%;
+		max-height: 100%;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		margin: auto;
+	}
+</style>
+{% endblock %}
+
 
 {% block content %}
 {%     if package_list %}
@@ -16,20 +42,20 @@
 				       class="form-control"
 				       data-cards="package-list-cards"
 				       placeholder="Filter/Search"
-				       value="{% if search_term %}{{ search_term }}{% endif %}">
+				       value="{% if filtered_term %}{{ filtered_term }}{% endif %}">
 			</div>
 			<button type="submit" class="btn btn-primary mb-2">Search</button>
 		</form>
 
-		<div class="row row-cols-3" id="package-list-cards">
+		<div class="row row-cols-1 row-cols-lg-3" id="package-list-cards">
 {%     for package in package_list %}
-			<div class="col-4 mb-3">
+			<div class="col mb-3">
 				<div class="card h-100">
-					<a href="{% url 'packages:detail' package.file_hash %}">
+					<a href="{% url 'packages:detail' package.file_hash %}" class="bg-secondary">
 						{% if package.screenshots.all %}
-						<img src="{{ package.screenshots.all.0.thumbnail.url }}" class="card-img-top" style="max-height: 195.75px">
+						<img src="{{ package.screenshots.all.0.thumbnail.url }}">
 						{% else %}
-						<img src="{% static '/384x216.png' %}" class="card-img-top">
+						<img src="{% static '/384x216.png' %}">
 						{% endif %}
 					</a>
 					<div class="card-body">
