@@ -98,7 +98,7 @@
 					<dt class="col-md-4">Authors</dt>
 					<dd class="col-md-8 text-right">
 					{% for author in package.authors.all %}
-						<a href="{% url 'packages:list' %}?author={{ author.id }}" title="Show only this users packages">{{ author }}</a>{% if not forloop.last %}, {% endif %}
+						<a href="{% url 'packages:list' %}?author={{ author.username }}" title="Show only this users packages">{{ author }}</a>{% if not forloop.last %}, {% endif %}
 					{% endfor %}
 					</dd>
 
@@ -248,7 +248,7 @@
 			<div class="card-body">
 				<p>
 				{% for tag in package.tags.all %}
-					<a class="btn btn-light btn-sm mb-1" href="{% url 'packages:list' %}?tag={{ tag.id }}">{{ tag }}</a>
+					<a class="btn btn-light btn-sm mb-1" href="{% url 'packages:list' %}?tag={{ tag.slug }}">{{ tag }}</a>
 				{% endfor %}
 					<a href="" class="btn btn-light btn-sm mb-1" title="Suggest a new tag">
 						<i class="fas fa-plus"></i>
