@@ -74,9 +74,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            'libraries': {
-                'quaddicted_tags': 'quaddicted.templatetags.quaddicted_tags',
-            }
         },
     },
 ]
