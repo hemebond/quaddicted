@@ -4,11 +4,11 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Quake Maps</title>
+		<title>{% block title %}Quake Maps{% endblock %}</title>
 		<link rel="stylesheet"
 			href="{% static 'ext/bootstrap-4.4.1-dist/css/bootstrap.min.css' %}" />
 		<link rel="stylesheet"
-				href="{% static 'ext/fontawesome-free-5.12.0-web/css/all.min.css' %}" />
+		href="{% static 'ext/fontawesome-free-5.12.0-web/css/all.min.css' %}" />
 		<style type="text/css">
 			.navbar {
 				background-color: #544D3D;
@@ -107,7 +107,8 @@
 			{% endblock %}
 		</div>
 
-		<script src="{% static 'ext/jquery-3.0.0.slim.min.js' %}"></script>
+		{% comment %}<script src="{% static 'ext/jquery-3.0.0.slim.min.js' %}"></script>{% endcomment %}
+		<script src="{% static 'ext/jquery-3.4.1.min.js' %}"></script>
 		<script src="{% static 'ext/bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js' %}"></script>
 		{% block javascript %}{% endblock %}
 	</body>
