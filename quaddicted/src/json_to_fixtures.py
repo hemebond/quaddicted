@@ -166,11 +166,15 @@ for root, dirs, files in os.walk(SRC_DIR.joinpath('json')):
 			else:
 				for rating in package_ratings:
 					rating_pk += 1
+
+					if rating_pk == 2997:
+						logging.debug(rating)
+
 					ratings.append({
 						'model': 'quaddicted_packages.rating',
 						'pk': rating_pk,
 						'fields': {
-							'user': rating['username'],
+							'username': rating['username'],
 							'package': package_pk,
 							'rating': rating['rating'],
 							'created': rating['datetime'],
@@ -179,6 +183,7 @@ for root, dirs, files in os.walk(SRC_DIR.joinpath('json')):
 
 				del(ratings_raw[package_abs_path.stem])
 
+# The left-over ratings; the package has been deleted
 logging.debug(ratings_raw)
 
 print(yaml.dump(package_list))
