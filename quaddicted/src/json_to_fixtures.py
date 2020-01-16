@@ -55,7 +55,7 @@ logging.debug("Read %s ratings" % len(ratings_json))
 for rating in ratings_json:
 	ratings_raw.setdefault(rating['zipname'], []).append({
 		'datetime': (datetime.fromtimestamp(rating['timestamp'])).isoformat() + 'Z',
-		'rating': rating['rating_value'],
+		'score': rating['rating_value'],
 		'username': rating['username'],
 	})
 
@@ -176,7 +176,7 @@ for root, dirs, files in os.walk(SRC_DIR.joinpath('json')):
 						'fields': {
 							'username': rating['username'],
 							'package': package_pk,
-							'rating': rating['rating'],
+							'score': rating['score'],
 							'created': rating['datetime'],
 						}
 					})
