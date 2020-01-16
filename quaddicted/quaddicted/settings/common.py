@@ -39,11 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
+    'imagekit',
+    'taggit',
+    'taggit_serializer',
+    'rest_framework',
+    'django_comments',
     'quaddicted_packages',
     'quaddicted_comments',
-    'imagekit',
-    'django_comments',
-    'taggit',
+    'quaddicted_api',
 ]
 
 COMMENTS_APP = 'quaddicted_comments'

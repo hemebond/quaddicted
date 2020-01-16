@@ -20,8 +20,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/v1/', include('quaddicted_api.urls')),
     path('packages/', include('quaddicted_packages.urls')),
     path('comments/', include('django_comments.urls')),
 ]
