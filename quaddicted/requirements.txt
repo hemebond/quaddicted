@@ -1,0 +1,7 @@
+Django==3.0
+django-imagekit
+django-taggit
+django-taggit-serializer
+djangorestframework
+Pillow
+vgio
