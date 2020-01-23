@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     'imagekit',
+    'extra_views',
     'taggit',
     'taggit_serializer',
     'rest_framework',
@@ -67,7 +68,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'quaddicted', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {

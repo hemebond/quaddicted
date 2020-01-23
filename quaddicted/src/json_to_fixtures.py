@@ -38,7 +38,8 @@ package_pk = 0
 
 SRC_DIR = Path(__file__).resolve().parent
 BASE_DIR = SRC_DIR.parent
-MEDIA_DIR = Path(BASE_DIR.joinpath('media'))
+# MEDIA_DIR = Path(BASE_DIR.joinpath('media'))
+MEDIA_DIR = Path('/srv/www/quaddicted/media')
 
 
 
@@ -75,7 +76,10 @@ for root, dirs, files in os.walk(SRC_DIR.joinpath('json')):
 			with open(os.path.join(root, file)) as fp:
 				j = json.load(fp)
 
-			fields = {}
+			fields = {
+				'uploaded_by': 1,
+				'published': True,
+			}
 
 			for tag in j['tags']:
 				tag_name, tag_value = tag.split('=', 1)
@@ -89,6 +93,7 @@ for root, dirs, files in os.walk(SRC_DIR.joinpath('json')):
 
 				if tag_name == 'releasedate':
 					fields['created'] = tag_value
+					fields['uploaded_on'] = tag_value
 					continue
 
 				if tag_name == 'author':
@@ -213,6 +218,7 @@ for pk, (tag_slug, tag_maps) in enumerate(tag_packages.items()):
 		}]))
 
 
+package_author_pk = 0
 for pk, (author_slug, author_name) in enumerate(author_names.items()):
 	print(yaml.dump([{
 		'model': 'quaddicted_packages.author',
@@ -220,9 +226,21 @@ for pk, (author_slug, author_name) in enumerate(author_names.items()):
 		'fields': {
 			'slug': author_slug,
 			'name': author_name,
-			'packages': author_packages[author_slug]
+			# 'packages': author_packages[author_slug]
 		}
 	}]))
+
+	for package_id in author_packages[author_slug]:
+		package_author_pk += 1
+		print(yaml.dump([{
+			'model': 'quaddicted_packages.packageauthors',
+			'pk': package_author_pk,
+			'fields': {
+				'tag': pk,
+				'content_type': ['quaddicted_packages', 'package'],
+				'object_id': package_id,
+			}
+		}]))
 
 
 for pk, screenshot in enumerate(all_screenshots):
