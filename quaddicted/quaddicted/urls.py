@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/v1/', include('quaddicted_api.urls')),
     path('packages/', include('quaddicted_packages.urls')),
     path('comments/', include('django_comments.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
 
 

@@ -31,6 +31,16 @@ SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = [
+    'quaddicted_api',
+    'quaddicted_comments',
+    'quaddicted_packages',
+    'django_comments',
+    'rest_framework',
+    'extra_views',
+    'taggit_serializer',
+    'taggit',
+    'imagekit',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,16 +48,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-
-    'imagekit',
-    'extra_views',
-    'taggit',
-    'taggit_serializer',
-    'rest_framework',
-    'django_comments',
-    'quaddicted_packages',
-    'quaddicted_comments',
-    'quaddicted_api',
 ]
 
 COMMENTS_APP = 'quaddicted_comments'

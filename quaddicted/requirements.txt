@@ -1,5 +1,6 @@
 Django>=3.0.2
 django-imagekit
+django-contrib-comments
 django-taggit
 django-taggit-serializer
 djangorestframework

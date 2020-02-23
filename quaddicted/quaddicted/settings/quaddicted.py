@@ -1,28 +1,20 @@
+import os
+
 from quaddicted.settings.common import *
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'xj2&3&xj@$zz5va@^2si$ei7%&q^i(x*3(9%u04ew=4$8*5ziv'
+DEBUG = False
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
 DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.postgresql',
-		'NAME': 'quaddicted',
-		'USER': 'quaddicted',
-		'PASSWORD': 'quaddicted',
-		'HOST': 'localhost',
-		'PORT': '5432',
-	}
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
-
 
 LOGGING = {
 	'version': 1,
@@ -35,16 +27,15 @@ LOGGING = {
 	'loggers': {
 		'django': {
 			'handlers': ['console'],
-			'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+			'level': os.getenv('DJANGO_LOG_LEVEL', 'ERROR'),
 		},
 	},
 }
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = '/srv/www/quaddicted/static'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'quaddicted', 'static'),
 ]
