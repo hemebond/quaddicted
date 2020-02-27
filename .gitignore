@@ -132,10 +132,10 @@ dmypy.json
 
 
 # Quaddicted exclusions
-quaddicted/src
+import/
+static/
+media/
 quaddicted/static
-quaddicted/media
-quaddicted/quaddicted/static
 quaddicted/quaddicted_packages
 quaddicted/quaddicted_comments
 quaddicted/quaddicted_api
