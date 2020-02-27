@@ -5,14 +5,16 @@ from quaddicted.settings.common import *
 DEBUG = False
 SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', '116.203.37.22']
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # the file and its parent directory must
+        # be writable by the gunicorn group/user
+        'NAME': '/var/lib/quaddicted/db.sqlite3',
     }
 }
 
