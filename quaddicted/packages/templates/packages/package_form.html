@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+
+
+{% load i18n %}
+{% load static %}
+{% load comments %}
+{% load quaddicted_tags %}
+
+
+
+{% block css %}
+		<link rel="stylesheet" href="{% static 'packages/rating.css' %}" />
+		<link rel="stylesheet" href="{% static 'packages/detail.css' %}" />
+{% endblock %}
+
+{% block content %}
+<section class="row">
+	<div class="col">
+		<h1 class="title is-1 text-center">
+			{% if object %}
+				{% trans "Update this package" %}
+			{% else %}
+				{% trans "Upload a new package" %}
+			{% endif %}
+		</h1>
+	</div>
+</section>
+
+<section class="row">
+	<div class="col">
+		<form action="" method="POST" enctype="multipart/form-data">
+			{% csrf_token %}
+
+
+			{% if form.non_field_errors %}
+			<div class="alert alert-danger" role="alert">
+				{{ form.non_field_errors }}
+			</div>
+			{% endif %}
+
+
+			{% for hidden in form.hidden_fields %}
+				{{ hidden }}
+			{% endfor %}
+
+
+			<div class="row">
+				<div class="col">
+					{% with f=form.name %}
+					<div class="form-group">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<input type="text"
+						       class="form-control {% if f.errors %}is-invalid{% endif %}"
+						       id="{{ f.id_for_label }}"
+						       name="{{ f.html_name }}"
+						       maxlength="32"
+						       value="{% if f.value %}{{ f.value }}{% endif %}"
+						       required="">
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'packages/field_errors.html' %}
+					</div>
+					{% endwith %}
+				</div>
+
+				<div class="col-4">
+					{% with f=form.game %}
+					<div class="form-group">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<select id="{{ f.id_for_label }}"
+						        name="{{ f.html_name }}"
+						        class="form-control {% if f.errors %}is-invalid{% endif %}">
+						{% for v, label in f.field.choices %}
+							<option value="{{ v }}" {% if f.value == v %}selected="selected"{% endif %}>{{ label }}</option>
+						{% endfor %}
+						</select>
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'packages/field_errors.html' %}
+					</div>
+					{% endwith %}
+				</div>
+			</div>
+
+			{% if form.file %}
+			{% with f=form.file %}
+			<div class="form-group">
+				<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+				<input type="file"
+				       class="form-control-file {% if f.errors %}is-invalid{% endif %}"
+				       id="{{ f.id_for_label }}"
+				       name="{{ f.html_name }}"
+				       required="">
+				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+				{% include 'packages/field_errors.html' %}
+			</div>
+			{% endwith %}
+			{% endif %}
+
+			{% with f=form.description %}
+			<div class="form-group">
+				<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+				<textarea class="form-control {% if f.errors %}is-invalid{% endif %}"
+				          id="{{ f.id_for_label }}"
+				          name="{{ f.html_name }}">{% if f.value %}{{ f.value }}{% endif %}</textarea>
+				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+				{% include 'packages/field_errors.html' %}
+			</div>
+			{% endwith %}
+
+
+			{% with f=form.tags %}
+			<div class="form-group">
+				<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+				<input type="text"
+				       class="form-control {% if f.errors %}is-invalid{% endif %}"
+				       id="{{ f.id_for_label }}"
+				       name="{{ f.html_name }}"
+				       maxlength="32"
+				       value="{{ f.value|edit_tags|default_if_none:'' }}">
+				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+				{% include 'packages/field_errors.html' %}
+			</div>
+			{% endwith %}
+
+
+			{% with f=form.authors %}
+			<div class="form-group">
+				<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+				<input type="text"
+				       class="form-control {% if f.errors %}is-invalid{% endif %}"
+				       id="{{ f.id_for_label }}"
+				       name="{{ f.html_name }}"
+				       maxlength="32"
+				       value="{{ f.value|edit_tags|default_if_none:'' }}">
+				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+				{% include 'packages/field_errors.html' %}
+			</div>
+			{% endwith %}
+
+			{{ screenshot_inline.management_form }}
+
+			<div class="card">
+				<div class="card-header">
+					Screenshots
+				</div>
+
+				<div class="card-body">
+					<div class="card-group">
+					{% for form in screenshot_inline %}
+						{% for hidden in form.hidden_fields %}
+							{{ hidden }}
+						{% endfor %}
+
+						<div class="row mb-3 w-100">
+						{% with f=form.image %}
+							<div class="col-4">
+							{% if form.instance and form.instance.thumbnail %}
+								<img src="{{ form.instance.thumbnail.url }}" class="card-img-top" style="max-width: 320px; max-height: 180px">
+							{% else %}
+								<img src="{% static '/1280x720.jpg' %}" class="card-img-top" style="max-width: 320px; max-height: 180px">
+							{% endif %}
+							</div>
+
+							<div class="col">
+								<div class="form-group row">
+								{% if f.value and not f.errors %}
+									<label for="{{ f.id_for_label }}" class="col-sm-3">{% trans "Current" %}:</label>
+									<div class="col-sm-9">
+										<a href="{{ f.value.url }}">{{ f.value.name|basename }}</a>
+									</div>
+								{% else %}
+									<small id="{{ f.id_for_label }}_help" class="form-text text-muted col-sm-12">{{ f.help_text }}</small>
+								{% endif %}
+								</div>
+
+								<div class="form-group row">
+									<label for="{{ f.id_for_label }}" class="col-sm-3">{% if f.value and not f.errors %}{% trans 'Replace' %}{% else %}{{ f.label }}{% endif %}</label>
+									<div class="col">
+										<input type="file"
+										       class="form-control-file {% if f.errors %}is-invalid{% endif %}"
+										       id="{{ f.id_for_label }}"
+										       name="{{ f.html_name }}"
+										       value="{{ f.file.url }}">
+										{% include 'packages/field_errors.html' %}
+									</div>
+								</div>
+
+								{% if form.image.value and not f.errors %}
+								{% if screenshot_inline.can_delete %}
+								{% with f=form.DELETE %}
+								<div class="form-group row">
+									<label for="{{ f.id_for_label }}" class="col-sm-3">{{ f.label }}</label>
+									<div class="col">
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" id="{{ f.id_for_label }}" name="{{ f.html_name }}">
+										</div>
+									</div>
+								</div>
+								{% endwith %}
+								{% endif %}
+								{% endif %}
+
+							</div>
+
+						{% endwith %}
+						</div>
+
+					{% endfor %}
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group row mt-3">
+				<div class="col-sm-10">
+					<button type="submit" class="btn btn-primary">
+						{% if object %}
+							{% trans 'Save' %}
+						{% else %}
+							{% trans 'Add package' %}
+						{% endif %}
+					</button>
+				</div>
+			</div>
+
+		</form>
+	</div>
+</section>
+{% endblock %}

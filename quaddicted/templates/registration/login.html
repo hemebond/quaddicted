@@ -1,7 +1,69 @@
+{% extends "base.html" %}
+
+
+{% block content %}
 <!-- templates/registration/login.html -->
-<h2>Login</h2>
-<form method="post">
-	{% csrf_token %}
-	{{ form.as_p }}
-	<button type="submit">Login</button>
-</form>
+
+<div class="row justify-content-center align-items-center">
+	<div class="col-md-6">
+		<div class="col-md-12">
+
+			<form action="" method="POST" enctype="multipart/form-data">
+				{% csrf_token %}
+
+				<h2 class="text-center">Login</h2>
+
+			{% with f=form.username %}
+				<div class="form-group">
+					<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+					<input type="text"
+					       class="form-control {% if f.errors %}is-invalid{% endif %}"
+					       id="{{ f.id_for_label }}"
+					       name="{{ f.html_name }}"
+					       maxlength="32"
+					       value="{% if f.value %}{{ f.value }}{% endif %}"
+					       required="">
+					<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+				{% if f.errors %}
+					<div class="invalid-feedback">
+						<ul class="list-unstyled">
+						{% for e in f.errors %}
+							<li>{{ e }}</li>
+						{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+				</div>
+			{% endwith %}
+
+			{% with f=form.password %}
+				<div class="form-group">
+					<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+					<input type="text"
+					       class="form-control {% if f.errors %}is-invalid{% endif %}"
+					       id="{{ f.id_for_label }}"
+					       name="{{ f.html_name }}"
+					       maxlength="32"
+					       value="{% if f.value %}{{ f.value }}{% endif %}"
+					       required="">
+					<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+				{% if f.errors %}
+					<div class="invalid-feedback">
+						<ul class="list-unstyled">
+						{% for e in f.errors %}
+							<li>{{ e }}</li>
+						{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+				</div>
+			{% endwith %}
+
+				<div class="form-group">
+					<input type="submit" name="submit" class="btn btn-primary btn-md" value="Login">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}

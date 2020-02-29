@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load comments %}
+
+{% block title %}{% trans "Thanks for flagging" %}.{% endblock %}
+
+{% block content %}
+<h1>Test</h1>
+<section class="row justify-content-center">
+	<div class="col-6">
+
+		<div class="alert alert-success">
+			<a class="close"
+			   data-dismiss="modal"
+			   aria-label="Close"
+			   href="{% get_comment_permalink comment %}">
+				<span aria-hidden="true">&times;</span>
+			</a>
+
+			<span class="fas fa-check"></span>
+
+			<strong>{% trans "Thanks for flagging" %}</strong>
+
+			<hr class="message-inner-separator">
+			<p>
+				{% trans "Thanks for taking the time to improve the quality of discussion on our site" %}
+			</p>
+		</div>
+	</div>
+</section>
+{% endblock %}

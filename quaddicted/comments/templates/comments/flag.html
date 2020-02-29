@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Flag this comment" %}{% endblock %}
+
+{% block content %}
+<section class="row justify-content-center">
+	<div class="col-6">
+		<form action="." method="post">
+			{% csrf_token %}
+
+		{% if next %}
+			<input type="hidden" name="next" value="{{ next }}" id="next"/>
+		{% endif %}
+
+			<div class="card">
+				<div class="card-header">
+					{% trans "Really flag this comment?" %}
+				</div>
+
+				<div class="card-body">
+					<blockquote class="card-text">{{ comment|linebreaks }}</blockquote>
+
+					<div class="text-right">
+						<input type="submit"
+						       name="submit"
+						       value="{% trans "Flag" %}"
+						       class="btn btn-primary"/>
+
+						<a href="{{ comment.get_absolute_url }}"
+						   class="btn btn-secondary">cancel</a>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</section>
+{% endblock %}

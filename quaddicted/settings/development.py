@@ -6,22 +6,22 @@ SECRET_KEY = 'xj2&3&xj@$zz5va@^2si$ei7%&q^i(x*3(9%u04ew=4$8*5ziv'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
 DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.postgresql',
-		'NAME': 'quaddicted',
-		'USER': 'quaddicted',
-		'PASSWORD': 'quaddicted',
-		'HOST': 'localhost',
-		'PORT': '5432',
-	}
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
+# DATABASES = {
+# 	'default': {
+# 		'ENGINE': 'django.db.backends.postgresql',
+# 		'NAME': 'quaddicted',
+# 		'USER': 'quaddicted',
+# 		'PASSWORD': 'quaddicted',
+# 		'HOST': 'localhost',
+# 		'PORT': '5432',
+# 	}
+# }
 
 
 LOGGING = {

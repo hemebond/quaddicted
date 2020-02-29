@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+
+{% load static %}
+{% load quaddicted_tags %}
+{% load comments %}
+
+
+{% block content %}
+<section class="row">
+	<div class="col">
+		<h1 class="text-center">Showing {{ page_obj.paginator.count }} Packages</h1>
+
+		<div class="d-flex align-items-start">
+			<form class="form-inline flex-grow-1" action="" method="get">
+				<div class="form-group mr-2 mb-2">
+					<input type="search"
+					       name="search"
+					       id="package-table-filter"
+					       class="form-control"
+					       data-table="package-list-table"
+					       placeholder="Filter/Search"
+					       value="{% if filtered_term %}{{ filtered_term }}{% endif %}">
+				</div>
+				<button type="submit" class="btn btn-primary mb-2">Search</button>
+			</form>
+
+			{% include 'packages/package_pagination.html' %}
+
+			<div class="btn-group ml-2" role="group" area-label="View modes">
+				<a class="btn btn-secondary disabled">
+					<i class="fas fa-bars"></i>
+				</a>
+				<a href="{% url 'packages:cards' %}?{{ querydict.urlencode }}"
+				   class="btn btn-secondary"
+				   title="Card View">
+					<i class="fas fa-th"></i>
+				</a>
+			</div>
+		</div>
+
+{%     if package_list %}
+		<table class="table" id="package-list-table">
+			<thead>
+				<tr>
+					<th><a href="?{% sort_by querydict sort_fields.name %}">Title</a></th>
+					<th>Author(s)</th>
+					<th><a href="?{% sort_by querydict sort_fields.created %}">Date</a></th>
+					<th><a href="?{% sort_by querydict sort_fields.rating %}">Rating</a></th>
+					<th>Comments</th>
+					<th>Tags</th>
+				</tr>
+			</thead>
+			<tbody>
+{%         for package in package_list %}
+				<tr>
+					<td><a href="{% url 'packages:detail' package.file_hash %}">{{ package.name }}</a></td>
+					<td>
+{%             for author in package.authors.all %}
+						<a href="?{% filter_by_author querydict author.slug %}" title="Show only this users maps">{{ author }}</a>{% if not forloop.last %}, {% endif %}
+{%             endfor %}
+					</td>
+					<td>{{ package.created }}</td>
+					<td class="text-nowrap">
+{%             if package.rating %}
+						{{ package.rating|floatformat:"-2" }}
+{%             endif %}
+					</td>
+					<td>{% get_comment_count for package as comment_count %}{{ comment_count }}</td>
+					<td>
+
+{%             for tag in package.tags.all %}
+						<div class="btn-group btn-group-sm mb-1">
+						{% if tag.slug in filtered_tags %}
+							<a href="?{% filter_del_tag querydict tag.slug %}"
+							   class="btn btn-warning">
+								<i class="fas fa-minus"></i> {{ tag }}
+							</a>
+						{% else %}
+							<a href="?{% filter_add_tag querydict tag.slug %}"
+							   class="btn btn-primary">
+								<i class="fas fa-plus"></i> {{ tag }}
+							</a>
+						{% endif %}
+						</div>
+{%             endfor %}
+					</td>
+				</tr>
+{%         endfor %}
+			</tbody>
+		</table>
+
+		<div class="justify-content-center">
+			{% include 'packages/package_pagination.html' %}
+		</div>
+{% else %}
+		<p>No maps available</p>
+{% endif %}
+	</div>
+</section>
+
+{% endblock %}
+
+
+{% block javascript %}
+{% comment %}
+	<script>
+		(function($){
+		    "use strict";
+			$(document).ready(function() {
+				$("#package-table-filter").on("change keyup paste", function() {
+					var value = $(this).val().toLowerCase();
+
+					$("#package-list-table tbody tr").filter(function() {
+						$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+					});
+				});
+			});
+		}(jQuery));
+	</script>
+{% endcomment %}
+{% endblock %}

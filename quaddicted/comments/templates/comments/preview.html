@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load comments %}
+{% load static %}
+{% load quaddicted_tags %}
+{% load md2 %}
+
+{% block title %}{% trans "Preview your comment" %}{% endblock %}
+
+{% block css %}
+<style>
+	article.comment .card-header:after,
+	article.comment .card-header:before {
+		position:absolute;
+		top:11px;left:-16px;
+		right:100%;
+		width:0;
+		height:0;
+		display:block;
+		content:" ";
+		border-color:transparent;
+		border-style:solid solid outset;
+		pointer-events:none;
+	}
+	article.comment .card-header:after {
+		border-width:7px;
+		border-right-color:#f7f7f7;
+		margin-top:1px;
+		margin-left:2px;
+	}
+	article.comment .card-header:before {
+		border-right-color:#ddd;
+		border-width:8px;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="row">
+	<div class="col">
+		<h1 class="text-center">{% trans "Comment Preview" %}</h1>
+
+		<form action="{% comment_form_target %}" method="post">
+
+			<article class="row mb-3 comment" id="c{{ comment.id }}">
+				<div class="col-sm-2">
+					<img class="img-thumbnail img-responsive user-photo" src="{% static 'avatar_2x.png' %}">
+				</div>
+
+				<div class="col-sm-10">
+					<div class="card">
+						<div class="card-header">
+							{% if user.is_authenticated %}
+							<strong class="comment-user">{{ user.username }}</strong>
+							{% else %}
+							<strong class="comment-user">Guest (<small>{{ form.name.value }}</small>)</strong>
+							{% endif %}
+							<time class="text-muted small"
+							      datetime="{{ comment.submit_date }}">
+								commented
+							</time>
+						</div>
+						<div class="card-body">
+							<blockquote>
+								{{ comment|linebreaks }}
+							</blockquote>
+						</div>
+					</div>
+				</div>
+			</article>
+
+
+			{% csrf_token %}
+
+
+			{% if form.non_field_errors %}
+			<div class="alert alert-danger" role="alert">
+				{{ form.non_field_errors }}
+			</div>
+			{% endif %}
+
+
+			{% for hidden in form.hidden_fields %}
+				{{ hidden }}
+			{% endfor %}
+
+
+			{% if not user.is_authenticated %}
+			{% with f=form.name %}
+			<div class="form-group">
+				<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+				<input type="text"
+				       class="form-control {% if f.errors %}is-invalid{% endif %}"
+				       id="{{ f.id_for_label }}"
+				       name="{{ f.html_name }}"
+				       {% if f.field.max_length %}maxlength="{{ f.field.max_length }}"{% endif %}
+				       value="{% if f.value %}{{ f.value }}{% endif %}"
+				       {% if f.field.required %}required=""{% endif %}>
+				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+				{% include 'packages/field_errors.html' %}
+			</div>
+			{% endwith %}
+			{% endif %}
+
+
+			{% if next %}
+				<input type="hidden" name="next" value="{{ next }}"/>
+			{% endif %}
+
+
+			{% with f=form.comment %}
+			<div class="form-group">
+				<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+				<textarea class="form-control {% if f.errors %}is-invalid{% endif %}"
+				          id="{{ f.id_for_label }}"
+				          name="{{ f.html_name }}"
+				          rows="3"
+				          {% if f.field.required %}required=""{% endif %}>{% if f.value %}{{ f.value }}{% endif %}</textarea>
+				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+				{% include 'packages/field_errors.html' %}
+			</div>
+			{% endwith %}
+
+			<div class="d-none">{{ form.honeypot }}</div>
+
+			<button type="submit" class="btn btn-primary mb-2" name="submit">{% trans "Post" %}</button>
+			<button type="submit" class="btn btn-secondary mb-2" name="preview">{% trans "Preview" %}</button>
+		</form>
+	</div>
+</section>
+{% endblock %}

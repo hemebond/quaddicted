@@ -31,9 +31,9 @@ SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = [
-    'quaddicted_api',
-    'quaddicted_comments',
-    'quaddicted_packages',
+    'quaddicted.api',
+    'quaddicted.comments',
+    'quaddicted.packages',
     'django_comments',
     'rest_framework',
     'extra_views',
@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 ]
 
-COMMENTS_APP = 'quaddicted_comments'
+COMMENTS_APP = 'quaddicted.comments'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
