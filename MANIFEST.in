@@ -1,6 +1,11 @@
 include LICENSE
 include README.md
+
 recursive-include quaddicted/static *
 recursive-include quaddicted/templates *
+
+recursive-include quaddicted/packages/static *
 recursive-include quaddicted/packages/templates *
+
+recursive-include quaddicted/comments/static *
 recursive-include quaddicted/comments/templates *
