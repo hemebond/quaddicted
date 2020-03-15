@@ -52,3 +52,7 @@ STATICFILES_DIRS = [
 # Save all uploads to the project directory during development
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/srv/www/quaddicted/media'
+
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

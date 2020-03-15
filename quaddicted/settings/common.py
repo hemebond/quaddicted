@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'taggit_serializer',
     'taggit',
     'imagekit',
+    'registration',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -116,3 +117,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+#
+# Django Registration Redux settings
+#
+ACCOUNT_ACTIVATION_DAYS = 2
