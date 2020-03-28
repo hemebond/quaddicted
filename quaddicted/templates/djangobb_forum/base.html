@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% get_static_prefix as STATIC_URL %}
+
+
+
+{% block title %}{% trans 'Forum' %}{% endblock %}
+{% block description %}{{ forum_settings.FORUM_META_DESCRIPTION }}{% endblock %}
+{% block keywords %}{{ forum_settings.FORUM_META_KEYWORDS }}{% endblock %}
+
+
+
+{% block head %}
+	<script type="text/javascript">
+		var STATIC_URL = "{{ STATIC_URL }}";
+		var POST_PREVIEW_URL = "{% url 'djangobb:post_preview' %}";
+	</script>
+
+	<style>
+		/*
+			Workarounds for markItUp and Bootstrap conflicts
+		*/
+		.markItUp, .markItUpEditor {
+			width: 100% !important;
+		}
+		#markItUpId_body * {
+			box-sizing: content-box;
+		}
+		.markItUpPreviewFrame {
+			border: 1px solid #ced4da;
+			border-radius: .25rem;
+		}
+	</style>
+{% endblock %}
+
+
+{% block javascript %}
+	{% if user.is_authenticated %}
+		{% if post %}
+			{% with markup=post.markup %}
+				{% include "djangobb_forum/includes/markup_editor.html" %}
+			{% endwith %}
+		{% else %}
+			{% with markup=user.forum_profile.markup %}
+				{% include "djangobb_forum/includes/markup_editor.html" %}
+			{% endwith %}
+		{% endif %}
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$(".markup").markItUp(mySettings);
+			});
+		</script>
+	{% endif %}
+{% endblock %}
+
+
+
+{% block content %}
+	<div class="row">
+		<div class="col-sm-9">
+			{% block forum_content %}{% endblock %}
+		</div>
+
+		<div class="col-sm-3">
+			{% block controls %}
+				<div class="card mb-3">
+					<div class="card-header">
+						{% trans "Search links" %}
+					</div>
+
+					<ul class="list-group list-group-flush">
+						<li class="list-group-item">
+							<a href="{% url 'djangobb:search' %}?action=show_24h">{% trans "Show recent posts" %}</a>
+						</li>
+						<li class="list-group-item">
+							<a href="{% url 'djangobb:search' %}?action=show_unanswered">{% trans "Show unanswered posts" %}</a>
+						</li>
+
+						{% if user.is_authenticated %}
+							<li class="list-group-item">
+								<a href="{% url 'djangobb:search' %}?action=show_subscriptions">{% trans "Show your subscribed topics" %}</a>
+							</li>
+							<li class="list-group-item">
+								{% trans "Show your" %} <a href="{% url 'djangobb:search' %}?action=show_user&show_as=topics">{% trans "topics" %}</a>/<a href="{% url 'djangobb:search' %}?action=show_user&show_as=posts">{% trans "posts" %}</a>
+							</li>
+						{% endif %}
+					</ul>
+				</div>
+			{% endblock controls %}
+
+			{% include 'djangobb_forum/header.html' %}
+		</div>
+	</div>
+{% endblock %}

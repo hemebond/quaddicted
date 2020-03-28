@@ -35,7 +35,7 @@ LOGGING = {
 	'loggers': {
 		'django': {
 			'handlers': ['console'],
-			'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+			'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
 		},
 	},
 }
@@ -55,4 +55,24 @@ MEDIA_ROOT = '/srv/www/quaddicted/media'
 
 
 
+#
+# Django Registration Redux settings
+#
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+
+HAYSTACK_CONNECTIONS = {
+	'default': {
+		'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+	},
+}
+
+
+#
+# DjangoBB
+#
+DJANGOBB_TOPIC_PAGE_SIZE = 2
+DJANGOBB_FORUM_PAGE_SIZE = 2
+DJANGOBB_SEARCH_PAGE_SIZE = 2
+DJANGOBB_USERS_PAGE_SIZE = 2

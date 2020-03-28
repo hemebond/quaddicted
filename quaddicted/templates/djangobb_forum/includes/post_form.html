@@ -1,0 +1,204 @@
+{% load i18n %}
+{% load quaddicted_tags %}
+
+<form id="post" action="{{ form_url|default_if_none:'.' }}" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+
+
+	{% if form.non_field_errors %}
+		<div class="alert alert-danger" role="alert">
+			{{ form.non_field_errors }}
+		</div>
+	{% endif %}
+
+
+	{% for hidden in form.hidden_fields %}
+		{{ hidden }}
+	{% endfor %}
+
+
+	{% comment %}<h2>{% if forum %}{% trans "New topic" %}{% else %}{% trans "New reply" %}{% endif %}</h2>{% endcomment %}
+
+
+	{% if create_poll_form %}
+
+		{% if create_poll_form.non_field_errors %}
+		<div class="alert alert-danger" role="alert">
+			{{ create_poll_form.non_field_errors }}
+		</div>
+		{% endif %}
+
+		<div class="card">
+			<div class="card-header">
+				<i class="fas fa-poll"></i>
+				<button class="btn btn-link"
+				        style="padding-left: 0 !important"
+				        type="button"
+				        data-toggle="collapse"
+				        data-target="#poll_form"
+				        aria-expanded="true"
+				        aria-controls="poll_form">
+					{% trans "Create a poll" %}
+				</button>
+			</div>
+
+			<div id="poll_form" class="card-body collapse {% if create_poll_form.is_bound %}show{% endif %}">
+				{% with f=create_poll_form.question %}
+					<div class="form-group">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<input type="text"
+						       class="form-control {% if f.errors %}is-invalid{% endif %}"
+						       {% if f.required %}required="required"{% endif %}
+						       id="{{ f.id_for_label }}"
+						       name="{{ f.html_name }}"
+						       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
+						       value="{{ f.value|default_if_none:'' }}">
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'packages/field_errors.html' %}
+					</div>
+				{% endwith %}
+
+				{% with f=create_poll_form.answers %}
+					<div class="form-group">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<textarea id="{{ f.id_for_label }}"
+						          name="{{ f.html_name }}"
+						          class="form-control {% if f.errors %}is-invalid{% endif %}"
+						          {% if f.required %}required="required"{% endif %}
+						          minlength="{{ f.field.min_length }}"
+						          cols="{{ f.field.widget.attrs.cols }}"
+						          rows="{{ f.field.widget.attrs.rows }}"
+						          >{{ f.value|default_if_none:'' }}</textarea>
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'packages/field_errors.html' %}
+					</div>
+				{% endwith %}
+
+
+				{% with f=create_poll_form.choice_count %}
+					<div class="form-group">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<input type="number"
+						       id="{{ f.id_for_label }}"
+						       name="{{ f.html_name }}"
+						       min="{{ f.field.min_value|default_if_none:'' }}"
+						       max="{{ f.field.max_value|default_if_none:'' }}"
+						       value="{{ f.value|default_if_none:'' }}"
+						       {% if f.required %}required="required"{% endif %}
+						       class="form-control {% if f.errors %}is-invalid{% endif %}">
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'packages/field_errors.html' %}
+					</div>
+				{% endwith %}
+
+
+				{% with f=create_poll_form.days %}
+					<div class="form-group">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<input type="number"
+						       id="{{ f.id_for_label }}"
+						       name="{{ f.html_name }}"
+						       min="{{ f.field.min_value|default_if_none:'' }}"
+						       max="{{ f.field.max_value|default_if_none:'' }}"
+						       value="{{ f.value|default_if_none:'' }}"
+						       {% if f.required %}required="required"{% endif %}
+						       class="form-control {% if f.errors %}is-invalid{% endif %}">
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'packages/field_errors.html' %}
+					</div>
+				{% endwith %}
+			</div>
+		</div>
+	{% endif %}
+
+	<div class="card mt-3">
+		<div class="card-header">
+			<i class="fas fa-pen"></i> {% trans "Write your message and submit" %}
+		</div>
+
+		<div class="card-body">
+			{% if forum or post %}
+				{% with f=form.name %}
+					<div class="form-group">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<input type="text"
+						       class="form-control {% if f.errors %}is-invalid{% endif %}"
+						       id="{{ f.id_for_label }}"
+						       name="{{ f.html_name }}"
+						       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
+						       value="{{ f.value|default_if_none:'' }}"
+						       {% if f.required %}required="required"{% endif %}>
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'packages/field_errors.html' %}
+					</div>
+				{% endwith %}
+			{% endif %}
+
+			{% with f=form.body %}
+				<div class="form-group">
+					<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+					<textarea class="form-control markup {% if f.errors %}is-invalid{% endif %}"
+					          {% if f.required %}required="required"{% endif %}
+					          maxlength="{{ f.field.max_length|default_if_none:'' }}"
+					          id="{{ f.id_for_label }}"
+					          cols="{{ f.field.widget.attrs.cols }}"
+					          rows="{{ f.field.widget.attrs.rows }}"
+					          name="{{ f.html_name }}">{{ f.value|default_if_none:'' }}</textarea>
+					<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+					{% include 'packages/field_errors.html' %}
+
+					<small id="{{ f.id_for_label }}_help" class="form-text text-muted">
+						Note: A list of all supported source code highlighter for [code <strong>XXX</strong>]...[/code] can be found here: <a href="http://pygments.org/docs/lexers/">pygments.org</a> (Use 'Short name')
+					</small>
+				</div>
+			{% endwith %}
+
+			{% comment %}
+				If this is a new forum topic or we're commenting on a topic we are not currently subscribed to
+			{% endcomment %}
+			{% if form.subscribe %}
+			{% if forum or topic and user.is_authenticated and not subscribed %}
+			{% with f=form.subscribe %}
+				<div class="form-group form-check">
+					<input type="checkbox"
+					       class="form-check-input"
+					       id="{{ f.id_for_label }}"
+					       {% if f.required %}required="required"{% endif %}>
+					<label class="form-check-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
+					<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+				</div>
+			{% endwith %}
+			{% endif %}
+			{% endif %}
+
+			{% if forum_settings.ATTACHMENT_SUPPORT %}
+				{% with f=form.attachment %}
+					<div class="form-group">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<input type="file"
+						       class="form-control-file {% if f.errors %}is-invalid{% endif %}"
+						       id="{{ f.id_for_label }}"
+						       name="{{ f.html_name }}"
+						       {% if f.required %}required="required"{% endif %}>
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'packages/field_errors.html' %}
+					</div>
+				{% endwith %}
+			{% endif %}
+
+			<div>
+				<input type="submit"
+				       class="btn btn-primary"
+				       name="{{ form.FORM_NAME }}"
+				       value="{% trans "Submit" %}" />
+
+				{% if post %}
+					<a href="{{ post.get_absolute_url }}"
+					   class="btn btn-warning">
+						{% trans "Go back" %}
+					</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</form>

@@ -1,0 +1,11 @@
+{% extends 'djangobb_forum/base.html' %}
+{% load forum_extras %}
+{% load i18n %}
+
+{% block forum_content %}
+	{% include "djangobb_forum/includes/breadcrumbs.html" %}
+
+	<h2>{% if forum %}{% trans "New topic" %}{% else %}{% trans "New reply" %}{% endif %}</h2>
+
+	{% include "djangobb_forum/includes/post_form.html" %}
+{% endblock %}

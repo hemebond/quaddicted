@@ -1,0 +1,43 @@
+{% load forum_extras %}
+{% load cache %}
+{% load i18n %}
+
+
+
+{% if forum.last_post.topic %}
+	<tr {% if forum|forum_unreads:user %}class="inew"{% endif %}>
+{% else %}
+	<tr>
+{% endif %}
+		<td>
+			<div style="display: inline-flex">
+				{% if forum.forum_logo %}
+					<div class="pr-4">
+						<img src="{{ forum.forum_logo.url }}" />
+					</div>
+				{% else %}
+					<div class="pr-4">
+						<div class="nosize"><!-- --></div>
+					</div>
+				{% endif %}
+
+				<div class="">
+					{% link forum %}
+
+					<p class="mb-0 small">
+						{{ forum.description|safe }}
+					</p>
+				</div>
+			</div>
+		</td>
+		<td class="text-center">{{ forum.topic_count }}</td>
+		<td class="text-center">{{ forum.post_count }}</td>
+		<td>
+			{% if forum.updated %}
+				{% if forum.last_post.topic %}
+					<a href="{{ forum.last_post.get_absolute_url }}">{% forum_time forum.last_post.created %}</a>
+					<span class="byuser">{% trans "by" %} {{ forum.last_post.user.username }}</span>
+				{% endif %}
+			{% endif %}
+		</td>
+	</tr>

@@ -1,0 +1,105 @@
+{% extends 'djangobb_forum/base.html' %}
+{% load forum_extras %}
+{% load i18n %}
+
+
+{% block title %}{{ forum.name }} / {{ block.super }}{% endblock %}
+
+
+{% block forum_content %}
+	{% include "djangobb_forum/includes/breadcrumbs.html" %}
+
+	{% comment %}
+	<h2>
+		<span>{{ forum.name }}</span>
+	</h2>
+	{% endcomment %}
+
+	<div class="position-relative">
+		{% if user.is_authenticated %}
+			<a href="{% url 'djangobb:add_topic' forum.id %}" class="position-absolute" style="right: 0; padding-top: 0.5rem">
+				<i class="fas fa-edit"></i> {% trans "New topic" %}
+			</a>
+		{% endif %}
+		{% include 'djangobb_forum/paginator.html' with page=topics_page request=request only %}
+	</div>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th class="col-5" scope="col">{% trans "Topic" %}</th>
+				<th class="col-2" scope="col">{% trans "Replies" %}</th>
+				<th class="col-5" scope="col">{% trans "Last post" %}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for topic in topics_page %}
+				<tr>
+					<td>
+						<div class="intd">
+							<div {% if topic.sticky %}class="sticky"{% else %}{% if topic.closed %}class="closed"{% else %}{% if topic|has_unreads:user %}class="inew"{% else %}class="icon"{% endif %}{% endif %}{% endif %}>
+								<div class="nosize"><!-- --></div>
+							</div>
+
+							<div class="tclcon">
+								{% if topic.sticky %}
+									{% comment %}{% trans "Sticky:" %}{% endcomment %}
+									<i class="fas fa-thumbtack"></i>
+								{% endif %}
+
+								{% if topic|has_unreads:user %}
+									<strong>
+										{% link topic %}
+										<span class="byuser">{% trans "by" %} {{ topic.user.username }}</span>
+									</strong>
+								{% else %}
+									{% link topic %}
+									<span class="byuser">{% trans "by" %} {{ topic.user.username }}</span>
+								{% endif %}
+							</div>
+						</div>
+					</td>
+					<td>
+						{{ topic.reply_count }}
+					</td>
+					<td>
+						<a href="{{ topic.last_post.get_absolute_url }}">
+							{% forum_time topic.updated %}
+						</a>
+						<span class="byuser">
+							{% trans "by" %} {{ topic.last_post.user.username }}
+						</span>
+					</td>
+				</tr>
+				{% empty %}
+				<tr>
+					<td class="djangobbcon1" colspan="3">
+						{% trans "Forum is empty." %}
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+
+	{% include 'djangobb_forum/paginator.html' with page=topics_page request=request only %}
+
+{% endblock %}
+
+
+
+{% block controls %}
+	{% if moderator %}
+		<div class="card mb-3">
+			<div class="card-header">
+				{% trans "Moderator control" %}
+			</div>
+
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item">
+					<a href="{% url 'djangobb:moderate' forum.id %}">{% trans "Moderate forum" %}</a>
+				</li>
+			</ul>
+		</div>
+	{% endif %}
+{% endblock %}

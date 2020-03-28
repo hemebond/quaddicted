@@ -1,0 +1,11 @@
+{% extends 'djangobb_forum/base.html' %}
+{% load forum_extras %}
+{% load i18n %}
+
+{% block content %}
+	{% include "djangobb_forum/includes/breadcrumbs.html" %}
+
+	<h2>{% trans "Edit post" %}</h2>
+
+	{% include "djangobb_forum/includes/post_form.html" %}
+{% endblock %}

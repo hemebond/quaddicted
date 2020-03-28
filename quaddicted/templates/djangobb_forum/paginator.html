@@ -1,0 +1,85 @@
+{% load i18n %}
+{% load forum_extras %}
+
+
+<nav aria-label="pagination">
+	<ul class="pagination justify-content-center">
+	{% if page.has_previous %}
+		<li class="page-item">
+			<a class="page-link" href="?{% url_replace request 'page' page.previous_page_number %}">
+				<span aria-hidden="true">&laquo;</span>
+			</a>
+		</li>
+	{% else %}
+		<li class="page-item disabled">
+			<a class="page-link" href="#" aria-disabled="true">
+				<span aria-hidden="true">&laquo;</span>
+			</a>
+		</li>
+	{% endif %}
+
+		<li class="page-item disabled">
+			<span class="page-link disabled">
+				Page {{ page.number }} of {{ page.paginator.num_pages }}
+			</span>
+		</li>
+
+	{% if page.has_next %}
+		<li class="page-item">
+			<a class="page-link" href="?{% url_replace request 'page' page.next_page_number %}">
+				<span aria-hidden="true">&raquo;</span>
+			</a>
+		</li>
+	{% else %}
+		<li class="page-item disabled">
+			<a class="page-link" href="#" aria-disabled="true">
+				<span aria-hidden="true">&raquo;</span>
+			</a>
+		</li>
+	{% endif %}
+	</ul>
+</nav>
+
+{% comment %}
+{% if page.has_other_pages %}
+	<nav aria-label="Page navigation example">
+		<ul class="pagination">
+			{% if page.has_previous %}
+				<li class="page-item">
+					<a class="page-link" href="?{% url_replace request 'page' page.previous_page_number %}">
+						Previous
+					</a>
+				</li>
+			{% else %}
+				<li class="page-item disabled">
+					<a class="page-link" href="#" tabindex="-1" aria-disabled="true">{% trans "Previous" %}</a>
+				</li>
+			{% endif %}
+
+			{% for number in page.paginator.page_range %}
+				{% if number == page.number %}
+					<li class="page-item active" aria-current="page">
+				{% else %}
+					<li class="page-item" aria-current="page">
+				{% endif %}
+						<a class="page-link" href="?{% url_replace request 'page' number %}">
+							{{ number }}
+						</a>
+					</li>
+			{% endfor %}
+
+			{% if page.has_next %}
+				<li class="page-item">
+					<a class="page-link" href="?{% url_replace request 'page' page.next_page_number %}">
+						Next
+					</a>
+				</li>
+			{% else %}
+				<li class="page-item disabled">
+					<a class="page-link" href="#" tabindex="-1" aria-disabled="true">{% trans "Next" %}</a>
+				</li>
+			{% endif %}
+		</ul>
+	</nav>
+{% endif %}
+{% endcomment %}

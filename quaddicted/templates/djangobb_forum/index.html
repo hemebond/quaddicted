@@ -1,0 +1,41 @@
+{% extends 'djangobb_forum/base.html' %}
+{% load forum_extras %}
+{% load i18n %}
+
+
+
+{% block extra_meta %}
+		<script type="text/javascript" src="{{ STATIC_URL }}djangobb_forum/js/jquery.cookie.js"></script>
+{% endblock %}
+
+
+
+{% block forum_content %}
+	{% for iter in cats %}
+		<div class="card mb-3">
+			<div class="card-header" id="category_head_{{ iter.id }}">
+				<h3>
+					{{ iter.cat }}
+				</h3>
+			</div>
+
+			<div class="card-body mb-0 pb-0" id="category_body_{{ iter.id }}">
+				<table class="table mb-0 pb-0">
+					<thead>
+						<tr>
+							<th class="col-6" scope="col">{% trans "Forum" %}</th>
+							<th class="col-1" scope="col">{% trans "Topics" %}</th>
+							<th class="col-1" scope="col">{% trans "Posts" %}</th>
+							<th class="col-4" scope="col">{% trans "Last post" %}</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for forum in iter.forums %}
+							{% include 'djangobb_forum/forum_row.html' %}
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	{% endfor %}
+{% endblock %}

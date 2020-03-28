@@ -47,4 +47,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = '/srv/www/quaddicted/media'
 
 
+
+#
+# Django Registration Redux settings
+#
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

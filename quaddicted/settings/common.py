@@ -40,7 +40,13 @@ INSTALLED_APPS = [
     'taggit_serializer',
     'taggit',
     'imagekit',
+
+    # registration and authentication
     'registration',
+
+    # djangobb forums
+    'haystack',
+    'djangobb_forum',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -122,3 +128,11 @@ USE_TZ = True
 # Django Registration Redux settings
 #
 ACCOUNT_ACTIVATION_DAYS = 2
+ATTACHMENT_SUPPORT = True
+
+
+
+#
+# DjangoBB
+#
+DJANGOBB_NOTICE = 'Testing'

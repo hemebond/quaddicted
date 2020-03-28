@@ -1,14 +1,13 @@
+{% load i18n %}
 {% load static %}
 <!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>{% block title %}Quake Maps{% endblock %}</title>
-		<link rel="stylesheet"
-			href="{% static 'ext/bootstrap-4.4.1-dist/css/bootstrap.min.css' %}" />
-		<link rel="stylesheet"
-		href="{% static 'ext/fontawesome-free-5.12.0-web/css/all.min.css' %}" />
+		<title>{% block title %}{% endblock %} - Quaddicted</title>
+		<link rel="stylesheet" href="{% static 'ext/bootstrap-4.4.1-dist/css/bootstrap.min.css' %}">
+		<link rel="stylesheet" href="{% static 'ext/fontawesome-free-5.12.0-web/css/all.min.css' %}">
 		<style type="text/css">
 			.navbar {
 				background-color: #544D3D;
@@ -20,7 +19,14 @@
 			}
 		</style>
 
+
+		<meta name="description" content="{% block description %}{% endblock %}">
+		<meta name="keywords" content="{% block keywords %}{% endblock %}">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
 {% block css %}{% endblock %}
+
+{% block head %}{% endblock %}
 
 	</head>
 	<body>
@@ -45,47 +51,30 @@
 					<img src="{% static 'top.png' %}" alt="">
 				</a>
 				<ul class="navbar-nav justify-content-center">
-					<li class="nav-item {% if active_section == 'home' %}active{% endif %}">
-						<a class="nav-link" href="/">Home
-							{% if active_section == 'home' %}
-								<span class="sr-only">(current)</span>
-							{% endif %}
-						</a>
+					<li class="nav-item">
+						<a class="nav-link" href="/">Home</a>
 					</li>
-					<li class="nav-item {% if active_section == 'news' %}active{% endif %}">
-						<a class="nav-link" href="/news/">News
-							{% if active_section == 'news' %}
-								<span class="sr-only">(current)</span>
-							{% endif %}
-						</a>
+					<li class="nav-item">
+						<a class="nav-link" href="/news/">News</a>
 					</li>
-					<li class="nav-item {% if active_section == 'packages' %}active{% endif %}">
-						<a class="nav-link" href="{% url 'packages:list' %}">Packages
-							{% if active_section == 'packages' %}
-								<span class="sr-only">(current)</span>
-							{% endif %}
-						</a>
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'packages:list' %}">Packages</a>
 					</li>
-					<li class="nav-item {% if active_section == 'wiki' %}active{% endif %}">
-						<a class="nav-link" href="/wiki/">Wiki
-							{% if active_section == 'wiki' %}
-								<span class="sr-only">(current)</span>
-							{% endif %}
-						</a>
+					<li class="nav-item">
+						<a class="nav-link" href="/wiki/">Wiki</a>
 					</li>
-					<li class="nav-item {% if active_section == 'forum' %}active{% endif %}">
-						<a class="nav-link" href="/forum/">Forum
-							{% if active_section == 'forum' %}
-								<span class="sr-only">(current)</span>
-							{% endif %}
-						</a>
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'djangobb:index' %}">Forum</a>
 					</li>
-					<li class="nav-item {% if active_section == 'help' %}active{% endif %}">
-						<a class="nav-link" href="/help/">Help
-							{% if active_section == 'help' %}
-								<span class="sr-only">(current)</span>
-							{% endif %}
-						</a>
+					<li class="nav-item">
+						<a class="nav-link" href="/help/">Help</a>
+					</li>
+					<li class="nav-item">
+						{% if user.is_authenticated %}
+							<a class="nav-link" href="{% url 'auth_logout' %}">{% trans 'Logout' %}</a>
+						{% else %}
+							<a class="nav-link" href="{% url 'auth_login' %}">{% trans 'Login' %}</a>
+						{% endif %}
 					</li>
 				</ul>
 			</div>
@@ -109,6 +98,7 @@
 
 		<script src="{% static 'ext/jquery-3.4.1.min.js' %}"></script>
 		<script src="{% static 'ext/bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js' %}"></script>
+
 		{% block javascript %}{% endblock %}
 	</body>
 </html>

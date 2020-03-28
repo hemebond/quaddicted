@@ -1,0 +1,14 @@
+{% load forum_extras %}
+{% load i18n %}
+
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="{% url 'djangobb:index' %}">{% trans "Forum" %}</a></li>
+		{% if forum %}
+			<li class="breadcrumb-item active" aria-current="page">{{ forum.name }}</li>
+		{% else %}
+			<li class="breadcrumb-item">{% link topic.forum %}</li>
+			<li class="breadcrumb-item active" aria-current="page">{{ topic }}</li>
+		{% endif %}
+	</ol>
+</nav>
