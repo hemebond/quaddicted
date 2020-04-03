@@ -60,14 +60,14 @@
 			   role="button"
 			   data-slide="prev">
 				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-				<span class="sr-only">Previous</span>
+				<span class="sr-only">{% trans 'Previous' %}</span>
 			</a>
 			<a class="carousel-control-next"
 			   href="#screenshots"
 			   role="button"
 			   data-slide="next">
 				<span class="carousel-control-next-icon" aria-hidden="true"></span>
-				<span class="sr-only">Next</span>
+				<span class="sr-only">{% trans 'Next' %}</span>
 			</a>
 			{% endif %}
 		</div>
@@ -83,23 +83,23 @@
 			<h5 class="card-header">{{ package.name }}</h5>
 			<div class="card-body">
 				<dl class="row">
-					<dt class="col-md-4">Authors</dt>
+					<dt class="col-md-4">{% trans 'Authors' %}</dt>
 					<dd class="col-md-8 text-right">
 					{% for author in package.authors.all %}
 						<a href="{% url 'packages:list' %}?author={{ author.slug }}" title="Show only this users packages">{{ author }}</a>{% if not forloop.last %}, {% endif %}
 					{% endfor %}
 					</dd>
 
-					<dt class="col-sm-4">Created</dt>
+					<dt class="col-sm-4">{% trans 'Created' %}</dt>
 					<dd class="col-sm-8 text-right"><time datetime="{{ package.created }}">{{ package.created }}</time></dd>
 
 				{%  if package.modified %}
-					<dt class="col-sm-4">Modified</dt>
+					<dt class="col-sm-4">{% trans 'Modified' %}</dt>
 					<dd class="col-sm-8 text-right"><time datetime="{{ package.modified }}">{{ package.modified }}</time></dd>
 				{%  endif %}
 
 				{% if package.urls.all %}
-					<dt class="col-sm-4">Additional Links</dt>
+					<dt class="col-sm-4">{% trans 'Additional Links' %}</dt>
 					<dd class="col-sm-8 text-right">
 						<ul class="list-unstyled mb-0">
 						{% for u in package.urls.all %}
@@ -109,12 +109,12 @@
 					</dd>
 				{% endif %}
 
-					<dt class="col-sm-4">Type</dt>
+					<dt class="col-sm-4">{% trans 'Type' %}</dt>
 					<dd class="col-sm-8 text-right">{{ package.map_type|default:'map'|capfirst }}</dd>
 				</dl>
 
 				<div class="text-right">
-					<a class="btn btn-primary" href="{{ package.file.url }}">Download</a>
+					<a class="btn btn-primary" href="{{ package.file.url }}">{% trans 'Download' %}</a>
 					{% comment %}
 					<a class="btn bg-danger text-white" href=""><span class="icon"><i class="fas fa-flag"></i></span></a>
 					{% endcomment %}
@@ -124,7 +124,7 @@
 
 		<!-- package description -->
 		<section class="card mb-3">
-			<h5 class="card-header">Description</h5>
+			<h5 class="card-header">{% trans 'Description' %}</h5>
 			<div class="card-body"><p>{{ package.description|linebreaks }}</p></div>
 		</section>
 
@@ -132,7 +132,7 @@
 			Comment Form
 		-->
 		<section class="card mb-3 package-comments" id="comments">
-			<h5 class="card-header">Comments</h5>
+			<h5 class="card-header">{% trans 'Comments' %}</h5>
 			<div class="card-body">
 				<div class="row">
 					<div class="col-sm-2"></div>
@@ -202,13 +202,13 @@
 								{% if comment.user %}
 								<strong class="comment-user">{{ comment.user_name }}</strong>
 								{% else %}
-								<strong class="comment-user">Guest (<small>{{ comment.user_name }}</small>)</strong>
+								<strong class="comment-user">{% trans 'Guest' %} (<small>{{ comment.user_name }}</small>)</strong>
 								{% endif %}
 								<time class="text-muted small"
 								      datetime="{{ comment.submit_date }}">
-									commented
+									{% trans 'commented' %}
 									<a href="#c{{ comment.id }}">
-										{{ comment.submit_date|timesince }} ago
+										{{ comment.submit_date|timesince }} {% trans 'ago' %}
 									</a>
 								</time>
 								{% if comment.score %}
@@ -242,17 +242,17 @@
 	<!-- right column -->
 	<div class="col-lg-4">
 		<section class="card mb-3">
-			<h5 class="card-header">Ratings</h5>
+			<h5 class="card-header">{% trans 'Ratings' %}</h5>
 			<div class="card-body">
 				<div class="d-flex">
-					<h5 class="align-self-end">Average</h5>
+					<h5 class="align-self-end">{% trans 'Average' %}</h5>
 					<div class="col text-right">
 						<h2 class="bold mb-1">{{ package.rating|default:0|floatformat }} <small>/ 5</small></h2>
 					</div>
 				</div>
 				{% if user.is_authenticated %}
 				<div class="d-flex">
-					<h5 class="align-self-end">Your rating</h5>
+					<h5 class="align-self-end">{% trans 'Your rating' %}</h5>
 					<div class="col text-right">
 					{% if user_rating %}
 						<h2 class="bold mb-1">
@@ -267,7 +267,7 @@
 								class="btn btn-primary"
 								data-toggle="modal"
 								data-target="#ratingModal">
-							Rate it
+							{% trans 'Rate it' %}
 						</button>
 					{% endif %}
 					</div>
@@ -298,7 +298,7 @@
 
 
 		<section class="card mb-3">
-			<h5 class="card-header">Tags</h5>
+			<h5 class="card-header">{% trans 'Tags' %}</h5>
 			<div class="card-body">
 				<p>
 				{% for tag in package.tags.all %}
@@ -312,17 +312,17 @@
 		</section>
 
 		<section class="card">
-			<h5 class="card-header">Demos</h5>
+			<h5 class="card-header">{% trans 'Demos' %}</h5>
 			<div class="card-body">
 				{% if package.demos %}
 				<table class="table table-sm">
 					<thead>
 						<tr>
-							<th>Player</th>
-							<th>Skill</th>
-							<th>Length</th>
-							<th>Protocol</th>
-							<th>Date</th>
+							<th>{% trans 'Player' %}</th>
+							<th>{% trans 'Skill' %}</th>
+							<th>{% trans 'Length' %}</th>
+							<th>{% trans 'Protocol' %}</th>
+							<th>{% trans 'Date' %}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -338,18 +338,18 @@
 					</tbody>
 				</table>
 				{% else %}
-				<p>No demos</p>
+				<p>{% trans 'No demos' %}</p>
 				{% endif %}
 
 				{% if user.is_authenticated %}
 				<form action="" method="POST">
 					<div class="form-group">
-						<label for="id_demo_skill">Skill</label>
+						<label for="id_demo_skill">{% trans 'Skill' %}</label>
 						<select class="form-control" id="id_demo_skill" name="demo_skill">
-							<option value="0">Easy</option>
-							<option value="1">Normal</option>
-							<option value="2">Hard</option>
-							<option value="3">Nightmare</option>
+							<option value="0">{% trans 'Easy' %}</option>
+							<option value="1">{% trans 'Normal' %}</option>
+							<option value="2">{% trans 'Hard' %}</option>
+							<option value="3">{% trans 'Nightmare' %}</option>
 						</select>
 					</div>
 					<div class="form-group">
@@ -357,7 +357,7 @@
 						<input type="file" class="form-control-file" id="id_demo_file" name="demo_file">
 					</div>
 
-					<button type="submit" class="btn btn-primary mb-2">Upload demo</button>
+					<button type="submit" class="btn btn-primary mb-2">{% trans 'Upload demo' %}</button>
 				</form>
 				{% endif %}
 			</div>
@@ -365,14 +365,14 @@
 
 	{% if package.package %}
 		<section class="card">
-			<h5 class="card-header">Files</h5>
+			<h5 class="card-header">{% trans 'Files' %}</h5>
 			<div class="card-body">
 				<table class="table table-sm">
 					<thead>
 						<tr>
-							<th>File</th>
-							<th>Size</th>
-							<th>Date</th>
+							<th>{% trans 'File' %}</th>
+							<th>{% trans 'Size' %}</th>
+							<th>{% trans 'Date' %}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -398,7 +398,7 @@
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="ratingModalLabel">Rate this package</h5>
+				<h5 class="modal-title" id="ratingModalLabel">{% trans 'Rate this package' %}</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -408,7 +408,7 @@
 				{% csrf_token %}
 				<div class="modal-body">
 					<div class="form-group text-center">
-						<label for="id_rating">Your Rating</label>
+						<label for="id_rating">{% trans 'Your Rating' %}</label>
 						<input type="range"
 						       id="id_rating"
 						       name="score"
@@ -420,7 +420,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="submit" class="btn btn-primary">Save</button>
+					<button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
 				</div>
 			</form>
 		</div>

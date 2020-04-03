@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-
+{% load i18n %}
 {% load static %}
 {% load quaddicted_tags %}
 {% load comments %}
@@ -22,7 +22,7 @@
 					       placeholder="Filter/Search"
 					       value="{% if filtered_term %}{{ filtered_term }}{% endif %}">
 				</div>
-				<button type="submit" class="btn btn-primary mb-2">Search</button>
+				<button type="submit" class="btn btn-primary mb-2">{% trans 'Search' %}</button>
 			</form>
 
 			{% include 'packages/package_pagination.html' %}
@@ -43,12 +43,12 @@
 		<table class="table" id="package-list-table">
 			<thead>
 				<tr>
-					<th><a href="?{% sort_by querydict sort_fields.name %}">Title</a></th>
-					<th>Author(s)</th>
-					<th><a href="?{% sort_by querydict sort_fields.created %}">Date</a></th>
-					<th><a href="?{% sort_by querydict sort_fields.rating %}">Rating</a></th>
-					<th>Comments</th>
-					<th>Tags</th>
+					<th><a href="?{% sort_by querydict sort_fields.name %}">{% trans 'Title' %}</a></th>
+					<th>{% trans 'Author(s)' %}</th>
+					<th><a href="?{% sort_by querydict sort_fields.created %}">{% trans 'Date' %}</a></th>
+					<th><a href="?{% sort_by querydict sort_fields.rating %}">{% trans 'Rating' %}</a></th>
+					<th>{% trans 'Comments' %}</th>
+					<th>{% trans 'Tags' %}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -57,7 +57,7 @@
 					<td><a href="{% url 'packages:detail' package.file_hash %}">{{ package.name }}</a></td>
 					<td>
 {%             for author in package.authors.all %}
-						<a href="?{% filter_by_author querydict author.slug %}" title="Show only this users maps">{{ author }}</a>{% if not forloop.last %}, {% endif %}
+						<a href="?{% filter_by_author querydict author.slug %}" title="{% trans 'Show only this user\'s maps' %}">{{ author }}</a>{% if not forloop.last %}, {% endif %}
 {%             endfor %}
 					</td>
 					<td>{{ package.created }}</td>
@@ -94,7 +94,7 @@
 			{% include 'packages/package_pagination.html' %}
 		</div>
 {% else %}
-		<p>No maps available</p>
+		<p>{% trans 'No maps available' %}</p>
 {% endif %}
 	</div>
 </section>
@@ -102,21 +102,4 @@
 {% endblock %}
 
 
-{% block javascript %}
-{% comment %}
-	<script>
-		(function($){
-		    "use strict";
-			$(document).ready(function() {
-				$("#package-table-filter").on("change keyup paste", function() {
-					var value = $(this).val().toLowerCase();
-
-					$("#package-list-table tbody tr").filter(function() {
-						$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-					});
-				});
-			});
-		}(jQuery));
-	</script>
-{% endcomment %}
-{% endblock %}
+{% block javascript %}{% endblock %}
