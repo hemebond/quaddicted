@@ -123,6 +123,10 @@ LANGUAGES = [
     ('en', _('English')),
 ]
 
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'quaddicted', 'locale'),
+]
+
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
