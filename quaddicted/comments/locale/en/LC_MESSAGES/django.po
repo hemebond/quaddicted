@@ -1,0 +1,60 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-03 20:37+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: quaddicted/comments/forms.py:7
+msgid "Email address"
+msgstr ""
+
+#: quaddicted/comments/templates/comments/flag.html:4
+msgid "Flag this comment"
+msgstr ""
+
+#: quaddicted/comments/templates/comments/flag.html:18
+msgid "Really flag this comment?"
+msgstr ""
+
+#: quaddicted/comments/templates/comments/flag.html:27
+msgid "Flag"
+msgstr ""
+
+#: quaddicted/comments/templates/comments/flagged.html:5
+#: quaddicted/comments/templates/comments/flagged.html:22
+msgid "Thanks for flagging"
+msgstr ""
+
+#: quaddicted/comments/templates/comments/flagged.html:26
+msgid ""
+"Thanks for taking the time to improve the quality of discussion on our site"
+msgstr ""
+
+#: quaddicted/comments/templates/comments/preview.html:8
+msgid "Preview your comment"
+msgstr ""
+
+#: quaddicted/comments/templates/comments/preview.html:41
+msgid "Comment Preview"
+msgstr ""
+
+#: quaddicted/comments/templates/comments/preview.html:126
+msgid "Post"
+msgstr ""
+
+#: quaddicted/comments/templates/comments/preview.html:127
+msgid "Preview"
+msgstr ""

@@ -1,0 +1,71 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-03 20:37+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: quaddicted/packages/models.py:36
+msgid "Author"
+msgstr ""
+
+#: quaddicted/packages/models.py:37
+msgid "Authors"
+msgstr ""
+
+#: quaddicted/packages/templates/packages/package_detail.html:183
+msgid "Post"
+msgstr ""
+
+#: quaddicted/packages/templates/packages/package_detail.html:184
+msgid "Preview"
+msgstr ""
+
+#: quaddicted/packages/templates/packages/package_detail.html:439
+msgid "Suggest a tag"
+msgstr ""
+
+#: quaddicted/packages/templates/packages/package_detail.html:455
+#: quaddicted/packages/templates/packages/package_detail.html:486
+msgid "Flag"
+msgstr ""
+
+#: quaddicted/packages/templates/packages/package_detail.html:470
+msgid "Report this comment?"
+msgstr ""
+
+#: quaddicted/packages/templates/packages/package_form.html:22
+msgid "Update this package"
+msgstr ""
+
+#: quaddicted/packages/templates/packages/package_form.html:24
+msgid "Upload a new package"
+msgstr ""
+
+#: quaddicted/packages/templates/packages/package_form.html:167
+msgid "Current"
+msgstr ""
+
+#: quaddicted/packages/templates/packages/package_form.html:177
+msgid "Replace"
+msgstr ""
+
+#: quaddicted/packages/templates/packages/package_form.html:217
+msgid "Save"
+msgstr ""
+
+#: quaddicted/packages/templates/packages/package_form.html:219
+msgid "Add package"
+msgstr ""
