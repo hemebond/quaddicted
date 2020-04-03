@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
-{% get_static_prefix as STATIC_URL %}
 
 
 
@@ -13,10 +12,11 @@
 
 {% block head %}
 	<script type="text/javascript">
-		var STATIC_URL = "{{ STATIC_URL }}";
+		var STATIC_URL = "{% static '/' %}";
 		var POST_PREVIEW_URL = "{% url 'djangobb:post_preview' %}";
 	</script>
 
+	<link type="text/css" rel="stylesheet" href="{% static 'djangobb_forum/css/pygments.css' %}">
 	<style>
 		/*
 			Workarounds for markItUp and Bootstrap conflicts
@@ -82,7 +82,7 @@
 								<a href="{% url 'djangobb:search' %}?action=show_subscriptions">{% trans "Show your subscribed topics" %}</a>
 							</li>
 							<li class="list-group-item">
-								{% trans "Show your" %} <a href="{% url 'djangobb:search' %}?action=show_user&show_as=topics">{% trans "topics" %}</a>/<a href="{% url 'djangobb:search' %}?action=show_user&show_as=posts">{% trans "posts" %}</a>
+								{% trans "Show your" %}<a href="{% url 'djangobb:search' %}?action=show_user&amp;show_as=topics">{% trans "topics" %}</a>/<a href="{% url 'djangobb:search' %}?action=show_user&amp;show_as=posts">{% trans "posts" %}</a>
 							</li>
 						{% endif %}
 					</ul>
