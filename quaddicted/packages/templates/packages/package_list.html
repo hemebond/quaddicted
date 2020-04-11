@@ -23,6 +23,7 @@
 					       value="{% if filtered_term %}{{ filtered_term }}{% endif %}">
 				</div>
 				<button type="submit" class="btn btn-primary mb-2">{% trans 'Search' %}</button>
+				<a class="btn btn-primary mb-2" href="{% url 'packages:new' %}"><i class="fas fa-upload"></i> {% trans 'New Package' %}</a>
 			</form>
 
 			{% include 'packages/package_pagination.html' %}
