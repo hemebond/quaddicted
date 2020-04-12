@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+{% load i18n %}
 {% load static %}
 {% load quaddicted_tags %}
 
@@ -46,7 +47,8 @@
 					       placeholder="Filter/Search"
 					       value="{% if filtered_term %}{{ filtered_term }}{% endif %}">
 				</div>
-				<button type="submit" class="btn btn-primary mb-2">Search</button>
+				<button type="submit" class="btn btn-primary mb-2 mr-2">{% trans 'Search' %}</button>
+				<a class="btn btn-primary mb-2" href="{% url 'packages:new' %}"><i class="fas fa-upload"></i> {% trans 'New Package' %}</a>
 			</form>
 
 			{% include 'packages/package_pagination.html' %}
@@ -131,7 +133,7 @@
 {%     else %}
 <section class="section">
 	<div class="container">
-		<p>No packages available</p>
+		<p>{% trans 'No packages available' %}</p>
 	</div>
 </section>
 {%     endif %}
@@ -139,21 +141,4 @@
 {% endblock %}
 
 
-{% block javascript %}
-{% comment %}
-	<script>
-		(function($){
-		    "use strict";
-			$(document).ready(function() {
-				$("#package-card-filter").on("change keyup paste", function() {
-					var value = $(this).val().toLowerCase();
-
-					$("#package-list-cards > *").filter(function() {
-						$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-					});
-				});
-			});
-		}(jQuery));
-	</script>
-{% endcomment %}
-{% endblock %}
+{% block javascript %}{% endblock %}
