@@ -1,0 +1,50 @@
+{% extends 'djangobb_forum/base.html' %}
+{% load forum_extras %}
+{% load i18n %}
+
+{% block forum_content %}
+	<h2>{{ profile.username }} - {% trans "Privacy" %}</h2>
+
+	<form method="post">
+		{% csrf_token %}
+
+
+		{% with f=form.privacy_permission %}
+			<p>
+				{% trans "Select whether you want your e-mail address to be viewable to other users or not and if you want other users to be able to send you e-mail via the forum (form e-mail) or not." %}
+			</p>
+			<div class="list-group">
+				{% for choice in f %}
+					<div class="list-group-item list-group-item-action form-check">
+						<label class="form-check-label d-block pl-3"
+						       for="{{ choice.id_for_label }}">
+							<input type="radio"
+							       class="form-check-input"
+							       name="{{ f.html_name }}"
+							       id="{{ choice.id_for_label }}"
+							       value="{{ choice.data.value }}"
+							       {% if choice.data.selected %}checked{% endif %}>
+							{{ choice.choice_label }}
+						</label>
+					</div>
+				{% endfor %}
+				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+			</div>
+		{% endwith %}
+
+
+		<p>
+			<small>
+				{% trans "When you update your profile, you will be redirected back to this page." %}
+			</small>
+		</p>
+
+		<div class="form-group">
+			<input type="submit" name="submit" class="btn btn-primary btn-md" value="{% trans "Save changes" %}">
+		</div>
+	</form>
+{% endblock %}
+
+{% block controls %}
+	{% include 'djangobb_forum/profile/profile_menu.html' %}
+{% endblock %}

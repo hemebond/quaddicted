@@ -1,7 +1,7 @@
 {% load forum_extras %}
 {% load i18n %}
 
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" class="flex-grow-1">
 	<ol class="breadcrumb">
 		<li class="breadcrumb-item"><a href="{% url 'djangobb:index' %}">{% trans "Forum" %}</a></li>
 		{% if forum %}

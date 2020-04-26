@@ -7,22 +7,16 @@
 
 
 {% block forum_content %}
-	{% include "djangobb_forum/includes/breadcrumbs.html" %}
-
-	{% comment %}
-	<h2>
-		<span>{{ forum.name }}</span>
-	</h2>
-	{% endcomment %}
-
-	<div class="position-relative">
+	<div class="d-flex">
+		{% include "djangobb_forum/includes/breadcrumbs.html" %}
+		{% include 'djangobb_forum/includes/paginator-inline.html' with page=topics_page request=request only %}
 		{% if user.is_authenticated %}
-			<a href="{% url 'djangobb:add_topic' forum.id %}" class="position-absolute" style="right: 0; padding-top: 0.5rem">
+			<a href="{% url 'djangobb:add_topic' forum.id %}" class="btn btn-primary ml-3 mb-3 py-2">
 				<i class="fas fa-edit"></i> {% trans "New topic" %}
 			</a>
 		{% endif %}
-		{% include 'djangobb_forum/includes/paginator.html' with page=topics_page request=request only %}
 	</div>
+
 
 	<table class="table">
 		<thead>
@@ -80,10 +74,6 @@
 			{% endfor %}
 		</tbody>
 	</table>
-
-
-	{% include 'djangobb_forum/includes/paginator.html' with page=topics_page request=request only %}
-
 {% endblock %}
 
 

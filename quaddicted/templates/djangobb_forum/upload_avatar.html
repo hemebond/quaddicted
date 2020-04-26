@@ -1,0 +1,53 @@
+{% extends 'djangobb_forum/base.html' %}
+{% load forum_extras %}
+{% load i18n %}
+
+{% block forum_content %}
+	<h2>{% trans "Upload avatar" %}</h2>
+
+
+	<form id="upload_avatar" method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+
+
+		{% for hidden in form.hidden_fields %}
+			{{ hidden }}
+		{% endfor %}
+
+
+		{% if form.non_field_errors %}
+			<div class="alert alert-danger" role="alert">
+				{{ form.non_field_errors }}
+			</div>
+		{% endif %}
+
+
+		<fieldset>
+			<legend>{% trans "Enter an avatar file to upload" %}</legend>
+
+			{% with f=form.avatar %}
+				<div class="form-group">
+					<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+					<input type="file"
+					       class="form-control-file {% if f.errors %}is-invalid{% endif %}"
+					       id="{{ f.id_for_label }}"
+					       name="{{ f.html_name }}"
+					       required="">
+					<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+					{% include 'includes/field_errors.html' %}
+				</div>
+			{% endwith %}
+
+			<p>{% blocktrans %}An avatar is a small image that will be displayed under your username in your posts. It must not be any bigger than {{ avatar_width }} x {{ avatar_height }} pixels {% endblocktrans %}</p>
+		</fieldset>
+
+
+		<div class="form-group">
+			<input type="submit" name="submit" class="btn btn-primary btn-md" value="{% trans "Upload" %}">
+		</div>
+	</form>
+{% endblock %}
+
+{% block controls %}
+	{% include 'djangobb_forum/profile/profile_menu.html' %}
+{% endblock %}

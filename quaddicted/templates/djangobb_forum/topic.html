@@ -12,46 +12,9 @@
 
 {% block forum_content %}
 
-	<div class="d-flex justify-content-between">
-		<nav aria-label="pagination align-self-stretch">
-			<ul class="pagination">
-				{% if page.has_previous %}
-					<li class="page-item">
-						<a class="page-link" href="?{% url_replace request 'page' page.previous_page_number %}">
-							<span aria-hidden="true">&laquo;</span>
-						</a>
-					</li>
-				{% else %}
-					<li class="page-item disabled">
-						<a class="page-link" href="#" aria-disabled="true">
-							<span aria-hidden="true">&laquo;</span>
-						</a>
-					</li>
-				{% endif %}
+	<div class="d-flex">
 
-				<li class="page-item disabled">
-					<span class="page-link disabled">
-						Page {{ page.number }} of {{ page.paginator.num_pages }}
-					</span>
-				</li>
-
-				{% if page.has_next %}
-					<li class="page-item">
-						<a class="page-link" href="?{% url_replace request 'page' page.next_page_number %}">
-							<span aria-hidden="true">&raquo;</span>
-						</a>
-					</li>
-				{% else %}
-					<li class="page-item disabled">
-						<a class="page-link" href="#" aria-disabled="true">
-							<span aria-hidden="true">&raquo;</span>
-						</a>
-					</li>
-				{% endif %}
-			</ul>
-		</nav>
-
-		<nav aria-label="breadcrumb" class="flex-grow-1 align-self-baseline">
+		<nav aria-label="breadcrumb" class="flex-grow-1">
 			<ol class="breadcrumb">
 				<li class="breadcrumb-item"><a href="{% url 'djangobb:index' %}">{% trans "Forum" %}</a></li>
 				{% if forum %}
@@ -63,41 +26,25 @@
 			</ol>
 		</nav>
 
+		{% include 'djangobb_forum/includes/paginator-inline.html' with page=posts_page request=request only %}
+
 		{% if user.is_authenticated %}
 			{% if subscribed %}
-				<a href="{% url 'djangobb:forum_delete_subscription' topic.id %}?from_topic"
-				   title="{% trans "Unsubscribe" %}" class="btn btn-primary">
-					<i class="fas fa-eye-slash"></i>
-				</a>
-			{% else %}
-				<a href="{% url 'djangobb:forum_add_subscription' topic.id %}"
-				   title="{% trans "Subscribe" %}">
-					<i class="fas fa-eye"></i>
-				</a>
-			{% endif %}
-		{% endif %}
-
-
-
-{% comment %}
-		{% if user.is_authenticated %}
-			{% if subscribed %}
-				<a class="position-absolute"
-				   style="top: 0; right: 0; padding: .75rem 1rem"
+				<a id="topic-subscribe-button"
 				   href="{% url 'djangobb:forum_delete_subscription' topic.id %}?from_topic"
-				   title="{% trans "Unsubscribe" %}">
+				   title="{% trans "Unsubscribe" %}"
+				   class="btn btn-primary ml-3">
 					<i class="fas fa-eye-slash"></i>
 				</a>
 			{% else %}
-				<a class="position-absolute"
-				   style="top: 0; right: 0; padding: .75rem 1rem"
+				<a id="topic-subscribe-button"
 				   href="{% url 'djangobb:forum_add_subscription' topic.id %}"
-				   title="{% trans "Subscribe" %}">
+				   title="{% trans "Subscribe" %}"
+				   class="btn btn-primary ml-3">
 					<i class="fas fa-eye"></i>
 				</a>
 			{% endif %}
 		{% endif %}
-{% endcomment %}
 	</div>
 
 
@@ -154,7 +101,8 @@
 												       class="form-check-input"
 												       name="{{ f.html_name }}"
 												       id="{{ choice.id_for_label }}"
-												       value="{{ choice.data.value }}">
+												       value="{{ choice.data.value }}"
+												       {% if choice.data.selected %}checked{% endif %}>
 												{{ choice.choice_label }}
 											</label>
 										</div>
@@ -187,9 +135,6 @@
 		</div>
 	{% endif %}
 
-{% comment %}
-	{% include 'djangobb_forum/includes/paginator.html' with page=posts_page request=request only %}
-{% endcomment %}
 
 	{% for post in posts_page %}
 		<article class="row mb-3" id="p{{ post.id }}">
@@ -290,9 +235,6 @@
 			</div>
 		</article>
 	{% endfor %}
-
-
-	{% include 'djangobb_forum/includes/paginator.html' with page=posts_page request=request only %}
 
 
 	{% if reply_form %}

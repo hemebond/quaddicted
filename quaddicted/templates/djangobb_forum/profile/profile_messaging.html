@@ -1,0 +1,50 @@
+{% extends 'djangobb_forum/base.html' %}
+{% load forum_extras %}
+{% load i18n %}
+
+{% block forum_content %}
+	<h2>{{ profile.username }} - {% trans "Messaging" %}</h2>
+
+
+	<form id="profile3" method="post">
+		{% csrf_token %}
+
+
+		{% for hidden in form.hidden_fields %}
+			{{ hidden }}
+		{% endfor %}
+
+
+		{% if form.non_field_errors %}
+			<div class="alert alert-danger" role="alert">
+				{{ form.non_field_errors }}
+			</div>
+		{% endif %}
+
+
+		<fieldset>
+			<legend>{% trans "Personal" %}</legend>
+
+			{% include 'includes/input_text.html' with f=form.jabber %}
+			{% include 'includes/input_text.html' with f=form.icq %}
+			{% include 'includes/input_text.html' with f=form.msn %}
+			{% include 'includes/input_text.html' with f=form.aim %}
+			{% include 'includes/input_text.html' with f=form.yahoo %}
+		</fieldset>
+
+		<p>
+			<small>
+				{% trans "When you update your profile, you will be redirected back to this page." %}
+			</small>
+		</p>
+
+		<div class="form-group">
+			<input type="submit" name="submit" class="btn btn-primary btn-md" value="{% trans "Save changes" %}">
+		</div>
+	</form>
+{% endblock %}
+
+
+{% block controls %}
+	{% include 'djangobb_forum/profile/profile_menu.html' %}
+{% endblock %}

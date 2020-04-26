@@ -1,0 +1,81 @@
+{% extends 'djangobb_forum/base.html' %}
+{% load forum_extras %}
+{% load i18n %}
+
+{% block forum_content %}
+	<h2>{{ profile.username }} - {% trans "Display" %}</h2>
+
+
+	<form id="profile5" method="post">
+		{% csrf_token %}
+
+
+		{% for hidden in form.hidden_fields %}
+			{{ hidden }}
+		{% endfor %}
+
+
+		{% if form.non_field_errors %}
+			<div class="alert alert-danger" role="alert">
+				{{ form.non_field_errors }}
+			</div>
+		{% endif %}
+
+		<fieldset>
+			<legend>{% trans "Markup" %}</legend>
+
+			{% with f=form.markup %}
+				<div class="form-group">
+					<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+					<select id="{{ f.id_for_label }}"
+					        name="{{ f.html_name }}"
+					        class="form-control {% if f.errors %}is-invalid{% endif %}">
+					{% for v, label in f.field.choices %}
+						<option value="{{ v }}" {% if f.value == v %}selected="selected"{% endif %}>{{ label }}</option>
+					{% endfor %}
+					</select>
+					<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+					{% include 'includes/field_errors.html' %}
+				</div>
+			{% endwith %}
+		</fieldset>
+
+		<fieldset>
+			<legend>{% trans "Post display" %}</legend>
+
+			{% with f=form.show_smilies %}
+		        <fieldset>
+		            <legend>{{ form.auto_subscribe.label }}</legend>
+
+					<div class="form-check">
+						<input class="form-check-input"
+						       type="checkbox"
+						       name="{{ f.html_name }}"
+						       id="{{ f.id_for_label }}"
+						       value="{{ f.value|default_if_none:'' }}"
+						       {% if f.value %}checked{% endif %}>
+						<label class="form-check-label" for="{{ f.id_for_label }}">
+							{{ f.label }}
+						</label>
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+					</div>
+					{% include 'includes/field_errors.html' %}
+		        </fieldset>
+	        {% endwith %}
+		</fieldset>
+
+		<p>
+			<small>
+				{% trans "When you update your profile, you will be redirected back to this page." %}
+			</small>
+		</p>
+
+		<div class="form-group">
+			<input type="submit" name="submit" class="btn btn-primary btn-md" value="{% trans "Save changes" %}">
+		</div>
+	</form>
+{% endblock %}
+
+{% block controls %}
+	{% include 'djangobb_forum/profile/profile_menu.html' %}
+{% endblock %}

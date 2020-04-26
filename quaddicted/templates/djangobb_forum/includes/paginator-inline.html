@@ -3,7 +3,7 @@
 
 
 <nav aria-label="pagination">
-	<ul class="pagination justify-content-center">
+	<ul class="pagination topic-pagination ml-3">
 		{% if page.has_previous %}
 			<li class="page-item">
 				<a class="page-link" href="?{% url_replace request 'page' page.previous_page_number %}">
@@ -20,7 +20,7 @@
 
 		<li class="page-item disabled">
 			<span class="page-link disabled">
-				Page {{ page.number }} of {{ page.paginator.num_pages }}
+				{{ page.number }} of {{ page.paginator.num_pages }}
 			</span>
 		</li>
 
