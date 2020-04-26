@@ -83,34 +83,37 @@
 		</nav>
 
 		<div class="container">
-			{% block content %}
-			{% endblock %}
+			{% block content %}{% endblock %}
+		</div>
+
+
+		<div class="modal fade cookieModal" id="cookieModal" tabindex="-1" role="dialog" aria-labelledby="cookieModalLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h2 id="cookieModalLabel">Cookie Consent Request</h2>
+					</div>
+					<div class="modal-body">
+						<p>
+							This website uses cookies to ensure you get the best experience on our website. You can block cookies and use <em>most</em> of the site just fine.
+						</p>
+						<p>
+							<a href="https://cookiesandyou.com/" target="_blank">Click here to view our cookie policy</a>
+						</p>
+					</div>
+					<div class="modal-footer">
+						<button id="cookieModalConsent" type="button" class="btn btn-primary btn-lg" data-dismiss="modal">Accept</button>
+						{% comment %}
+						<button id="cookieModalDecline" type="button" class="btn btn-secondary btn-lg" data-dismiss="modal">Decline</button>
+						{% endcomment %}
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<script src="{% static 'ext/jquery-3.4.1.min.js' %}"></script>
 		<script src="{% static 'ext/bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js' %}"></script>
-		<script src="{% static 'cookieconsent.min.js' %}"></script>
-		<script>
-			window.addEventListener("load", function(){
-				window.cookieconsent.initialise({
-					"palette": {
-						"popup": {
-							"background": "#64386b",
-							"text": "#ffcdfd"
-						},
-						"button": {
-							"background": "#f8a8ff",
-							"text": "#3f0045"
-						}
-					},
-					"theme": "edgeless",
-					"content": {
-						"message": "This website uses cookies to ensure you get the best experience on our website. You can block cookies and use *most* of the site just fine.",
-						"link": "TODOpolicy"
-					}
-				})
-			});
-		</script>
+		<script src="{% static 'gdpr.min.js' %}"></script>
 
 		{% block javascript %}{% endblock %}
 	</body>
