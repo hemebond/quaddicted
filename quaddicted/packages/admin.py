@@ -16,7 +16,7 @@ class AuthorAdmin(admin.ModelAdmin):
 
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
-	list_display = ('name', 'file_name', 'file_hash', 'published')
+	list_display = ('name', 'file_name', 'file_hash', 'uploaded_on', 'published')
 	search_fields = ['name', 'file_name', 'file_hash']
 	list_filter = ('published', 'game')
 	actions = ['make_published',]
