@@ -12,9 +12,74 @@
 
 {% block forum_content %}
 
-	<div class="position-relative">
-		{% include "djangobb_forum/includes/breadcrumbs.html" %}
+	<div class="d-flex justify-content-between">
+		<nav aria-label="pagination align-self-stretch">
+			<ul class="pagination">
+				{% if page.has_previous %}
+					<li class="page-item">
+						<a class="page-link" href="?{% url_replace request 'page' page.previous_page_number %}">
+							<span aria-hidden="true">&laquo;</span>
+						</a>
+					</li>
+				{% else %}
+					<li class="page-item disabled">
+						<a class="page-link" href="#" aria-disabled="true">
+							<span aria-hidden="true">&laquo;</span>
+						</a>
+					</li>
+				{% endif %}
 
+				<li class="page-item disabled">
+					<span class="page-link disabled">
+						Page {{ page.number }} of {{ page.paginator.num_pages }}
+					</span>
+				</li>
+
+				{% if page.has_next %}
+					<li class="page-item">
+						<a class="page-link" href="?{% url_replace request 'page' page.next_page_number %}">
+							<span aria-hidden="true">&raquo;</span>
+						</a>
+					</li>
+				{% else %}
+					<li class="page-item disabled">
+						<a class="page-link" href="#" aria-disabled="true">
+							<span aria-hidden="true">&raquo;</span>
+						</a>
+					</li>
+				{% endif %}
+			</ul>
+		</nav>
+
+		<nav aria-label="breadcrumb" class="flex-grow-1 align-self-baseline">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="{% url 'djangobb:index' %}">{% trans "Forum" %}</a></li>
+				{% if forum %}
+					<li class="breadcrumb-item active" aria-current="page">{{ forum.name }}</li>
+				{% else %}
+					<li class="breadcrumb-item">{% link topic.forum %}</li>
+					<li class="breadcrumb-item active" aria-current="page">{{ topic }}</li>
+				{% endif %}
+			</ol>
+		</nav>
+
+		{% if user.is_authenticated %}
+			{% if subscribed %}
+				<a href="{% url 'djangobb:forum_delete_subscription' topic.id %}?from_topic"
+				   title="{% trans "Unsubscribe" %}" class="btn btn-primary">
+					<i class="fas fa-eye-slash"></i>
+				</a>
+			{% else %}
+				<a href="{% url 'djangobb:forum_add_subscription' topic.id %}"
+				   title="{% trans "Subscribe" %}">
+					<i class="fas fa-eye"></i>
+				</a>
+			{% endif %}
+		{% endif %}
+
+
+
+{% comment %}
 		{% if user.is_authenticated %}
 			{% if subscribed %}
 				<a class="position-absolute"
@@ -32,6 +97,7 @@
 				</a>
 			{% endif %}
 		{% endif %}
+{% endcomment %}
 	</div>
 
 
@@ -121,9 +187,9 @@
 		</div>
 	{% endif %}
 
-
-	{% include 'djangobb_forum/paginator.html' with page=posts_page request=request only %}
-
+{% comment %}
+	{% include 'djangobb_forum/includes/paginator.html' with page=posts_page request=request only %}
+{% endcomment %}
 
 	{% for post in posts_page %}
 		<article class="row mb-3" id="p{{ post.id }}">
@@ -131,12 +197,12 @@
 
 			<div class="col-sm-2">
 				{% if post.user.forum_profile.avatar and post.user.forum_profile.show_avatar %}
-					<img class="img-thumbnail img-responsive user-photo" src="{{ post.user.forum_profile.avatar.url }}" />
+					<img class="img-thumbnail img-responsive user-photo w-100 mb-3" src="{{ post.user.forum_profile.avatar.url }}" />
 				{% else %}
 					{% if forum_settings.GRAVATAR_SUPPORT %}
-						<img class="img-thumbnail img-responsive user-photo" src="{% gravatar post.user.email %}" />
+						<img class="img-thumbnail img-responsive user-photo w-100 mb-3" src="{% gravatar post.user.email %}" />
 					{% else %}
-						<img class="img-thumbnail img-responsive user-photo" src="{% static 'avatar_2x.png' %}">
+						<img class="img-thumbnail img-responsive user-photo w-100 mb-3" src="{% static 'avatar_2x.png' %}">
 					{% endif %}
 				{% endif %}
 
@@ -226,7 +292,7 @@
 	{% endfor %}
 
 
-	{% include 'djangobb_forum/paginator.html' with page=posts_page request=request only %}
+	{% include 'djangobb_forum/includes/paginator.html' with page=posts_page request=request only %}
 
 
 	{% if reply_form %}

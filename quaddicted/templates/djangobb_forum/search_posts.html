@@ -1,0 +1,31 @@
+{% extends 'djangobb_forum/base.html' %}
+{% load forum_extras %}
+{% load i18n %}
+
+{% block forum_content %}
+	{% include 'djangobb_forum/includes/paginator.html' with page=posts_page request=request only %}
+
+
+	<h2>{% trans "Search type" %}</h2>
+	<p><a href="{{ as_topic_url }}">{% trans "Show results as topic list." %}</a></p>
+
+
+	{% for post in posts_page %}
+		{% if post.object %}
+			{% with post=post.object %}
+				{% include "djangobb_forum/includes/post_in_search_page.html" %}
+			{% endwith %}
+		{% else %}
+			{% include "djangobb_forum/includes/post_in_search_page.html" %}
+		{% endif %}
+	{% empty %}
+
+		<div class="alert alert-info" role="alert">
+			{% trans "Your search returned no hits." %}
+		</div>
+
+	{% endfor %}
+
+
+	{% include 'djangobb_forum/includes/paginator.html' with page=posts_page request=request only %}
+{% endblock %}

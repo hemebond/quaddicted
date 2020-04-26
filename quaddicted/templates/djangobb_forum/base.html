@@ -82,7 +82,7 @@
 								<a href="{% url 'djangobb:search' %}?action=show_subscriptions">{% trans "Show your subscribed topics" %}</a>
 							</li>
 							<li class="list-group-item">
-								{% trans "Show your" %}<a href="{% url 'djangobb:search' %}?action=show_user&amp;show_as=topics">{% trans "topics" %}</a>/<a href="{% url 'djangobb:search' %}?action=show_user&amp;show_as=posts">{% trans "posts" %}</a>
+								{% trans "Show your" %} <a href="{% url 'djangobb:search' %}?action=show_user&amp;show_as=topics">{% trans "topics" %}</a> / <a href="{% url 'djangobb:search' %}?action=show_user&amp;show_as=posts">{% trans "posts" %}</a>
 							</li>
 						{% endif %}
 					</ul>

@@ -23,6 +23,7 @@
 		<meta name="description" content="{% block description %}{% endblock %}">
 		<meta name="keywords" content="{% block keywords %}{% endblock %}">
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<link rel="stylesheet" type="text/css" href="{% static 'cookieconsent.min.css' %}" />
 
 {% block css %}{% endblock %}
 
@@ -88,6 +89,28 @@
 
 		<script src="{% static 'ext/jquery-3.4.1.min.js' %}"></script>
 		<script src="{% static 'ext/bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js' %}"></script>
+		<script src="{% static 'cookieconsent.min.js' %}"></script>
+		<script>
+			window.addEventListener("load", function(){
+				window.cookieconsent.initialise({
+					"palette": {
+						"popup": {
+							"background": "#64386b",
+							"text": "#ffcdfd"
+						},
+						"button": {
+							"background": "#f8a8ff",
+							"text": "#3f0045"
+						}
+					},
+					"theme": "edgeless",
+					"content": {
+						"message": "This website uses cookies to ensure you get the best experience on our website. You can block cookies and use *most* of the site just fine.",
+						"link": "TODOpolicy"
+					}
+				})
+			});
+		</script>
 
 		{% block javascript %}{% endblock %}
 	</body>

@@ -1,0 +1,60 @@
+{% load forum_extras %}
+{% load static %}
+{% load i18n %}
+
+		<article class="row mb-3" id="p{{ post.id }}">
+			<a name="post-{{ post.id }}"></a>
+
+			<div class="col-sm-2">
+				{% if post.user.forum_profile.avatar and post.user.forum_profile.show_avatar %}
+					<img class="img-thumbnail img-responsive user-photo w-100 mb-3" src="{{ post.user.forum_profile.avatar.url }}" />
+				{% else %}
+					{% if forum_settings.GRAVATAR_SUPPORT %}
+						<img class="img-thumbnail img-responsive user-photo w-100 mb-3" src="{% gravatar post.user.email %}" />
+					{% else %}
+						<img class="img-thumbnail img-responsive user-photo w-100 mb-3" src="{% static 'avatar_2x.png' %}">
+					{% endif %}
+				{% endif %}
+
+				<strong>{{ post.user.username }}</strong>
+				<strong>{{ post.user.forum_profile.group }}</strong>
+			</div>
+
+			<div class="col">
+				<div class="card">
+					<div class="card-header">
+						<nav aria-label="breadcrumb" class="small">
+							<ol class="breadcrumb m-0">
+								<li class="breadcrumb-item">{% link post.topic.forum %}</li>
+								<li class="breadcrumb-item">{% link post.topic %}</li>
+								<li class="breadcrumb-item active" aria-current="page">
+									<time class="text-muted small"
+									      datetime="{{ post.created }}">
+										<a href="{{ post.get_absolute_url }}">
+											{% forum_time post.created %}
+										</a>
+									</time>
+								</li>
+							</ol>
+						</nav>
+					</div>
+					<div class="card-body">
+						<blockquote>
+							{{ post.body_html|safe }}
+						</blockquote>
+
+						{% with post.attachments.all as attachments %}
+							{% if attachments %}
+								{% for attach in attachments %}
+									<p class="postedit"><em>{% trans "Attachments:" %} <br />{{ attach|attachment_link }}</em></p>
+								{% endfor %}
+							{% endif %}
+						{% endwith %}
+					</div>
+
+					<div class="card-footer">
+						<a href="{{ post.get_absolute_url }}">{% trans "Go to post" %}</a>
+					</div>
+				</div>
+			</div>
+		</article>

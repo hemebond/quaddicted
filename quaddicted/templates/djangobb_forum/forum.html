@@ -21,7 +21,7 @@
 				<i class="fas fa-edit"></i> {% trans "New topic" %}
 			</a>
 		{% endif %}
-		{% include 'djangobb_forum/paginator.html' with page=topics_page request=request only %}
+		{% include 'djangobb_forum/includes/paginator.html' with page=topics_page request=request only %}
 	</div>
 
 	<table class="table">
@@ -71,9 +71,9 @@
 						</span>
 					</td>
 				</tr>
-				{% empty %}
+			{% empty %}
 				<tr>
-					<td class="djangobbcon1" colspan="3">
+					<td colspan="3" class="text-center">
 						{% trans "Forum is empty." %}
 					</td>
 				</tr>
@@ -82,7 +82,7 @@
 	</table>
 
 
-	{% include 'djangobb_forum/paginator.html' with page=topics_page request=request only %}
+	{% include 'djangobb_forum/includes/paginator.html' with page=topics_page request=request only %}
 
 {% endblock %}
 
