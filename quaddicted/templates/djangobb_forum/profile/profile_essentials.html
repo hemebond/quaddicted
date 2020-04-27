@@ -22,10 +22,10 @@
 		{% endif %}
 
 
-		{% with f=form.username %}
-			<div class="form-group">
-				<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-				{% if user.is_superuser %}
+		{% if user.is_superuser %}
+			{% with f=form.username %}
+				<div class="form-group">
+					<label for="{{ f.id_for_label }}">{{ f.label }}</label>
 					<input type="text"
 					       class="form-control {% if f.errors %}is-invalid{% endif %}"
 					       id="{{ f.id_for_label }}"
@@ -33,20 +33,16 @@
 					       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
 					       value="{{ f.value|default_if_none:'' }}"
 					       {% if f.required %}required="required"{% endif %}>
-				{% else %}
-					<p>
-						{{ f.initial }}
-					</p>
-				{% endif %}
-				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-				{% include 'includes/field_errors.html' %}
-				{% if user.is_superuser %}
-					<a href="{% url 'admin:auth_user_password_change' profile.id %}">{% trans "Change password" %}</a>
-				{% else %}
-					<a href="{% url 'auth_password_change' %}">{% trans "Change password" %}</a>
-				{% endif %}
-			</div>
-		{% endwith %}
+					<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+					{% include 'includes/field_errors.html' %}
+					{% if user.is_superuser %}
+						<a href="{% url 'admin:auth_user_password_change' profile.id %}">{% trans "Change password" %}</a>
+					{% else %}
+						<a href="{% url 'auth_password_change' %}">{% trans "Change password" %}</a>
+					{% endif %}
+				</div>
+			{% endwith %}
+		{% endif %}
 
 
 		{% with f=form.email %}
