@@ -9,18 +9,52 @@ import sys
 import json
 import yaml
 import logging
+import argparse
+import importlib
+import shutil
 from operator import itemgetter
 from pathlib import Path
 from django.utils.text import slugify
 from datetime import datetime
 
 
+
 logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger(__name__)
 
 
-make_files = True
-if len(sys.argv) > 1 and sys.argv[1] == '-noop':
-	make_files = False
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+	"--noop",
+	default=False,
+	action="store_true",
+)
+parser.add_argument(
+	"--json",
+	required=True,
+	help="Path to the JSON files",
+)
+parser.add_argument(
+	"--screenshots",
+	help="Path to the directory containing screenshots",
+)
+
+options = parser.parse_args()
+
+make_files = not options.noop
+
+
+
+settings_module = os.environ.get('DJANGO_SETTINGS_MODULE')
+try:
+	settings = importlib.import_module(settings_module)
+except ImportError:
+	log.error('Could not import settings')
+	exit(1)
+
+
+
 
 author_packages = {}
 author_names = {}
@@ -36,10 +70,16 @@ package_list = []
 
 package_pk = 0
 
-SRC_DIR = Path(__file__).resolve().parent
+SRC_DIR = Path(options.json).resolve()
 BASE_DIR = SRC_DIR.parent
 # MEDIA_DIR = Path(BASE_DIR.joinpath('media'))
-MEDIA_DIR = Path('/srv/www/quaddicted/media')
+# MEDIA_DIR = Path('/srv/www/quaddicted/media')
+MEDIA_DIR = Path(settings.MEDIA_ROOT)
+
+if options.screenshots is not None:
+	SS_DIR = Path(options.screenshots)
+else:
+	SS_DIR = None
 
 
 
@@ -48,10 +88,10 @@ MEDIA_DIR = Path('/srv/www/quaddicted/media')
 #
 ratings = []
 ratings_raw = {}
-with open('ratings.json', 'r') as fp:
+with open(SRC_DIR / 'ratings.json', 'r') as fp:
 	ratings_json = json.load(fp)
 
-logging.debug("Read %s ratings" % len(ratings_json))
+log.debug("Read %s ratings" % len(ratings_json))
 
 for rating in ratings_json:
 	ratings_raw.setdefault(rating['zipname'], []).append({
@@ -60,15 +100,23 @@ for rating in ratings_json:
 		'username': rating['username'],
 	})
 
-logging.debug("Found ratings for %s packages" % len(ratings_raw.keys()))
+log.debug("Found ratings for %s packages" % len(ratings_raw.keys()))
 
+
+
+map_details = {}
+with open(SRC_DIR / 'maps.json', 'r') as fp:
+	map_json = json.load(fp)
+
+for m in map_json:
+	map_details[m['zipname']] = m
 
 
 #
 # Process the packages/maps
 #
 rating_pk = 0
-for root, dirs, files in os.walk(SRC_DIR.joinpath('json')):
+for root, dirs, files in os.walk(SRC_DIR / 'json'):
 	for file in files:
 		if file.endswith('.json'):
 			package_pk += 1
@@ -102,7 +150,7 @@ for root, dirs, files in os.walk(SRC_DIR.joinpath('json')):
 
 					if author_slug in author_names:
 						if author_name != author_names[author_slug]:
-							logging.warning("Created duplicate author slug: (%s: %s) (%s: %s)" % (author_slug, author_name, author_slug, author_names[author_slug]))
+							log.warning("Created duplicate author slug: (%s: %s) (%s: %s)" % (author_slug, author_name, author_slug, author_names[author_slug]))
 					else:
 						author_names[author_slug] = author_name
 
@@ -135,27 +183,34 @@ for root, dirs, files in os.walk(SRC_DIR.joinpath('json')):
 			fields['file'] = str(package_abs_path.relative_to(MEDIA_DIR))
 			fields['file_name'] = j['filename'][0]
 			fields['file_hash'] = j['sha256']
+			fields['description'] = map_details[package_abs_path.stem]['description']
+
 
 			if make_files:
 				package_abs_path.parent.mkdir(parents=True, exist_ok=True)
 				package_abs_path.touch()
+			else:
+				log.debug(f'Would have created directory {package_abs_path.parent}')
+				log.debug(f'Would have touched file {package_abs_path}')
 
-			screenshot_src_path = BASE_DIR.joinpath(
-				'src',
-				'screenshots',
-				package_abs_path.stem + '.jpg'
-			)
 
-			# print('screenshot_src_path: %s' % screenshot_src_path)
-			# print('screenshot_abs_path: %s' % screenshot_abs_path)
-			if screenshot_src_path.exists():
-				if make_files and not screenshot_abs_path.exists():
-					screenshot_abs_path.symlink_to(screenshot_src_path)
+			if SS_DIR is not None:
+				screenshot_src_path = SS_DIR / (package_abs_path.stem + '.jpg')
 
-				all_screenshots.append({
-					'image': str(screenshot_abs_path.relative_to(MEDIA_DIR)),
-					'package': package_pk,
-				})
+				# print('screenshot_src_path: %s' % screenshot_src_path)
+				# print('screenshot_abs_path: %s' % screenshot_abs_path)
+				if screenshot_src_path.exists():
+					# screenshot_abs_path.symlink_to(screenshot_src_path)
+					if make_files:
+						shutil.copy(screenshot_src_path, screenshot_abs_path)
+
+						all_screenshots.append({
+							'image': str(screenshot_abs_path.relative_to(MEDIA_DIR)),
+							'package': package_pk,
+						})
+					else:
+						log.debug(f'Would have copied file {screenshot_src_path} to {screenshot_abs_path}')
+
 
 			package_list.append({
 				'model': 'quaddicted_packages.package',
@@ -167,13 +222,13 @@ for root, dirs, files in os.walk(SRC_DIR.joinpath('json')):
 			try:
 				package_ratings = ratings_raw[package_abs_path.stem]
 			except KeyError:
-				logging.warning('No package for rating %s' % package_abs_path.stem)
+				log.warning('No package for rating %s' % package_abs_path.stem)
 			else:
 				for rating in package_ratings:
 					rating_pk += 1
 
 					if rating_pk == 2997:
-						logging.debug(rating)
+						log.debug(rating)
 
 					ratings.append({
 						'model': 'quaddicted_packages.rating',
@@ -189,7 +244,7 @@ for root, dirs, files in os.walk(SRC_DIR.joinpath('json')):
 				del(ratings_raw[package_abs_path.stem])
 
 # The left-over ratings; the package has been deleted
-logging.debug(ratings_raw)
+log.debug(ratings_raw)
 
 print(yaml.dump(package_list))
 print(yaml.dump(ratings))
