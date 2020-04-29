@@ -74,7 +74,7 @@
 					       type="checkbox"
 					       name="{{ f.html_name }}"
 					       id="{{ f.id_for_label }}"
-					       value="{{ f.value|default_if_none:'' }}"
+					       {% if f.value %}value="{{ f.value }}"{% endif %}
 					       {% if f.value %}checked{% endif %}>
 					<label class="form-check-label" for="{{ f.id_for_label }}">
 						{{ f.label }}
@@ -127,12 +127,18 @@
 		</p>
 
 		<div class="form-group">
-			<input type="submit" name="submit" class="btn btn-primary btn-md" value="{% trans "Save changes" %}">
+			<input type="submit" name="submit" class="btn btn-primary btn-md" value="{% trans 'Save changes' %}">
 		</div>
 	</form>
+{% endblock %}
 
 
-	<div class="card">
+
+{% block controls %}
+	{% include 'djangobb_forum/profile/profile_menu.html' %}
+
+
+	<div class="card mb-3">
 		<div class="card-header">
 			{% trans "User activity" %}
 		</div>
@@ -153,8 +159,4 @@
 			</dl>
 		</div>
 	</div>
-{% endblock %}
-
-{% block controls %}
-	{% include 'djangobb_forum/profile/profile_menu.html' %}
 {% endblock %}

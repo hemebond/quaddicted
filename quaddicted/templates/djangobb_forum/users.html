@@ -1,0 +1,107 @@
+{% extends 'djangobb_forum/base.html' %}
+{% load forum_extras %}
+{% load i18n %}
+
+{% block forum_content %}
+	<h2>{% trans "User search" %}</h2>
+
+
+	<form method="get" action="">
+		<fieldset>
+			<legend>{% trans "Find and sort users" %}</legend>
+			<div class="form-row align-items-baseline">
+
+				<p>{% trans "Enter a username to search for. The username field can be left blank. Sort users by name, date registered or number of posts and in ascending/descending order." %}</p>
+
+
+				{% with f=form.username %}
+					<div class="form-group col-md-3">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<input type="text"
+						       class="form-control {% if f.errors %}is-invalid{% endif %}"
+						       id="{{ f.id_for_label }}"
+						       name="{{ f.html_name }}"
+						       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
+						       value="{{ f.value|default_if_none:'' }}"
+						       {% if f.required %}required="required"{% endif %}>
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'includes/field_errors.html' %}
+					</div>
+				{% endwith %}
+
+
+				{% with f=form.sort_by %}
+					<div class="form-group col-md-3">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<select id="{{ f.id_for_label }}"
+						        name="{{ f.html_name }}"
+						        class="form-control {% if f.errors %}is-invalid{% endif %}">
+							{% for v, label in f.field.choices %}
+								<option value="{{ v }}" {% if f.value == v %}selected="selected"{% endif %}>{{ label }}</option>
+							{% endfor %}
+						</select>
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'includes/field_errors.html' %}
+					</div>
+				{% endwith %}
+
+
+				{% with f=form.sort_dir %}
+					<div class="form-group col-md-3">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<select id="{{ f.id_for_label }}"
+						        name="{{ f.html_name }}"
+						        class="form-control {% if f.errors %}is-invalid{% endif %}">
+							{% for v, label in f.field.choices %}
+								<option value="{{ v }}" {% if f.value == v %}selected="selected"{% endif %}>{{ label }}</option>
+							{% endfor %}
+						</select>
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'includes/field_errors.html' %}
+					</div>
+				{% endwith %}
+
+				<div class="form-group">
+					<label class="d-block invisible">&nbsp;</label>
+					<input class="btn btn-primary ml-1" type="submit" value="{% trans "Search" %}">
+				</div>
+			</div>
+		</fieldset>
+	</form>
+
+
+	{% include 'djangobb_forum/paginator.html' with page=users_page request=request only %}
+
+
+	<h2>{% trans "User list" %}</h2>
+	<table class="table">
+		<thead>
+			<tr>
+				<th scope="col">{% trans "Username" %}</th>
+				<th scope="col">{% trans "Title" %}</th>
+				<th scope="col">{% trans "Posts" %}</th>
+				<th scope="col">{% trans "Registered" %}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for profile in users_page %}
+				<tr>
+					<td>{{ profile|profile_link }}</td>
+					<td>{{ profile.forum_profile.status }}</td>
+					<td>{{ profile.forum_profile.post_count }}</td>
+					<td>{{ profile.date_joined|date:"d-m-Y" }}</td>
+				</tr>
+			{% empty %}
+			     <tr>
+			         <td colspan="4" class="text-center">{% trans "Your search returned no hits." %}</td>
+			     </tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+
+	{% include 'djangobb_forum/paginator.html' with page=users_page request=request only %}
+{% endblock %}
+
+{% block controls %}
+{% endblock %}

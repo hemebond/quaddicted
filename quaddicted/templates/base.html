@@ -9,10 +9,11 @@
 		<link rel="stylesheet" href="{% static 'ext/bootstrap-4.4.1-dist/css/bootstrap.min.css' %}">
 		<link rel="stylesheet" href="{% static 'ext/fontawesome-free-5.12.0-web/css/all.min.css' %}">
 		<style type="text/css">
-			.navbar {
+			body > .navbar {
 				background-color: #544D3D;
 				border-bottom-width: 3px !important;
-				border-bottom-color: #CCCC99;
+				/*border-bottom-color: #CCCC99;*/
+				border-bottom-color: #000 !important;
 			}
 			.panel {
 				position:relative;
@@ -29,7 +30,7 @@
 {% block head %}{% endblock %}
 
 	</head>
-	<body>
+	<body class="bg-dark">
 		<nav class="navbar navbar-expand-lg navbar-dark border-bottom mb-3">
 			<a class="navbar-brand d-sm-inline-block d-lg-none" href="#">
 				<img src="{% static 'injector64.png' %}" width="30" height="30" alt="">

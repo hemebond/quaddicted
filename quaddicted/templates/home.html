@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+
+{% block content %}
+	<div class="card text-white bg-secondary mb-3">
+		<div class="card-body">
+			<p>
+				Welcome to a Quake fan-site offering a complete-as-can-be <a href="{% url 'packages:list' %}">singleplayer map archive</a> with an accompanying <a href="/tools/quake_injector">install &amp; launcher tool</a>, several rather messy archives (<a href="/files/engines/">engines</a>, <a href="/files/tools/">tools</a>, <a href="/files/wads/">wads</a>, <a href="/files/maps/multiplayer/">multiplayer maps</a>, <a href="/webarchive/">websites</a>) and a variety of articles, knowledge and help.
+			</p>
+		</div>
+	</div>
+
+
+	<div class="card-group mb-3">
+		{% for pkg in latest_pkgs %}
+			<div class="card">
+
+				<a href="{% url 'packages:detail' pkg.file_hash %}" class="bg-secondary">
+					<img class="card-img-top overflow-hidden" style="height: 156px"
+						{% if pkg.screenshots.exists %}
+							src="{{ pkg.screenshots.first.thumbnail.url }}">
+						{% else %}
+							src="{% static '/384x216.svg' %}">
+						{% endif %}
+				</a>
+
+
+				<div class="card-body">
+					<h5 class="card-text">
+						<a href="{% url 'packages:detail' pkg.file_hash %}" class="text-reset">
+							{{ pkg.name }}
+						</a>
+					</h5>
+
+						<p class="card-text">
+							{% for author in pkg.authors.all %}
+								<a href="?author={{ author.slug }}" title="Show only this users packages">{{ author }}</a>{% if not forloop.last %}, {% endif %}
+							{% endfor %}
+						</p>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+
+
+
+	<div class="row">
+		<div class="col-6">
+			<div class="card mb-3">
+				<div class="card-header">
+					{% trans 'The 5 Minute Quake Guide' %}
+				</div>
+				<div class="card-body">
+					<ul class="fa-ul">
+						{% for link in guide_links %}
+							<li><span class="fa-li"><i class="fas fa-comment"></i></span> <a href="{{ link.0 }}">{{ link.1 }}</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+
+			<div class="card mb-3">
+				<div class="card-header">
+					{% trans 'Guides and Help' %}
+				</div>
+				<div class="card-body">
+					<ul class="fa-ul">
+						{% for link in help_links %}
+							<li><span class="fa-li"><i class="fas fa-comment"></i></span> <a href="{{ link.0 }}">{{ link.1 }}</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="col-6">
+			<div class="card mb-3">
+				<div class="card-header">
+					{% trans 'Forum' %}
+				</div>
+				<div class="card-body">
+					<ul class="fa-ul">
+						{% for topic in latest_topics %}
+							<li><span class="fa-li"><i class="fas fa-comment"></i></span> <a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+
+			<div class="card mb-3">
+				<div class="card-header">
+					{% trans 'Wiki Highlights' %}
+				</div>
+				<div class="card-body">
+					<ul class="fa-ul">
+						{% for hlight in wiki_highlights %}
+							<li><span class="fa-li"><i class="fas fa-star"></i></span> <a href="{{ hlight.0 }}">{{ hlight.1 }}</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

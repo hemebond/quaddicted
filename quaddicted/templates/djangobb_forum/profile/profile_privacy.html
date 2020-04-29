@@ -13,23 +13,23 @@
 			<p>
 				{% trans "Select whether you want your e-mail address to be viewable to other users or not and if you want other users to be able to send you e-mail via the forum (form e-mail) or not." %}
 			</p>
-			<div class="list-group">
-				{% for choice in f %}
-					<div class="list-group-item list-group-item-action form-check">
-						<label class="form-check-label d-block pl-3"
-						       for="{{ choice.id_for_label }}">
-							<input type="radio"
-							       class="form-check-input"
-							       name="{{ f.html_name }}"
-							       id="{{ choice.id_for_label }}"
-							       value="{{ choice.data.value }}"
-							       {% if choice.data.selected %}checked{% endif %}>
-							{{ choice.choice_label }}
-						</label>
-					</div>
-				{% endfor %}
-				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-			</div>
+			{% for choice in f %}
+				<div class="form-check">
+					<input type="radio"
+					       class="form-check-input"
+					       name="{{ f.html_name }}"
+					       id="{{ choice.id_for_label }}"
+					       value="{{ choice.data.value }}"
+					       {% if choice.data.selected %}checked{% endif %}>
+					<label class="form-check-label"
+					       for="{{ choice.id_for_label }}">
+						{{ choice.choice_label }}
+					</label>
+				</div>
+			{% endfor %}
+			<small id="{{ f.id_for_label }}_help" class="form-text text-muted">
+				{{ f.help_text }}
+			</small>
 		{% endwith %}
 
 

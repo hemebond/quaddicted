@@ -1,0 +1,167 @@
+{% extends 'djangobb_forum/base.html' %}
+{% load forum_extras %}
+{% load i18n %}
+
+{% block forum_content %}
+	<h2>{% trans "Search" %}</h2>
+
+
+	<form method="get" action="">
+        <input type="hidden" name="action" value="search" />
+
+
+		{% if form.non_field_errors %}
+			<div class="alert alert-danger" role="alert">
+				{{ form.non_field_errors }}
+			</div>
+		{% endif %}
+
+
+		{% for hidden in form.hidden_fields %}
+			{{ hidden }}
+		{% endfor %}
+
+
+
+		<fieldset>
+			<legend>{% trans "Enter your search criteria" %}</legend>
+
+			<p>{% trans "To search by keyword, enter a term or terms to search for. Separate terms with spaces. To search by author enter the username of the author whose posts you wish to search for." %}</p>
+
+			<div class="form-row align-items-baseline">
+				{% with f=form.keywords %}
+					<div class="form-group col-md-3">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<input type="text"
+						       class="form-control {% if f.errors %}is-invalid{% endif %}"
+						       id="{{ f.id_for_label }}"
+						       name="{{ f.html_name }}"
+						       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
+						       value="{{ f.value|default_if_none:'' }}"
+						       {% if f.required %}required="required"{% endif %}>
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'includes/field_errors.html' %}
+					</div>
+				{% endwith %}
+
+				{% with f=form.author %}
+					<div class="form-group col-md-3">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<input type="text"
+						       class="form-control {% if f.errors %}is-invalid{% endif %}"
+						       id="{{ f.id_for_label }}"
+						       name="{{ f.html_name }}"
+						       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
+						       value="{{ f.value|default_if_none:'' }}"
+						       {% if f.required %}required="required"{% endif %}>
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'includes/field_errors.html' %}
+					</div>
+				{% endwith %}
+			</div>
+		</fieldset>
+
+
+		<fieldset>
+			<legend>{% trans "Select where to search" %}</legend>
+
+			<p>{% trans "Choose in which forum you would like to search and if you want to search in topic subjects, message text or both." %}</p>
+
+			<div class="form-row align-items-baseline">
+				{% with f=form.forum %}
+					<div class="form-group col-md-3">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<select id="{{ f.id_for_label }}"
+						        name="{{ f.html_name }}"
+						        class="form-control {% if f.errors %}is-invalid{% endif %}">
+							<option value="0">{% trans "All forums" %}</option>
+							{% for category in categories %}
+								{% for forum in category.forums.all %}
+									<option value="{{ forum.id }}">{{ forum }}</option>
+								{% endfor %}
+							{% endfor %}
+						</select>
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'includes/field_errors.html' %}
+					</div>
+				{% endwith %}
+
+				{% with f=form.search_in %}
+					<div class="form-group col-md-3">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<select id="{{ f.id_for_label }}"
+						        name="{{ f.html_name }}"
+						        class="form-control {% if f.errors %}is-invalid{% endif %}">
+							{% for v, label in f.field.choices %}
+								<option value="{{ v }}" {% if f.value == v %}selected="selected"{% endif %}>{{ label }}</option>
+							{% endfor %}
+						</select>
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'includes/field_errors.html' %}
+					</div>
+				{% endwith %}
+			</div>
+		</fieldset>
+
+
+		<fieldset>
+			<legend>{% trans "Select how to view search results" %}</legend>
+
+			<p>{% trans "You can choose how you wish to sort and show your results." %}</p>
+
+			<div class="form-row align-items-baseline">
+				{% with f=form.sort_by %}
+					<div class="form-group col-md-3">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<select id="{{ f.id_for_label }}"
+						        name="{{ f.html_name }}"
+						        class="form-control {% if f.errors %}is-invalid{% endif %}">
+							{% for v, label in f.field.choices %}
+								<option value="{{ v }}" {% if f.value == v %}selected="selected"{% endif %}>{{ label }}</option>
+							{% endfor %}
+						</select>
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'includes/field_errors.html' %}
+					</div>
+				{% endwith %}
+
+				{% with f=form.sort_dir %}
+					<div class="form-group col-md-3">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<select id="{{ f.id_for_label }}"
+						        name="{{ f.html_name }}"
+						        class="form-control {% if f.errors %}is-invalid{% endif %}">
+							{% for v, label in f.field.choices %}
+								<option value="{{ v }}" {% if f.value == v %}selected="selected"{% endif %}>{{ label }}</option>
+							{% endfor %}
+						</select>
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'includes/field_errors.html' %}
+					</div>
+				{% endwith %}
+
+				{% with f=form.show_as %}
+					<div class="form-group col-md-3">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						<select id="{{ f.id_for_label }}"
+						        name="{{ f.html_name }}"
+						        class="form-control {% if f.errors %}is-invalid{% endif %}">
+							{% for v, label in f.field.choices %}
+								<option value="{{ v }}" {% if f.value == v %}selected="selected"{% endif %}>{{ label }}</option>
+							{% endfor %}
+						</select>
+						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+						{% include 'includes/field_errors.html' %}
+					</div>
+				{% endwith %}
+			</div>
+		</fieldset>
+
+		<div class="form-group">
+			<input type="submit" class="btn btn-primary btn-md" value="{% trans "Search" %}" accesskey="s">
+		</div>
+	</form>
+{% endblock %}
+
+{% block controls %}
+{% endblock %}

@@ -63,9 +63,14 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 HAYSTACK_CONNECTIONS = {
-	'default': {
-		'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
-	},
+	# 'default': {
+	# 	'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+	# },
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch5_backend.Elasticsearch5SearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'haystack',
+    },
 }
 
 
