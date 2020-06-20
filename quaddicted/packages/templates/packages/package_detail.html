@@ -10,7 +10,6 @@
 
 
 {% block css %}
-		<link rel="stylesheet" href="{% static 'packages/rating.css' %}" />
 		<link rel="stylesheet" href="{% static 'packages/detail.css' %}" />
 {% endblock %}
 
@@ -244,41 +243,44 @@
 	<!-- right column -->
 	<div class="col-lg-4">
 		<section class="card mb-3">
+			<!--
+				Ratings
+			-->
 			<h5 class="card-header">{% trans 'Ratings' %}</h5>
 			<div class="card-body">
 				<div class="d-flex">
-					<h5 class="align-self-end">{% trans 'Average' %}</h5>
+					<h5 class="align-self-center">{% trans 'Average' %}</h5>
 					<div class="col text-right">
 						<h2 class="bold mb-1">{{ package.rating|default:0|floatformat }} <small>/ 5</small></h2>
 					</div>
 				</div>
+
 				{% if user.is_authenticated %}
 				<div class="d-flex">
-					<h5 class="align-self-end">{% trans 'Your rating' %}</h5>
-					<div class="col text-right">
-					{% if user_rating %}
-						<h2 class="bold mb-1">
-							<button type="button"
-									class="btn btn-light btn-lg"
-									data-toggle="modal"
-									data-target="#ratingModal">
-								{{ user_rating }}
-							</button> <small>/ 5</small></h2>
-					{% else %}
-						<button type="button"
-								class="btn btn-primary"
-								data-toggle="modal"
-								data-target="#ratingModal">
-							{% trans 'Rate it' %}
+					<form action="" method="POST" class="user-rating" name="rating-form">
+						<h5 class="align-self-center">{% trans 'You' %}</h5>
+
+						{% csrf_token %}
+
+						<div>
+							<input type="radio" name="score" class="star star-5" id="star-5" value="5" {% if user_rating == 5 %}checked{% endif %}><label class="star star-5" for="star-5" title="5 stars">{% icon 'star' %}</label>
+							<input type="radio" name="score" class="star star-4" id="star-4" value="4" {% if user_rating == 4 %}checked{% endif %}><label class="star star-4" for="star-4" title="4 stars">{% icon 'star' %}</label>
+							<input type="radio" name="score" class="star star-3" id="star-3" value="3" {% if user_rating == 3 %}checked{% endif %}><label class="star star-3" for="star-3" title="3 stars">{% icon 'star' %}</label>
+							<input type="radio" name="score" class="star star-2" id="star-2" value="2" {% if user_rating == 2 %}checked{% endif %}><label class="star star-2" for="star-2" title="2 stars">{% icon 'star' %}</label>
+							<input type="radio" name="score" class="star star-1" id="star-1" value="1" {% if user_rating == 1 %}checked{% endif %}><label class="star star-1" for="star-1" title="1 stars">{% icon 'star' %}</label>
+						</div>
+
+						<button type="submit"
+								class="btn btn-primary">
+							{% trans 'Save' %}
 						</button>
-					{% endif %}
-					</div>
+					</form>
 				</div>
 				{% endif %}
 
 				{% for rating in rating_list reversed %}
 				<div class="row">
-						<div class="col px-1 text-right"><span class="fas fa-star"></span> {{ forloop.revcounter }}</div>
+						<div class="col px-1 text-right">{% icon 'star' %} {{ forloop.revcounter }}</div>
 						<div class="col-8 px-1 align-self-center">
 							<div class="progress">
 								<div class="progress-bar {% if forloop.revcounter == 5 %}bg-success{% elif forloop.revcounter == 2 %}bg-warning{% elif forloop.revcounter == 1 %}bg-danger{% else %}bg-info{% endif %}"
@@ -390,42 +392,6 @@
 			</div>
 		</section>
 	{% endif %}
-	</div>
-</div>
-
-<!--
-	Rating Modal
--->
-<div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="ratingModal" aria-hidden="true">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="ratingModalLabel">{% trans 'Rate this package' %}</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-
-			<form action="" method="POST" id="rating-form" name="rating-form">
-				{% csrf_token %}
-				<div class="modal-body">
-					<div class="form-group text-center">
-						<label for="id_rating">{% trans 'Your Rating' %}</label>
-						<input type="range"
-						       id="id_rating"
-						       name="score"
-						       min="1"
-						       max="5"
-						       value="{% if user_rating %}{{ user_rating }}{% else %}0{% endif %}"
-						       required="required"
-						       class="form-control rating">
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
-				</div>
-			</form>
-		</div>
 	</div>
 </div>
 

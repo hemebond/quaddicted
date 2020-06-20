@@ -1,5 +1,6 @@
 import os
 from django import template
+from django.conf import settings
 from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
 from taggit.utils import edit_string_for_tags
@@ -74,6 +75,11 @@ def icon_rating_for_user(package, user):
 @register.simple_tag
 def rating_stars(rating):
 	return mark_safe(' <i class="fas fa-star"></i>' * int(rating))
+
+
+@register.simple_tag
+def icon(icon):
+	return mark_safe('<svg class="icon" viewBox="0 0 100 100"><use xlink:href="' + settings.STATIC_URL + '/ext/fontawesome-free-5.12.0-web/sprites/solid.svg#' + icon + '"></use></svg>')
 
 
 @register.filter
