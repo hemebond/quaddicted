@@ -18,10 +18,26 @@
 			.panel {
 				position:relative;
 			}
-			svg.icon {
+			.icon {
 				height: 1em;
 				width: 1em;
-				vertical-align: baseline;
+				vertical-align: middle;
+				stroke: currentColor;
+				fill: currentColor;
+			}
+			.list-custom {
+				list-style: none;
+			}
+			.list-custom > li {
+				margin-left: -1rem;
+			}
+			.list-custom > li > .icon {
+				margin-right: 0.5rem;
+			}
+
+			/* fall-back profile picture */
+			svg.img-thumbnail {
+				fill: gray;
 			}
 		</style>
 

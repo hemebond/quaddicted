@@ -12,7 +12,7 @@
 					{% if forum_settings.GRAVATAR_SUPPORT %}
 						<img class="img-thumbnail img-responsive user-photo w-100 mb-3" src="{% gravatar post.user.email %}" />
 					{% else %}
-						<img class="img-thumbnail img-responsive user-photo w-100 mb-3" src="{% static 'avatar_2x.png' %}">
+						<svg class="img-thumbnail img-responsive user-photo" viewBox="0 0 1 1"><use href="{% static 'fontawesome.svg' %}#user"></use></svg>
 					{% endif %}
 				{% endif %}
 

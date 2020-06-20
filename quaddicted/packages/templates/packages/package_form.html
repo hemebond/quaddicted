@@ -5,7 +5,7 @@
 {% load i18n %}
 {% load static %}
 {% load comments %}
-{% load quaddicted_tags %}
+{% load quaddicted %}
 
 
 
@@ -157,7 +157,7 @@
 							{% if form.instance and form.instance.thumbnail %}
 								<img src="{{ form.instance.thumbnail.url }}" class="card-img-top" style="max-width: 320px; max-height: 180px">
 							{% else %}
-								<img src="{% static '/1280x720.jpg' %}" class="card-img-top" style="max-width: 320px; max-height: 180px">
+								<img src="{% static '/1280x720.svg' %}" class="card-img-top" style="max-width: 320px; max-height: 180px">
 							{% endif %}
 							</div>
 

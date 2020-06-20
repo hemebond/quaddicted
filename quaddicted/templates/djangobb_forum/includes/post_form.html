@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load quaddicted_tags %}
+{% load quaddicted %}
 
 <form id="post" action="{{ form_url|default_if_none:'.' }}" method="post" enctype="multipart/form-data">
 	{% csrf_token %}
@@ -30,7 +30,7 @@
 
 		<div class="card">
 			<div class="card-header">
-				<i class="fas fa-poll"></i>
+				{% icon 'poll' %}
 				<button class="btn btn-link"
 				        style="padding-left: 0 !important"
 				        type="button"
@@ -113,7 +113,7 @@
 
 	<div class="card mt-3">
 		<div class="card-header">
-			<i class="fas fa-pen"></i> {% trans "Write your message and submit" %}
+			{% icon 'pen' %} {% trans "Write your message and submit" %}
 		</div>
 
 		<div class="card-body">

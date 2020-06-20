@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load quaddicted %}
 {% load i18n %}
 
 
@@ -53,9 +54,9 @@
 					{% trans 'The 5 Minute Quake Guide' %}
 				</div>
 				<div class="card-body">
-					<ul class="fa-ul">
+					<ul class="list-custom" role="list">
 						{% for link in guide_links %}
-							<li><span class="fa-li"><i class="fas fa-book"></i></span> <a href="{{ link.0 }}">{{ link.1 }}</a></li>
+							<li>{% icon 'book' %} <a href="{{ link.0 }}">{{ link.1 }}</a></li>
 						{% endfor %}
 					</ul>
 				</div>
@@ -66,9 +67,9 @@
 					{% trans 'Guides and Help' %}
 				</div>
 				<div class="card-body">
-					<ul class="fa-ul">
+					<ul class="list-custom" role="list">
 						{% for link in help_links %}
-							<li><span class="fa-li"><i class="fas fa-book"></i></span> <a href="{{ link.0 }}">{{ link.1 }}</a></li>
+							<li>{% icon 'book' %} <a href="{{ link.0 }}">{{ link.1 }}</a></li>
 						{% endfor %}
 					</ul>
 				</div>
@@ -82,9 +83,9 @@
 					{% trans 'Forum' %}
 				</div>
 				<div class="card-body">
-					<ul class="fa-ul">
+					<ul class="list-custom" role="list">
 						{% for topic in latest_topics %}
-							<li><span class="fa-li"><i class="fas fa-comment"></i></span> <a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></li>
+							<li>{% icon 'comment' %} <a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></li>
 						{% endfor %}
 					</ul>
 				</div>
@@ -95,9 +96,9 @@
 					{% trans 'Wiki Highlights' %}
 				</div>
 				<div class="card-body">
-					<ul class="fa-ul">
+					<ul class="list-custom" role="list">
 						{% for hlight in wiki_highlights %}
-							<li><span class="fa-li"><i class="fas fa-star"></i></span> <a href="{{ hlight.0 }}">{{ hlight.1 }}</a></li>
+							<li>{% icon 'star' %} <a href="{{ hlight.0 }}">{{ hlight.1 }}</a></li>
 						{% endfor %}
 					</ul>
 				</div>

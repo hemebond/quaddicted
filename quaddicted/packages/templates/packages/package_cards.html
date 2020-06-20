@@ -2,7 +2,7 @@
 
 {% load i18n %}
 {% load static %}
-{% load quaddicted_tags %}
+{% load quaddicted %}
 
 
 {% block css %}
@@ -48,7 +48,7 @@
 					       value="{% if filtered_term %}{{ filtered_term }}{% endif %}">
 				</div>
 				<button type="submit" class="btn btn-primary mb-2 mr-2">{% trans 'Search' %}</button>
-				<a class="btn btn-primary mb-2" href="{% url 'packages:new' %}"><i class="fas fa-upload"></i> {% trans 'New Package' %}</a>
+				<a class="btn btn-primary mb-2" href="{% url 'packages:new' %}">{% icon 'upload' %} {% trans 'New Package' %}</a>
 			</form>
 
 			{% include 'packages/package_pagination.html' %}
@@ -57,10 +57,10 @@
 				<a href="{% url 'packages:list' %}?{{ querydict.urlencode }}"
 				   class="btn btn-secondary"
 				   title="List View">
-					<i class="fas fa-bars"></i>
+					{% icon 'bars' %}
 				</a>
 				<a class="btn btn-secondary disabled">
-					<i class="fas fa-th"></i>
+					{% icon 'th' %}
 				</a>
 			</div>
 		</div>
@@ -94,12 +94,12 @@
 						{% if tag.slug in filtered_tags %}
 							<a href="?{% filter_del_tag querydict tag.slug %}"
 							   class="btn btn-warning">
-								<i class="fas fa-times"></i> {{ tag }}
+								{% icon 'times' %} {{ tag }}
 							</a>
 						{% else %}
 							<a href="?{% filter_add_tag querydict tag.slug %}"
 							   class="btn btn-primary">
-								<i class="fas fa-plus"></i> {{ tag }}
+								{% icon 'plus' %} {{ tag }}
 							</a>
 						{% endif %}
 						</div>

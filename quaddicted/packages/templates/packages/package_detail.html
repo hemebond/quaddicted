@@ -5,7 +5,7 @@
 {% load i18n %}
 {% load static %}
 {% load comments %}
-{% load quaddicted_tags %}
+{% load quaddicted %}
 
 
 
@@ -20,7 +20,7 @@
 			{{ package }}
 			{% if user.is_authenticated %}
 			{% if perms.quaddicted_packages.change_package %}
-			<a href="{% url 'packages:edit' package.file_hash %}" class="btn btn-primary float-right"><i class="fas fa-edit"></i></a>
+			<a href="{% url 'packages:edit' package.file_hash %}" class="btn btn-primary float-right">{% icon 'edit' %}</a>
 			{% endif %}
 			{% endif %}
 		</h1>
@@ -117,7 +117,7 @@
 				<div class="text-right">
 					<a class="btn btn-primary" href="{{ package.file.url }}">{% trans 'Download' %}</a>
 					{% comment %}
-					<a class="btn bg-danger text-white" href=""><span class="icon"><i class="fas fa-flag"></i></span></a>
+					<a class="btn bg-danger text-white" href="">{% icon 'flag' %}</a>
 					{% endcomment %}
 				</div>
 			</div>
@@ -194,7 +194,7 @@
 			{% for comment in comments %}
 				<article class="row mb-3" id="c{{ comment.id }}">
 					<div class="col-sm-2">
-						<img class="img-thumbnail img-responsive user-photo" src="{% static 'avatar_2x.png' %}">
+						<svg class="img-thumbnail img-responsive user-photo" viewBox="0 0 1 1"><use href="{% static 'fontawesome.svg' %}#user"></use></svg>
 					</div>
 
 					<div class="col-sm-10">
@@ -228,7 +228,7 @@
 									   data-toggle="modal"
 									   data-target="#flagCommentModal"
 									   data-comment-id="{{ comment.pk }}"
-									   href="/comments/flag/{{ comment.id }}/?next={{ package.get_absolute_url }}"><span class="icon"><i class="fas fa-exclamation-circle"></i></span></a>
+									   href="/comments/flag/{{ comment.id }}/?next={{ package.get_absolute_url }}">{% icon 'exclamation-circle' %}</a>
 								</div>
 							</div>
 						</div>
@@ -309,7 +309,7 @@
 					<a class="btn btn-light btn-sm mb-1" href="{% url 'packages:list' %}?tag={{ tag.slug }}">{{ tag }}</a>
 				{% endfor %}
 					<a href="" class="btn btn-light btn-sm mb-1" title="Suggest a new tag">
-						<i class="fas fa-plus"></i>
+						{% icon 'plus' %}
 					</a>
 				</p>
 			</div>
