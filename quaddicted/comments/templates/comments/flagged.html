@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load comments %}
+{% load quaddicted %}
 
 {% block title %}{% trans "Thanks for flagging" %}.{% endblock %}
 
 {% block content %}
-<h1>Test</h1>
 <section class="row justify-content-center">
 	<div class="col-6">
 
@@ -17,7 +17,7 @@
 				<span aria-hidden="true">&times;</span>
 			</a>
 
-			<span class="fas fa-check"></span>
+			{% icon 'check' %}
 
 			<strong>{% trans "Thanks for flagging" %}</strong>
 

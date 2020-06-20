@@ -7,7 +7,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>{% block title %}{% endblock %} - Quaddicted</title>
 		<link rel="stylesheet" href="{% static 'ext/bootstrap-4.4.1-dist/css/bootstrap.min.css' %}">
-		<link rel="stylesheet" href="{% static 'ext/fontawesome-free-5.12.0-web/css/all.min.css' %}">
 		<style type="text/css">
 			body > .navbar {
 				background-color: #544D3D;
@@ -74,7 +73,7 @@
 				</a>
 				<ul class="navbar-nav justify-content-center">
 					<li class="nav-item">
-						<a class="nav-link" href="/">{% trans 'Home' %}</a>
+						<a class="nav-link" href="/home/">{% trans 'Home' %}</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="/news/">{% trans 'News' %}</a>
