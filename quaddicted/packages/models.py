@@ -48,6 +48,9 @@ class PackageAuthors(GenericTaggedItemBase):
 
 
 def get_package_hash(instance):
+	"""
+	Calculate the sha256 hash of an uploaded file
+	"""
 	ctx = hashlib.sha256()
 
 	if instance.file.multiple_chunks():
@@ -56,10 +59,9 @@ def get_package_hash(instance):
 	else:
 		ctx.update(instance.file.read())
 
-	# hash = ctx.hexdigest()
 	return ctx.hexdigest()
 
-	# return os.path.join(file_dir, hash[0], hash, filename)
+
 
 def package_upload_to(instance, filename):
 	"""
@@ -67,8 +69,9 @@ def package_upload_to(instance, filename):
 	"""
 	return os.path.join('packages', instance.file_hash[0], instance.file_hash, filename)
 
+
+
 def validate_package_file(value):
-	#
 	# In-memory files (files being uploaded) have a content_type attribute
 	# whereas files already uploaded do not
 	try:
@@ -103,12 +106,13 @@ class Package(models.Model):
 	description = models.TextField(blank=True)
 
 	tags = TaggableManager(blank=True)
-	authors = TaggableManager(
-		through=PackageAuthors,
-		blank=True,
-		verbose_name="Authors",
-		help_text="A comma-separated list of authors."
-	)
+	authors = TaggableManager(through=PackageAuthors,
+	                          blank=True,
+	                          verbose_name="Authors",
+	                          help_text="A comma-separated list of authors.")
+	comments = GenericRelation(Comment,
+	                           content_type_field="content_type",
+	                           object_id_field="object_pk")
 
 	# management info
 	published = models.BooleanField(default=False) # package not public until published
@@ -190,6 +194,8 @@ class Rating(models.Model):
 			['username', 'package'],
 		]
 
+
+
 @receiver(post_save, sender=Rating, dispatch_uid="new_rating")
 @receiver(post_delete, sender=Rating, dispatch_uid="del_rating")
 def update_package_rating(sender, instance, **kwargs):
@@ -198,6 +204,8 @@ def update_package_rating(sender, instance, **kwargs):
 	bayesian = calculate_bayesian_average(package_pk=instance.package_id)
 	instance.package.rating = bayesian
 	instance.package.save()
+
+
 
 def calculate_bayesian_average(package_pk):
 	"""
@@ -246,6 +254,8 @@ class PackageUrls(models.Model):
 def screenshot_upload_to(instance, filename):
 	return os.path.join('packages', instance.package.file_hash[0], instance.package.file_hash, filename)
 
+
+
 class Screenshot(models.Model):
 	"""
 	Packages can have zero or more screenshots associated with it.
@@ -262,6 +272,8 @@ class Screenshot(models.Model):
 
 	def __str__(self):
 		return self.image.name
+
+
 
 @receiver(post_delete, sender=Screenshot)
 def screenshot_delete(sender, instance, **kwargs):
