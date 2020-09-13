@@ -8,11 +8,13 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.contrib.auth import logout as auth_logout
 from django.http import HttpResponseRedirect
+from django.contrib.contenttypes.models import ContentType
 
 from django.contrib.auth.views import LogoutView as AuthLogoutView
 
 from quaddicted.packages.models import Package
 from djangobb_forum.models import Topic
+from django_comments.models import Comment
 
 
 
@@ -146,5 +148,27 @@ class HomePageNewView(TemplateView):
 			('/engines/software_vs_glquake', 'Differences between software rendered Quake and GLQuake'),
 			('/quake/quake_arcade_tournament_edition', 'Quake Arcade Tournament Edition'),
 		]
+
+		return context
+
+
+
+class HomePageGridView(TemplateView):
+	"""
+	Layout with a carousel, sectioned thumbnails, latest forum posts
+	"""
+	template_name = "home_grid.html"
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+
+		# the the four newest packages
+		context['latest_pkgs'] = Package.objects.order_by('-uploaded_on')[:4]
+
+		# five packages with new comments
+		context['latest_pkgs_by_comment'] = Package.objects.exclude(comments=None).order_by("-comments__submit_date")[:5]
+
+		# get the five topics with the newest posts
+		context['latest_topics'] = Topic.objects.order_by('-last_post__created')[:5]
 
 		return context

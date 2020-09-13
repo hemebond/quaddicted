@@ -19,7 +19,7 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from quaddicted.views import LogoutView, HomePageView, HomePageNewView
+from quaddicted.views import LogoutView, HomePageView, HomePageNewView, HomePageGridView
 
 
 
@@ -33,6 +33,7 @@ urlpatterns = [
 	path('accounts/', include('registration.backends.default.urls')),
 	path('', HomePageView.as_view(), name='homepage'),
 	path('home/', HomePageNewView.as_view(), name='homepagenew'),
+	path('homegrid/', HomePageGridView.as_view(), name='homepagegrid'),
 ]
 
 
