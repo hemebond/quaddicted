@@ -8,6 +8,13 @@
 {% load quaddicted %}
 
 
+{% block title %}
+{% if object %}
+{% trans "Editing" %} "{{ object.name }}"
+{% else %}
+{% trans "New Package" %}
+{% endif %}
+{% endblock %}
 
 {% block css %}
 		<link rel="stylesheet" href="{% static 'packages/rating.css' %}" />
@@ -212,13 +219,12 @@
 
 			<div class="form-group row mt-3">
 				<div class="col-sm-10">
-					<button type="submit" class="btn btn-primary">
-						{% if object %}
-							{% trans 'Save' %}
-						{% else %}
-							{% trans 'Add package' %}
-						{% endif %}
-					</button>
+					{% if object %}
+						<button name="_save" type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
+						<button name="_continue" type="submit" class="btn btn-primary">{% trans 'Save and continue editing' %}</button>
+					{% else %}
+						<button name="_save" type="submit" class="btn btn-primary">{% trans 'Add package' %}</button>
+					{% endif %}
 				</div>
 			</div>
 
