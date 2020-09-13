@@ -9,6 +9,7 @@ from django.conf import settings
 from django.contrib.auth import logout as auth_logout
 from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Max
 
 from django.contrib.auth.views import LogoutView as AuthLogoutView
 
@@ -166,7 +167,10 @@ class HomePageGridView(TemplateView):
 		context['latest_pkgs'] = Package.objects.order_by('-uploaded_on')[:4]
 
 		# five packages with new comments
-		context['latest_pkgs_by_comment'] = Package.objects.exclude(comments=None).order_by("-comments__submit_date")[:5]
+		context['latest_pkgs_by_comments'] = Package.objects.exclude(comments=None).order_by("-comments__submit_date")[:5]
+
+		# five packages with new ratings
+		context['latest_pkgs_by_ratings'] = Package.objects.annotate(latest_rating=Max('ratings__created')).order_by("-latest_rating")[:5]
 
 		# get the five topics with the newest posts
 		context['latest_topics'] = Topic.objects.order_by('-last_post__created')[:5]

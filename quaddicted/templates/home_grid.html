@@ -18,10 +18,10 @@
 		</div>
 	</div>
 
-	<div class="row">
-		<h2>Latest Maps</h2>
-
-		<div class="col-md-12 box-center">
+	<div class="container">
+		<div class="row">
+		<div class="col box-center">
+			<h2>New Packages</h2>
 			<div id="latest_pkgs" class="carousel slide" data-ride="carousel">
 				<ol class="carousel-indicators">
 					{% for pkg in latest_pkgs %}
@@ -62,121 +62,120 @@
 			</div>
 		</div>
 	</div>
+	</div>
 
 
 
 	<div class="row">
-		<h2>Recent Comments</h2>
+		<div class="col">
+			<h2>Recently Commented</h2>
 
-		<div class="container">
-		<div class="card-group mb-3">
-			{% for pkg in latest_pkgs_by_comment %}
-				<div class="card">
-					<a href="{% url 'packages:detail' pkg.file_hash %}" class="bg-secondary">
-						<img class="card-img-top overflow-hidden" style="height: 156px"
+			<div class="card-deck">
+				{% for pkg in latest_pkgs_by_comments %}
+					<div class="card">
+						<img class="card-img-top overflow-hidden"
 							{% if pkg.screenshots.exists %}
 								src="{{ pkg.screenshots.first.thumbnail.url }}">
 							{% else %}
 								src="{% static '/384x216.svg' %}">
 							{% endif %}
-					</a>
-
-
-					<div class="card-body">
-						<h5 class="card-text">
-							<a href="{% url 'packages:detail' pkg.file_hash %}" class="text-reset">
-								{{ pkg.name }}
-							</a>
-						</h5>
-
-							<p class="card-text">
-								{% for author in pkg.authors.all %}
-									<a href="?author={{ author.slug }}" title="Show only this users packages">{{ author }}</a>{% if not forloop.last %}, {% endif %}
-								{% endfor %}
-							</p>
+						<div class="card-body">
+							<h5 class="card-title"><a class="stretched-link" href="{{ pkg.get_absolute_url }}">{{ pkg.name }}</a></h5>
+						</div>
 					</div>
-				</div>
-			{% endfor %}
+				{% endfor %}
+			</div>
 		</div>
 	</div>
+
+
+
+	<div class="row">
+		<div class="col">
+			<h2>Recently Rated</h2>
+
+			<div class="card-deck">
+				{% for pkg in latest_pkgs_by_ratings %}
+					<div class="card">
+						<img class="card-img-top overflow-hidden"
+							{% if pkg.screenshots.exists %}
+								src="{{ pkg.screenshots.first.thumbnail.url }}">
+							{% else %}
+								src="{% static '/384x216.svg' %}">
+							{% endif %}
+						<div class="card-body">
+							<h5 class="card-title"><a class="stretched-link" href="{{ pkg.get_absolute_url }}">{{ pkg.name }}</a></h5>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
 	</div>
 
 
 
 	<div class="row">
-		<h2>Recent Votes</h2>
-	</div>
+		<div class="col">
+			<h2>Recent Discussions</h2>
 
-
-
-	<div class="row">
-		<h2>Recent Discussions</h2>
-
-		<table class="table">
-			<thead>
-				<tr>
-					<th class="col-5" scope="col">{% trans "Topic" %}</th>
-					<th class="col-2" scope="col">{% trans "Replies" %}</th>
-					<th class="col-5" scope="col">{% trans "Last Message" %}</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for topic in latest_topics %}
+			<table class="table">
+				<thead>
 					<tr>
-						<td>
-							<div class="intd">
-								{% if topic.forum.forum_logo %}
-									<div class="pr-4">
-										<img src="{{ forum.forum_logo.url }}" />
-									</div>
-								{% else %}
-									<div class="pr-4">
-										<div class="nosize"><!-- --></div>
-									</div>
-								{% endif %}
-								{% comment %}<div {% if topic.sticky %}class="sticky"{% else %}{% if topic.closed %}class="closed"{% else %}{% if topic|has_unreads:user %}class="inew"{% else %}class="icon"{% endif %}{% endif %}{% endif %}>
-									<div class="nosize"><!-- --></div>
-								</div>{% endcomment %}
-
-								<div class="tclcon">
-									{% if topic.sticky %}
-										{% comment %}{% trans "Sticky:" %}{% endcomment %}
-										{% icon 'thumbtack' %}
+						<th class="col-5" scope="col">{% trans "Topic" %}</th>
+						<th class="col-2" scope="col">{% trans "Replies" %}</th>
+						<th class="col-5" scope="col">{% trans "Last Message" %}</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for topic in latest_topics %}
+						<tr>
+							<td>
+								<div class="intd">
+									{% if topic.forum.forum_logo %}
+										<div class="pr-4">
+											<img src="{{ forum.forum_logo.url }}" />
+										</div>
+									{% else %}
+										<div class="pr-4">
+											<div class="nosize"><!-- --></div>
+										</div>
 									{% endif %}
 
-									{% if topic|has_unreads:user %}
-										<strong>
+									<div class="tclcon">
+										{% if topic|has_unreads:user %}
+											<strong>
+												{% link topic %}
+												<span class="byuser">{% trans "by" %} {{ topic.user.username }}</span>
+											</strong>
+										{% else %}
 											{% link topic %}
 											<span class="byuser">{% trans "by" %} {{ topic.user.username }}</span>
-										</strong>
-									{% else %}
-										{% link topic %}
-										<span class="byuser">{% trans "by" %} {{ topic.user.username }}</span>
-									{% endif %}
+										{% endif %}
+									</div>
 								</div>
-							</div>
-						</td>
-						<td>
-							{{ topic.reply_count }}
-						</td>
-						<td>
-							<a href="{{ topic.last_post.get_absolute_url }}">
-								{% forum_time topic.updated %}
-							</a>
-							<span class="byuser">
-								{% trans "by" %} {{ topic.last_post.user.username }}
-							</span>
-						</td>
-					</tr>
-				{% empty %}
-					<tr>
-						<td colspan="3" class="text-center">
-							{% trans "Forum is empty." %}
-						</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+							</td>
+							<td>
+								{{ topic.reply_count }}
+							</td>
+							<td>
+								<a href="{{ topic.last_post.get_absolute_url }}">
+									{% forum_time topic.updated %}
+								</a>
+								<span class="byuser">
+									{% trans "by" %} {{ topic.last_post.user.username }}
+								</span>
+							</td>
+						</tr>
+					{% empty %}
+						<tr>
+							<td colspan="3" class="text-center">
+								{% trans "Forum is empty." %}
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 	</div>
 {% endblock %}
 
