@@ -140,25 +140,6 @@ class Package(models.Model):
 	def get_absolute_url(self):
 		return reverse('packages:detail', args=[str(self.file_hash)])
 
-	def clean(self):
-		if self.file:
-			self.file_hash = get_package_hash(self.file)
-			self.file_name = Path(self.file.name).name
-			self.file_size = int(self.file.size)
-
-		try:
-			# has this package already been uploaded?
-			existing_package = Package.objects.get(file_hash=self.file_hash)
-		except Package.DoesNotExist:
-			pass
-		else:
-			# it's only a problem if this is a new package
-			if not self.pk:
-				raise ValidationError(
-					{'file': [
-						'File with hash %s already exists' % self.file_hash,
-					]}
-				)
 
 
 @receiver(post_delete, sender=Package)

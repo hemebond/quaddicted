@@ -8,12 +8,14 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST, require_http_methods, require_GET, require_safe
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView
 from django.views.generic import DetailView, UpdateView, ListView
 from django.core.paginator import EmptyPage
+
+from django.forms import inlineformset_factory
 
 from extra_views import ModelFormSetView, NamedFormsetsMixin
 from extra_views import CreateWithInlinesView, UpdateWithInlinesView
@@ -253,18 +255,34 @@ class PackageCreate(LoginRequiredMixin, NamedFormsetsMixin, CreateWithInlinesVie
 
 
 
-class PackageEdit(PermissionRequiredMixin, LoginRequiredMixin, NamedFormsetsMixin, UpdateWithInlinesView):
-	model = Package
-	form_class = PackageEditForm
-	inlines = [ScreenshotInline,]
-	inlines_names = ['screenshot_inline',]
-	slug_field = 'file_hash'
-	slug_url_kwarg = 'package_hash'
-	template_name = 'packages/package_form.html'
-	permission_required = ('quaddicted_packages.change_package',)
+@login_required
+@permission_required('quaddicted_packages.change_package')
+def package_edit(request, package_hash):
+	package = get_object_or_404(Package, file_hash=package_hash)
+	ScreenshotFormSet = inlineformset_factory(Package, Screenshot, exclude=())
 
-	def get_context_data(self, *args, **kwargs):
-		return super().get_context_data(*args, active_section='packages', **kwargs)
+	if request.method == 'POST':
+		package_form = PackageEditForm(request.POST, request.FILES, instance=package)
+		screenshot_formset = ScreenshotFormSet(request.POST, request.FILES, instance=package)
+
+		if package_form.is_valid():
+			package_form.save()
+
+		if screenshot_formset.is_valid():
+			screenshot_formset.save()
+
+		if "_continue" in request.POST:
+			return HttpResponseRedirect(reverse('packages:edit', kwargs={'package_hash': package.file_hash}))
+		else:
+			return HttpResponseRedirect(package.get_absolute_url())
+	else:
+		package_form = PackageEditForm(instance=package)
+		screenshot_formset = ScreenshotFormSet(instance=package)
+		return render(request, 'packages/package_form.html', {
+			'object': package,
+			'form': package_form,
+			'screenshot_inline': screenshot_formset,
+		})
 
 
 
