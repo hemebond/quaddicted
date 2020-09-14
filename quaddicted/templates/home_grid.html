@@ -20,161 +20,167 @@
 
 	<div class="container">
 		<div class="row">
-		<div class="col box-center">
-			<h2>New Packages</h2>
-			<div id="latest_pkgs" class="carousel slide" data-ride="carousel">
-				<ol class="carousel-indicators">
-					{% for pkg in latest_pkgs %}
-						<li data-target="#latest_pkgs" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
-					{% endfor %}
-				</ol>
+			<div class="col box-center">
+				<h2>New Packages</h2>
+				<div id="latest_pkgs" class="carousel slide" data-ride="carousel">
+					<ol class="carousel-indicators">
+						{% for pkg in latest_pkgs %}
+							<li data-target="#latest_pkgs" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
+						{% endfor %}
+					</ol>
 
 
-				<div class="carousel-inner">
-					{% for pkg in latest_pkgs %}
-						<div class="carousel-item {% if forloop.first %}active{% endif %} overflow-hidden" style="max-height: 625px;">
-							<img class="d-block w-100"
+					<div class="carousel-inner">
+						{% for pkg in latest_pkgs %}
+							<div class="carousel-item {% if forloop.first %}active{% endif %} overflow-hidden" style="max-height: 625px;">
+								<img class="d-block w-100"
+									{% if pkg.screenshots.exists %}
+									src="{{ pkg.screenshots.first.image.url }}">
+									{% else %}
+									src="{% static '/1280x720.svg' %}">
+									{% endif %}
+
+								<div class="carousel-caption d-none d-md-block rounded" style="background-color: rgba(0,0,0,0.5)">
+									<h5><a href="{{ pkg.get_absolute_url }}">{{ pkg.name }}</a></h5>
+									<p>
+										{{ pkg.description }}
+									</p>
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+
+					<a class="carousel-control-prev" href="#latest_pkgs" role="button" data-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true">
+							<span class="sr-only">Previous</span>
+						</span>
+					</a>
+					<a class="carousel-control-next" href="#latest_pkgs" role="button" data-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="sr-only">Next</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<div class="container" id="home-recent-comments">
+		<div class="row">
+			<div class="col">
+				<h2>Recently Commented</h2>
+
+				<div class="card-deck">
+					{% for pkg in latest_pkgs_by_comments %}
+						<div class="card">
+							<img class="card-img-top overflow-hidden"
 								{% if pkg.screenshots.exists %}
-								src="{{ pkg.screenshots.first.image.url }}">
+									src="{{ pkg.screenshots.first.thumbnail.url }}">
 								{% else %}
-								src="{% static '/1280x720.svg' %}">
+									src="{% static '/384x216.svg' %}">
 								{% endif %}
-
-							<div class="carousel-caption d-none d-md-block rounded" style="background-color: rgba(0,0,0,0.5)">
-								<h5><a href="{{ pkg.get_absolute_url }}">{{ pkg.name }}</a></h5>
-								<p>
-									{{ pkg.description }}
-								</p>
+							<div class="card-body">
+								<h5 class="card-title"><a class="stretched-link" href="{{ pkg.get_absolute_url }}">{{ pkg.name }}</a></h5>
 							</div>
 						</div>
 					{% endfor %}
 				</div>
-
-				<a class="carousel-control-prev" href="#latest_pkgs" role="button" data-slide="prev">
-					<span class="carousel-control-prev-icon" aria-hidden="true">
-						<span class="sr-only">Previous</span>
-					</span>
-				</a>
-				<a class="carousel-control-next" href="#latest_pkgs" role="button" data-slide="next">
-					<span class="carousel-control-next-icon" aria-hidden="true"></span>
-					<span class="sr-only">Next</span>
-				</a>
 			</div>
 		</div>
 	</div>
-	</div>
 
 
 
-	<div class="row">
-		<div class="col">
-			<h2>Recently Commented</h2>
+	<div class="container" id="home-recent-ratings">
+		<div class="row">
+			<div class="col">
+				<h2>Recently Rated</h2>
 
-			<div class="card-deck">
-				{% for pkg in latest_pkgs_by_comments %}
-					<div class="card">
-						<img class="card-img-top overflow-hidden"
-							{% if pkg.screenshots.exists %}
-								src="{{ pkg.screenshots.first.thumbnail.url }}">
-							{% else %}
-								src="{% static '/384x216.svg' %}">
-							{% endif %}
-						<div class="card-body">
-							<h5 class="card-title"><a class="stretched-link" href="{{ pkg.get_absolute_url }}">{{ pkg.name }}</a></h5>
+				<div class="card-deck">
+					{% for pkg in latest_pkgs_by_ratings %}
+						<div class="card">
+							<img class="card-img-top overflow-hidden"
+								{% if pkg.screenshots.exists %}
+									src="{{ pkg.screenshots.first.thumbnail.url }}">
+								{% else %}
+									src="{% static '/384x216.svg' %}">
+								{% endif %}
+							<div class="card-body">
+								<h5 class="card-title"><a class="stretched-link" href="{{ pkg.get_absolute_url }}">{{ pkg.name }}</a></h5>
+							</div>
 						</div>
-					</div>
-				{% endfor %}
+					{% endfor %}
+				</div>
 			</div>
 		</div>
 	</div>
 
 
 
-	<div class="row">
-		<div class="col">
-			<h2>Recently Rated</h2>
+	<div class="container" id="home-recent-topics">
+		<div class="row">
+			<div class="col">
+				<h2>Recent Discussions</h2>
 
-			<div class="card-deck">
-				{% for pkg in latest_pkgs_by_ratings %}
-					<div class="card">
-						<img class="card-img-top overflow-hidden"
-							{% if pkg.screenshots.exists %}
-								src="{{ pkg.screenshots.first.thumbnail.url }}">
-							{% else %}
-								src="{% static '/384x216.svg' %}">
-							{% endif %}
-						<div class="card-body">
-							<h5 class="card-title"><a class="stretched-link" href="{{ pkg.get_absolute_url }}">{{ pkg.name }}</a></h5>
-						</div>
-					</div>
-				{% endfor %}
-			</div>
-		</div>
-	</div>
-
-
-
-	<div class="row">
-		<div class="col">
-			<h2>Recent Discussions</h2>
-
-			<table class="table">
-				<thead>
-					<tr>
-						<th class="col-5" scope="col">{% trans "Topic" %}</th>
-						<th class="col-2" scope="col">{% trans "Replies" %}</th>
-						<th class="col-5" scope="col">{% trans "Last Message" %}</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for topic in latest_topics %}
+				<table class="table">
+					<thead>
 						<tr>
-							<td>
-								<div class="intd">
-									{% if topic.forum.forum_logo %}
-										<div class="pr-4">
-											<img src="{{ forum.forum_logo.url }}" />
-										</div>
-									{% else %}
-										<div class="pr-4">
-											<div class="nosize"><!-- --></div>
-										</div>
-									{% endif %}
+							<th class="col-5" scope="col">{% trans "Topic" %}</th>
+							<th class="col-2" scope="col">{% trans "Replies" %}</th>
+							<th class="col-5" scope="col">{% trans "Last Message" %}</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for topic in latest_topics %}
+							<tr>
+								<td>
+									<div class="intd">
+										{% if topic.forum.forum_logo %}
+											<div class="pr-4">
+												<img src="{{ forum.forum_logo.url }}" />
+											</div>
+										{% else %}
+											<div class="pr-4">
+												<div class="nosize"><!-- --></div>
+											</div>
+										{% endif %}
 
-									<div class="tclcon">
-										{% if topic|has_unreads:user %}
-											<strong>
+										<div class="tclcon">
+											{% if topic|has_unreads:user %}
+												<strong>
+													{% link topic %}
+													<span class="byuser">{% trans "by" %} {{ topic.user.username }}</span>
+												</strong>
+											{% else %}
 												{% link topic %}
 												<span class="byuser">{% trans "by" %} {{ topic.user.username }}</span>
-											</strong>
-										{% else %}
-											{% link topic %}
-											<span class="byuser">{% trans "by" %} {{ topic.user.username }}</span>
-										{% endif %}
+											{% endif %}
+										</div>
 									</div>
-								</div>
-							</td>
-							<td>
-								{{ topic.reply_count }}
-							</td>
-							<td>
-								<a href="{{ topic.last_post.get_absolute_url }}">
-									{% forum_time topic.updated %}
-								</a>
-								<span class="byuser">
-									{% trans "by" %} {{ topic.last_post.user.username }}
-								</span>
-							</td>
-						</tr>
-					{% empty %}
-						<tr>
-							<td colspan="3" class="text-center">
-								{% trans "Forum is empty." %}
-							</td>
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
+								</td>
+								<td>
+									{{ topic.reply_count }}
+								</td>
+								<td>
+									<a href="{{ topic.last_post.get_absolute_url }}">
+										{% forum_time topic.updated %}
+									</a>
+									<span class="byuser">
+										{% trans "by" %} {{ topic.last_post.user.username }}
+									</span>
+								</td>
+							</tr>
+						{% empty %}
+							<tr>
+								<td colspan="3" class="text-center">
+									{% trans "Forum is empty." %}
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 {% endblock %}

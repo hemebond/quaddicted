@@ -6,39 +6,9 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>{% block title %}{% endblock %} - Quaddicted</title>
-		<link rel="stylesheet" href="{% static 'ext/bootstrap-4.4.1-dist/css/bootstrap.min.css' %}">
-		<style type="text/css">
-			body > .navbar {
-				background-color: #544D3D;
-				border-bottom-width: 3px !important;
-				/*border-bottom-color: #CCCC99;*/
-				border-bottom-color: #000 !important;
-			}
-			.panel {
-				position:relative;
-			}
-			.icon {
-				height: 1em;
-				width: 1em;
-				vertical-align: middle;
-				stroke: currentColor;
-				fill: currentColor;
-			}
-			.list-custom {
-				list-style: none;
-			}
-			.list-custom > li {
-				margin-left: -1rem;
-			}
-			.list-custom > li > .icon {
-				margin-right: 0.5rem;
-			}
-
-			/* fall-back profile picture */
-			svg.img-thumbnail {
-				fill: gray;
-			}
-		</style>
+		<!--<link rel="stylesheet" href="{% static 'ext/bootstrap-4.4.1-dist/css/bootstrap.min.css' %}">-->
+		<link rel="stylesheet" href="{% static 'theme-bootstrap.min.css' %}">
+		<link rel="stylesheet" href="{% static 'theme.css' %}">
 
 
 		<meta name="description" content="{% block description %}{% endblock %}">

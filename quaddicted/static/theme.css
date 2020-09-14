@@ -1,0 +1,82 @@
+/*
+dark-blue background #0b0b0f
+brown trim #533b1b
+*/
+
+
+body > .navbar {
+	background-color: #544D3D;
+	border-bottom-width: 3px !important;
+	/*border-bottom-color: #CCCC99;*/
+	border-bottom-color: #000 !important;
+}
+.panel {
+	position:relative;
+}
+.icon {
+	height: 1em;
+	width: 1em;
+	vertical-align: middle;
+	stroke: currentColor;
+	fill: currentColor;
+}
+.list-custom {
+	list-style: none;
+}
+.list-custom > li {
+	margin-left: -1rem;
+}
+.list-custom > li > .icon {
+	margin-right: 0.5rem;
+}
+
+/* fall-back profile picture */
+svg.img-thumbnail {
+	fill: gray;
+}
+
+.carousel-item.bg-dark {
+	background-color: #0b0b0f !important;
+}
+
+
+
+body {
+  color: #ababab;
+  background-color: #0b0b0f;
+}
+
+.card {
+  background-color: #533b1b;
+  border-radius: 0;
+}
+
+.card-body {
+  background-color: #13131f;
+  margin: 2px;
+  border: 1px solid black;
+  padding: 2px;
+}
+.card-img,
+.card-img-top,
+.card-img-bottom {
+  width: calc(100% - 4px);
+  border: 1px solid black;
+  margin: 2px;
+  border-radius: 0;
+}
+
+a {
+  color: #e7e357;
+}
+
+#home-recent-comments .card h5,
+#home-recent-ratings .card h5 {
+	font-size: 1rem;
+	text-align: center;
+	margin: 0.75rem;
+}
+
+thead {
+	background-color: #533b1b;
+}
