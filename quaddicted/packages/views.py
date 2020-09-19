@@ -27,6 +27,8 @@ from .models import Package, Rating, Screenshot
 from .forms import RatingForm, PackageEditForm, PackageCreateForm, ScreenshotInline
 from django_comments.models import Comment
 
+from djangobb_forum.models import Topic
+
 
 
 # https://docs.djangoproject.com/en/3.0/ref/models/database-functions/#round
@@ -186,6 +188,9 @@ def detail(request, package_hash):
 	# comments = Comment.objects.raw('SELECT * FROM quaddicted_comments_quaddictedcommentmodel LEFT JOIN quaddicted_packages_rating ON quaddicted_comments_quaddictedcommentmodel.user_id=quaddicted_packages_rating.user_id AND quaddicted_packages_rating.package_id=CAST(object_pk AS INTEGER) WHERE content_type_id=%s AND CAST(object_pk AS INTEGER)=%s', [package_content_type.id, package.id,])
 	comments = Comment.objects.raw('SELECT * FROM django_comments LEFT JOIN {tbl_rating} ON django_comments.user_id={tbl_rating}.user_id AND {tbl_rating}.package_id=CAST(object_pk AS INTEGER) WHERE content_type_id=%s AND CAST(object_pk AS INTEGER)=%s'.format(tbl_rating=tbl_rating), [package_content_type.id, package.id,])
 
+	# forum thread
+	thread = Topic.objects.get(pk=3)
+
 	#
 	# Rating Submission
 	#
@@ -224,6 +229,7 @@ def detail(request, package_hash):
 		'comments': comments,
 		'rating_qset': rating_qset,
 		'screenshots': screenshots,
+		'thread': thread,
 	})
 
 

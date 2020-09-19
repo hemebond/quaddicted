@@ -24,6 +24,7 @@ from imagekit.processors import ResizeToFit
 from taggit.managers import TaggableManager
 from taggit.models import Tag, TagBase, GenericTaggedItemBase
 from django_comments.models import Comment
+from djangobb_forum.models import Topic
 
 # Receive the pre_delete signal and delete the file associated with the model instance.
 from django.db.models.signals import post_delete, pre_save, post_save
@@ -113,6 +114,11 @@ class Package(models.Model):
 	comments = GenericRelation(Comment,
 	                           content_type_field="content_type",
 	                           object_id_field="object_pk")
+	topic = models.OneToOneField(Topic,
+	                             related_name='package',
+	                             blank=True,
+	                             null=True,
+	                             on_delete=models.SET_NULL)
 
 	# management info
 	published = models.BooleanField(default=False) # package not public until published
