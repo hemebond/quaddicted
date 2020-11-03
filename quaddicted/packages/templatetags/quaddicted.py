@@ -9,15 +9,15 @@ register = template.Library()
 
 
 @register.simple_tag
-def filter_on_tag(querydict, tag):
-	d = querydict.copy()
+def filter_on_tag(request, tag):
+	d = request.GET.copy()
 	d.setlist('tag', [tag])
 	return d.urlencode()
 
 
 @register.simple_tag
-def filter_add_tag(querydict, tag):
-	d = querydict.copy()
+def filter_add_tag(request, tag):
+	d = request.GET.copy()
 	d.appendlist('tag', tag)
 	try:
 		d.pop('page')
@@ -27,8 +27,8 @@ def filter_add_tag(querydict, tag):
 
 
 @register.simple_tag
-def filter_del_tag(querydict, tag):
-	d = querydict.copy()
+def filter_del_tag(request, tag):
+	d = request.GET.copy()
 	tags = d.pop('tag')
 
 	try:
@@ -44,17 +44,16 @@ def filter_del_tag(querydict, tag):
 
 
 @register.simple_tag
-def filter_by_author(querydict, author_slug):
-	d = querydict.copy()
-	d.setlist('author', [author_slug])
-	return d.urlencode()
+def qs_update(request, **kwargs):
+	querydict = request.GET.copy()
 
+	for k, v in kwargs.items():
+		if v is not None:
+			querydict[k] = v
+		else:
+			querydict.pop(k, 0)
 
-@register.simple_tag
-def sort_by(querydict, sort_value):
-	d = querydict.copy()
-	d.setlist('sort', [sort_value])
-	return d.urlencode()
+	return querydict.urlencode()
 
 
 @register.simple_tag
@@ -81,7 +80,7 @@ def rating_stars(rating):
 def icon(icon):
 	# return mark_safe('<svg class="icon" viewBox="0 0 10 10"><use href="' + settings.STATIC_URL + '/ext/fontawesome-free-5.12.0-web/sprites/solid.svg#' + icon + '"></use></svg>')
 	# return mark_safe('<svg class="icon" viewBox="0 0 10 10"><use href="' + settings.STATIC_URL + '/fa/' + icon + '.svg"></use></svg>')
-	return mark_safe('<svg class="icon" viewBox="0 0 1 1"><use href="' + settings.STATIC_URL + '/fontawesome.svg#' + icon + '"></use></svg>')
+	return mark_safe('<svg class="icon" viewBox="0 0 1 1"><use href="' + settings.STATIC_URL + 'fontawesome.svg#' + icon + '"></use></svg>')
 
 
 @register.filter
@@ -94,13 +93,6 @@ def edit_tags(value):
 	if value is not None and not isinstance(value, str):
 		return edit_string_for_tags(value)
 	return value
-
-
-@register.simple_tag
-def qs_set(querydict, keyname, value):
-	d = querydict.copy()
-	d.setlist(keyname, [value,])
-	return d.urlencode()
 
 
 @register.simple_tag

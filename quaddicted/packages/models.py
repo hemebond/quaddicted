@@ -22,7 +22,6 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFit
 
 from taggit.managers import TaggableManager
-from taggit.models import Tag, TagBase, GenericTaggedItemBase
 from django_comments.models import Comment
 
 # Receive the pre_delete signal and delete the file associated with the model instance.
@@ -31,19 +30,16 @@ from django.dispatch.dispatcher import receiver
 
 
 
-class Author(TagBase):
+class PackageAuthor(models.Model):
+	name = models.CharField(verbose_name=_("name"), unique=True, max_length=100)
+	slug = models.SlugField(verbose_name=_("slug"), unique=True, max_length=100)
+
 	class Meta:
-		verbose_name = _("Author")
-		verbose_name_plural = _("Authors")
+		verbose_name = _("Package Author")
+		verbose_name_plural = _("Package Authors")
 
-
-
-class PackageAuthors(GenericTaggedItemBase):
-	tag = models.ForeignKey(
-		Author,
-		on_delete=models.CASCADE,
-		related_name="%(app_label)s_%(class)s_authors",
-	)
+	def __str__(self):
+		return self.name
 
 
 
@@ -81,16 +77,22 @@ def validate_package_file(value):
 		pass
 
 
+
+
+
 class Package(models.Model):
-	# package was created for one of these games
-	QUAKE1 = 'q1'
-	QUAKE2 = 'q2'
-	QUAKE3 = 'q3'
-	GAME_CHOICES = [
-		(QUAKE1, 'Quake 1'),
-		(QUAKE2, 'Quake 2'),
-		(QUAKE3, 'Quake 3'),
-	]
+	class PackageGame(models.TextChoices):
+		QUAKE1 = 'q1', _('Quake 1')
+		QUAKE2 = 'q2', _('Quake 2')
+		QUAKE3 = 'q3', _('Quake 3')
+
+	class PackageType(models.IntegerChoices):
+		BSP = 1, _("Single BSP File(s)")
+		PARTIAL_CONVERSION = 2, _("Partial conversion")
+		TOTAL_CONVERSION = 3, _("Total conversion")
+		SPEEDMAPPING = 4, _("Speedmapping")
+		MISC_FILES = 5, _("Misc. Files")
+		UNDEFINED = 6, _("undefined, please tell Spirit")
 
 	# package file properties
 	file = models.FileField(upload_to=package_upload_to, max_length=256, validators=[validate_package_file,])
@@ -100,16 +102,16 @@ class Package(models.Model):
 
 	# package properties
 	name = models.CharField(max_length=128) # the name or title of the package
-	created = models.DateField(auto_now_add=True) # timestamp of the newest file in the package
+	created = models.DateTimeField(auto_now_add=True) # timestamp of the newest file in the package
 	rating = models.FloatField(blank=True, null=True, editable=False) # average of all the user ratings, a value from 1.0 to 5.0
-	game = models.CharField(max_length=2, choices=GAME_CHOICES, default=QUAKE1) # which game is this package for
+	game = models.CharField(max_length=2, choices=PackageGame.choices, default=PackageGame.QUAKE1) # which game is this package for
 	description = models.TextField(blank=True)
+	type = models.IntegerField(choices=PackageType.choices, default=PackageType.UNDEFINED)
 
 	tags = TaggableManager(blank=True)
-	authors = TaggableManager(through=PackageAuthors,
-	                          blank=True,
-	                          verbose_name="Authors",
-	                          help_text="A comma-separated list of authors.")
+	authors = models.ManyToManyField('PackageAuthor',
+	                                 related_name='packages',
+	                                 help_text="A comma-separated list of authors.")
 	comments = GenericRelation(Comment,
 	                           content_type_field="content_type",
 	                           object_id_field="object_pk")
@@ -118,6 +120,21 @@ class Package(models.Model):
 	published = models.BooleanField(default=False) # package not public until published
 	uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
 	uploaded_on = models.DateTimeField(auto_now_add=True, editable=False) # when was this package uploaded?
+
+	# execution properties
+	base_dir = models.CharField(max_length=256,
+	                            blank=True,
+	                            null=True,
+	                            help_text="directory where this package should be extracted to")
+	command_line = models.CharField(max_length=256,
+	                                blank=True,
+	                                null=True,
+	                                help_text="command-line arguments for running the package")
+	dependencies = models.ManyToManyField('self', symmetrical=False)
+	start_map = models.CharField(max_length=64,
+	                             blank=True,
+	                             null=True,
+	                             help_text="which map should be loaded")
 
 	def save(self, *args, **kwargs):
 		if not self.file_hash:
@@ -151,7 +168,7 @@ def package_delete(sender, instance, **kwargs):
 
 
 
-class Rating(models.Model):
+class PackageRating(models.Model):
 	"""
 	A package rating. Scale is 1 to 5.
 	"""
@@ -177,8 +194,8 @@ class Rating(models.Model):
 
 
 
-@receiver(post_save, sender=Rating, dispatch_uid="new_rating")
-@receiver(post_delete, sender=Rating, dispatch_uid="del_rating")
+@receiver(post_save, sender=PackageRating, dispatch_uid="new_rating")
+@receiver(post_delete, sender=PackageRating, dispatch_uid="del_rating")
 def update_package_rating(sender, instance, **kwargs):
 	# Update the rating for a package
 	# when it gains or loses a rating
@@ -203,8 +220,8 @@ def calculate_bayesian_average(package_pk):
 
 	if sum_ratings and sum_ratings > 0:
 		avg_num_ratings = packages.filter(~Q(ratings=None)).aggregate(avg=Avg('num_ratings'))['avg']
-		sum_sum_ratings = Rating.objects.aggregate(sum=Sum('score'))['sum']
-		sum_num_ratings = Rating.objects.count()
+		sum_sum_ratings = PackageRating.objects.aggregate(sum=Sum('score'))['sum']
+		sum_num_ratings = PackageRating.objects.count()
 
 		bayesian = (
 			avg_num_ratings * (
@@ -219,7 +236,7 @@ def calculate_bayesian_average(package_pk):
 		return None
 
 
-class PackageUrls(models.Model):
+class PackageUrl(models.Model):
 	"""
 	External URLs for a package
 	"""
@@ -232,12 +249,36 @@ class PackageUrls(models.Model):
 
 
 
+class PackageFile(models.Model):
+	"""
+	Files contained within the package
+	"""
+	name = models.CharField(max_length=256) # full path of file inside archive
+	last_modified = models.DateTimeField(auto_now_add=True) # when file was last modified
+	size = models.BigIntegerField(blank=True, null=True, editable=False)
+	package = models.ForeignKey(Package, related_name='files', on_delete=models.CASCADE)
+
+	def __str__(self):
+		return self.name
+
+
+
+class PackageMap(models.Model):
+	name = models.CharField(max_length=64, blank=True, null=True, help_text="Name of the map")
+	file_name = models.CharField(max_length=64, help_text="File name stem (no extension) of the map")
+	package = models.ForeignKey(Package, related_name="maps", on_delete=models.CASCADE)
+
+	def __str__(self):
+		return self.name
+
+
+
 def screenshot_upload_to(instance, filename):
 	return os.path.join('packages', instance.package.file_hash[0], instance.package.file_hash, filename)
 
 
 
-class Screenshot(models.Model):
+class PackageScreenshot(models.Model):
 	"""
 	Packages can have zero or more screenshots associated with it.
 	Thumbnails are automatically created.
@@ -256,27 +297,7 @@ class Screenshot(models.Model):
 
 
 
-@receiver(post_delete, sender=Screenshot)
+@receiver(post_delete, sender=PackageScreenshot)
 def screenshot_delete(sender, instance, **kwargs):
 	# Pass false so FileField doesn't save the model.
 	instance.image.delete(False)
-
-
-
-class Demo(models.Model):
-	package = models.ForeignKey(Package, on_delete=models.CASCADE)
-
-	SKILL_CHOICES = [
-		(0, 'Easy'),
-		(1, 'Normal'),
-		(2, 'Hard'),
-		(3, 'Nightmware'),
-	]
-	user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
-	file = models.FileField(max_length=256)
-	skill = models.IntegerField(choices=SKILL_CHOICES, default=1)
-	length = models.DurationField()
-	protocol = models.IntegerField(blank=True, null=True)
-	created = models.DateTimeField()
-	description = models.TextField(max_length=512, blank=True)
-	video_url = models.URLField(blank=True, null=True)

@@ -5,36 +5,11 @@
 {% load quaddicted %}
 
 
-{% block css %}
-<style type="text/css">
-	.card > a {
-		display: block;
-		width: 100%;
-		position: relative;
-		height: 0;
-		padding: 56.25% 0 0 0;
-		overflow: hidden;
-	}
-	.card > a > img {
-		position: absolute;
-		display: block;
-		max-width: 100%;
-		max-height: 100%;
-		left: 0;
-		right: 0;
-		top: 0;
-		bottom: 0;
-		margin: auto;
-	}
-</style>
-{% endblock %}
-
-
 {% block content %}
-{%     if package_list %}
+{% if page.object_list %}
 <section class="row">
 	<div class="col">
-		<h1 class="text-center">Showing {{ page_obj.paginator.count }} Packages</h1>
+		<h1 class="text-center">Showing {{ page.paginator.count }} Packages</h1>
 
 		<div class="d-flex align-items-start">
 			<form class="form-inline flex-grow-1" action="" method="get">
@@ -46,6 +21,13 @@
 					       data-cards="package-list-cards"
 					       placeholder="Filter/Search"
 					       value="{% if filtered_term %}{{ filtered_term }}{% endif %}">
+					{% for k, v in request.GET.lists %}
+					{% if k != 'search' %}
+					{% for i in v %}
+					<input type="hidden" name="{{ k }}" value="{{ i }}">
+					{% endfor %}
+					{% endif %}
+					{% endfor %}
 				</div>
 				<button type="submit" class="btn btn-primary mb-2 mr-2">{% trans 'Search' %}</button>
 				<a class="btn btn-primary mb-2" href="{% url 'packages:new' %}">{% icon 'upload' %} {% trans 'New Package' %}</a>
@@ -54,7 +36,7 @@
 			{% include 'packages/package_pagination.html' %}
 
 			<div class="btn-group ml-2" role="group" area-label="Views modes">
-				<a href="{% url 'packages:list' %}?{{ querydict.urlencode }}"
+				<a href="{% url 'packages:list' %}?{% qs_update request format=None %}"
 				   class="btn btn-secondary"
 				   title="List View">
 					{% icon 'bars' %}
@@ -66,14 +48,14 @@
 		</div>
 
 		<div class="row row-cols-1 row-cols-lg-3" id="package-list-cards">
-{%     for package in package_list %}
+{%     for package in page.object_list %}
 			<div class="col mb-3">
 				<div class="card h-100">
 					<a href="{% url 'packages:detail' package.file_hash %}" class="bg-secondary">
 						{% if package.screenshots.exists %}
-						<img src="{{ package.screenshots.first.thumbnail.url }}">
+							<img class="card-img-top" src="{{ package.screenshots.first.thumbnail.url }}" alt="">
 						{% else %}
-						<img src="{% static '/384x216.svg' %}">
+							<img class="card-img-top" src="{% static '/384x216.svg' %}" alt="">
 						{% endif %}
 					</a>
 					<div class="card-body">
@@ -82,28 +64,31 @@
 								{{ package.name }}
 							</a>
 						</h5>
+
 						<p class="card-text">
-{%             for author in package.authors.all %}
-							<a href="?author={{ author.slug }}" title="Show only this users packages">{{ author }}</a>{% if not forloop.last %}, {% endif %}
-{%             endfor %}
+							{% for author in package.authors.all %}
+								{% if author.slug in filtered_authors %}<mark>{% endif %}<a href="?{% qs_update request author=author.slug %}" title="{% trans 'Show only this user\'s maps' %}">{{ author }}</a>{% if author.slug in filtered_authors %}</mark>{% endif %}{% if not forloop.last %}, {% endif %}
+							{% empty %}
+								{% trans 'Unknown' %}
+							{% endfor %}
 						</p>
 
 						<p class="card-text">
-{%             for tag in package.tags.all %}
-						<div class="btn-group btn-group-sm mb-1">
-						{% if tag.slug in filtered_tags %}
-							<a href="?{% filter_del_tag querydict tag.slug %}"
-							   class="btn btn-warning">
-								{% icon 'times' %} {{ tag }}
-							</a>
-						{% else %}
-							<a href="?{% filter_add_tag querydict tag.slug %}"
-							   class="btn btn-primary">
-								{% icon 'plus' %} {{ tag }}
-							</a>
-						{% endif %}
-						</div>
-{%             endfor %}
+							{% for tag in package.tags.all %}
+								<div class="btn-group btn-group-sm mb-1">
+									{% if tag.slug in filtered_tags %}
+										<a href="?{% filter_del_tag request tag.slug %}"
+										   class="btn btn-warning">
+											{% icon 'times' %} {{ tag }}
+										</a>
+									{% else %}
+										<a href="?{% filter_add_tag request tag.slug %}"
+										   class="btn btn-primary">
+											{% icon 'plus' %} {{ tag }}
+										</a>
+									{% endif %}
+								</div>
+							{% endfor %}
 						</p>
 					</div>
 					<div class="card-footer">

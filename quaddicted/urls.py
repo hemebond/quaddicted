@@ -20,14 +20,17 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from quaddicted.views import LogoutView, HomePageView, HomePageNewView
+from quaddicted.packages.views import PackageCreate
+from quaddicted.api.views import package_list, package_detail, package_comments
 
 
 
 urlpatterns = [
 	path('accounts/logout/', LogoutView.as_view(), name='auth_logout'),
 	path('admin/', admin.site.urls),
-	path('api/v1/', include('quaddicted.api.urls')),
 	path('forum/', include('djangobb_forum.urls')),
+	path('packages/new/', PackageCreate.as_view()),
+	path('packages/', include('quaddicted.api.urls')),
 	path('packages/', include('quaddicted.packages.urls')),
 	path('comments/', include('django_comments.urls')),
 	path('accounts/', include('registration.backends.default.urls')),

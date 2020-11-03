@@ -1,9 +1,9 @@
 {% load quaddicted %}
 <nav aria-label="pagination">
 	<ul class="pagination justify-content-center">
-	{% if page_obj.has_previous %}
+	{% if page.has_previous %}
 		<li class="page-item">
-			<a class="page-link" href="?{% qs_set querydict 'page' page_obj.previous_page_number %}">
+			<a class="page-link" href="?{% qs_update request page=page.previous_page_number %}">
 				<span aria-hidden="true">&laquo;</span>
 			</a>
 		</li>
@@ -17,13 +17,13 @@
 
 		<li class="page-item disabled">
 			<span class="page-link disabled">
-				Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+				Page {{ page.number }} of {{ page.paginator.num_pages }}
 			</span>
 		</li>
 
-	{% if page_obj.has_next %}
+	{% if page.has_next %}
 		<li class="page-item">
-			<a class="page-link" href="?{% qs_set querydict 'page' page_obj.next_page_number %}">
+			<a class="page-link" href="?{% qs_update request page=page.next_page_number %}">
 				<span aria-hidden="true">&raquo;</span>
 			</a>
 		</li>

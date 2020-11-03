@@ -144,9 +144,63 @@
 			</div>
 			{% endwith %}
 
+			{{ packageurl_inline.management_form }}
+
+			<div class="card mt-3">
+				<div class="card-header">
+					URLs
+				</div>
+
+				<div class="card-body">
+					{% for form in packageurl_inline %}
+						{% for hidden in form.hidden_fields %}
+							{{ hidden }}
+						{% endfor %}
+
+					<div class="row">
+						<div class="col">
+							{% with f=form.name %}
+							<div class="form-group">
+								<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+								<input type="text"
+								       class="form-control {% if f.errors %}is-invalid{% endif %}"
+								       id="{{ f.id_for_label }}"
+								       name="{{ f.html_name }}"
+								       maxlength="32"
+								       value="{% if f.value %}{{ f.value }}{% endif %}"
+								       {% if f.required %}required="required"{% endif %}>
+								<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+								{% include 'packages/field_errors.html' %}
+							</div>
+							{% endwith %}
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col">
+							{% with f=form.url %}
+							<div class="form-group">
+								<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+								<input type="text"
+								       class="form-control {% if f.errors %}is-invalid{% endif %}"
+								       id="{{ f.id_for_label }}"
+								       name="{{ f.html_name }}"
+								       maxlength="256"
+								       value="{% if f.value %}{{ f.value }}{% endif %}"
+								       {% if f.required %}required="required"{% endif %}>
+								<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+								{% include 'packages/field_errors.html' %}
+							</div>
+							{% endwith %}
+						</div>
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+
 			{{ screenshot_inline.management_form }}
 
-			<div class="card">
+			<div class="card mt-3">
 				<div class="card-header">
 					Screenshots
 				</div>

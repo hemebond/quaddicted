@@ -6,13 +6,19 @@
 {% load comments %}
 
 
+
+{% block head %}
+<link rel="alternate" type="application/json" href="?{{ request.GET.urlencode }}&format=json">
+{% endblock %}
+
+
 {% block content %}
 <section class="row">
 	<div class="col">
-		<h1 class="text-center">Showing {{ page_obj.paginator.count }} Packages</h1>
+		<h1 class="text-center">Showing {{ page.paginator.count }} Packages</h1>
 
 		<div class="d-flex align-items-start">
-			<form class="form-inline flex-grow-1" action="" method="get">
+			<form class="form-inline flex-grow-1" action="?{{ request.GET.urlencode }}" method="get">
 				<div class="form-group mr-2 mb-2">
 					<input type="search"
 					       name="search"
@@ -21,6 +27,13 @@
 					       data-table="package-list-table"
 					       placeholder="Filter/Search"
 					       value="{% if filtered_term %}{{ filtered_term }}{% endif %}">
+					{% for k, v in request.GET.lists %}
+					{% if k != 'search' %}
+					{% for i in v %}
+					<input type="hidden" name="{{ k }}" value="{{ i }}">
+					{% endfor %}
+					{% endif %}
+					{% endfor %}
 				</div>
 				<button type="submit" class="btn btn-primary mb-2 mr-2">{% trans 'Search' %}</button>
 				<a class="btn btn-primary mb-2" href="{% url 'packages:new' %}">{% icon 'upload' %} {% trans 'New Package' %}</a>
@@ -32,7 +45,7 @@
 				<a class="btn btn-secondary disabled">
 					{% icon 'bars' %}
 				</a>
-				<a href="{% url 'packages:cards' %}?{{ querydict.urlencode }}"
+				<a href="{% url 'packages:list' %}?{% qs_update request format='card' %}"
 				   class="btn btn-secondary"
 				   title="Card View">
 					{% icon 'th' %}
@@ -40,65 +53,65 @@
 			</div>
 		</div>
 
-{%     if package_list %}
+		{% if page.object_list %}
 		<table class="table" id="package-list-table">
 			<thead>
 				<tr>
-					<th><a href="?{% sort_by querydict sort_fields.name %}">{% trans 'Title' %}</a></th>
+					<th><a href="?{% qs_update request sort=sort_fields.name %}">{% trans 'Title' %}</a></th>
 					<th>{% trans 'Author(s)' %}</th>
-					<th><a href="?{% sort_by querydict sort_fields.created %}">{% trans 'Date' %}</a></th>
-					<th><a href="?{% sort_by querydict sort_fields.rating %}">{% trans 'Rating' %}</a></th>
+					<th><a href="?{% qs_update request sort=sort_fields.created %}">{% trans 'Date' %}</a></th>
+					<th><a href="?{% qs_update request sort=sort_fields.rating %}">{% trans 'Rating' %}</a></th>
 					<th>{% trans 'Comments' %}</th>
 					<th>{% trans 'Tags' %}</th>
 				</tr>
 			</thead>
 			<tbody>
-{%         for package in package_list %}
+				{% for package in page.object_list %}
 				<tr>
 					<td><a href="{% url 'packages:detail' package.file_hash %}">{{ package.name }}</a></td>
 					<td>
-{%             for author in package.authors.all %}
-						<a href="?{% filter_by_author querydict author.slug %}" title="{% trans 'Show only this user\'s maps' %}">{{ author }}</a>{% if not forloop.last %}, {% endif %}
-{% empty %}
-						{% trans 'Unknown' %}
-{%             endfor %}
+						{% for author in package.authors.all %}
+							{% if author.slug in filtered_authors %}<mark>{% endif %}<a href="?{% qs_update request author=author.slug %}" title="{% trans 'Show only this user\'s maps' %}">{{ author }}</a>{% if author.slug in filtered_authors %}</mark>{% endif %}{% if not forloop.last %}, {% endif %}
+						{% empty %}
+							{% trans 'Unknown' %}
+						{% endfor %}
 					</td>
 					<td>{{ package.created }}</td>
 					<td class="text-nowrap">
-{%             if package.rating %}
+					{% if package.rating %}
 						{{ package.rating|floatformat:"-2" }}
-{%             endif %}
+					{% endif %}
 					</td>
 					<td>{% get_comment_count for package as comment_count %}{{ comment_count }}</td>
 					<td>
 
-{%             for tag in package.tags.all %}
+					{% for tag in package.tags.all %}
 						<div class="btn-group btn-group-sm mb-1">
 						{% if tag.slug in filtered_tags %}
-							<a href="?{% filter_del_tag querydict tag.slug %}"
+							<a href="?{% filter_del_tag request tag.slug %}"
 							   class="btn btn-warning">
 								{% icon 'minus' %} {{ tag }}
 							</a>
 						{% else %}
-							<a href="?{% filter_add_tag querydict tag.slug %}"
+							<a href="?{% filter_add_tag request tag.slug %}"
 							   class="btn btn-primary">
 								{% icon 'plus' %} {{ tag }}
 							</a>
 						{% endif %}
 						</div>
-{%             endfor %}
+						{% endfor %}
 					</td>
 				</tr>
-{%         endfor %}
+				{% endfor %}
 			</tbody>
 		</table>
 
 		<div class="justify-content-center">
 			{% include 'packages/package_pagination.html' %}
 		</div>
-{% else %}
-		<p>{% trans 'No maps available' %}</p>
-{% endif %}
+		{% else %}
+			<p>{% trans 'No maps available' %}</p>
+		{% endif %}
 	</div>
 </section>
 

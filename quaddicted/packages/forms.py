@@ -1,7 +1,7 @@
 from django import forms
-from .models import Package, Screenshot
+from .models import Package, PackageScreenshot, PackageUrl
 from extra_views import InlineFormSetFactory
-from taggit.forms import TagField, TagWidgetMixin, TagWidget
+from taggit.forms import TagField, TagWidgetMixin
 
 
 class MyTagWidgetMixin(TagWidgetMixin):
@@ -52,7 +52,7 @@ class PackageCreateForm(forms.ModelForm):
 
 class ScreenshotForm(forms.ModelForm):
 	class Meta:
-		model = Screenshot
+		model = PackageScreenshot
 		# fields = [
 		# 	'image',
 		# ]
@@ -60,8 +60,13 @@ class ScreenshotForm(forms.ModelForm):
 
 
 class ScreenshotInline(InlineFormSetFactory):
-	model = Screenshot
+	model = PackageScreenshot
 	# fields = [
 	# 	'image',
 	# ]
+	fields = '__all__'
+
+
+class PackageUrlInline(InlineFormSetFactory):
+	model = PackageUrl
 	fields = '__all__'

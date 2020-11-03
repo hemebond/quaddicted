@@ -299,7 +299,16 @@
 			</div>
 		</section>
 
-
+		<section class="card mb-3">
+			<h5 class="card-header">{% trans 'URLs' %}</h5>
+			<div class="card-body">
+				<ul class="">
+				{% for url in package.urls.all %}
+					<li><a href="{{ url.url }}">{{ url.name }}</a></li>
+				{% endfor %}
+				</ul>
+			</div>
+		</section>
 
 		<section class="card mb-3">
 			<h5 class="card-header">{% trans 'Tags' %}</h5>

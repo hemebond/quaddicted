@@ -13,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView
 from django.views.generic import DetailView, UpdateView, ListView
-from django.core.paginator import EmptyPage
+from django.core.paginator import EmptyPage, Paginator
 
 from django.forms import inlineformset_factory
 
@@ -23,8 +23,8 @@ from extra_views import CreateWithInlinesView, UpdateWithInlinesView
 
 import json
 
-from .models import Package, Rating, Screenshot
-from .forms import RatingForm, PackageEditForm, PackageCreateForm, ScreenshotInline
+from .models import Package, PackageRating, PackageScreenshot, PackageUrl
+from .forms import RatingForm, PackageEditForm, PackageCreateForm, ScreenshotInline, PackageUrlInline
 from django_comments.models import Comment
 
 
@@ -35,129 +35,134 @@ FloatField.register_lookup(Round)
 
 
 
-class PackageListView(ListView):
-	model = Package
-	context_object_name = 'package_list'
-	ordering = '-created'
-	template_name = 'packages/package_list.html'
-	ordering = '-created'
-	paginate_by = 21
-	queryset = Package.objects.filter(published=True)
+def package_list_filter(request, queryset):
+	"""
+	Filters a queryset of Package objects based on the request
+	"""
 
+	#
+	# Author Filtering
+	#
+	authors = request.GET.getlist('author', [])
+	for author in authors:
+		queryset = queryset.filter(authors__slug=author)
+
+	#
+	# Tag Filtering
+	# e.g., ?tag=runic&tag=halloween
+	#
+	tags = request.GET.getlist('tag', [])
+	for tag in tags:
+		queryset = queryset.filter(tags__slug=tag)
+
+	#
+	# Rating Score Filtering
+	# e.g., ?rating=3
+	#
+	rating = request.GET.get('rating', None)
+	if rating is not None:
+		try:
+			queryset = queryset.filter(rating__gte=int(rating))
+		except ValueError:
+			# Raised if the rating isn't actually an integer
+			pass
+
+	#
+	# Text Search
+	#
+	search = request.GET.get('search', None)
+	if search is not None:
+		queryset = queryset.filter(
+			Q(name__icontains=search) |
+			Q(tags__name__icontains=search) |
+			Q(authors__name__icontains=search)
+		)
+
+	return queryset
+
+
+
+def package_list_context(request):
+	#
+	# Filtering
+	#
+	sort = request.GET.get('sort', '-created')
+	packages = Package.objects.filter(published=True)
+	packages = package_list_filter(request, packages).distinct().order_by(sort)
+
+	#
+	# Sorting defaults
+	#
 	sort_fields = {
 		'name': 'asc',
 		'created': 'desc',
 		'rating': 'desc',
 	}
 
-	def get_ordering(self):
-		sort = self.request.GET.get('sort')
-		if sort:
-			sort_field = sort[1:] if sort.startswith('-') else sort
+	#
+	# Update the sorting field dict for table headers
+	#
+	sort_field = sort[1:] if sort.startswith('-') else sort
+	for field, direction in sort_fields.items():
+		# invert the sort direction of each field
 
-			if sort_field in self.sort_fields.keys():
-				# Set the view ordering property
-				return sort
+		if field == sort_field:
+			# This is the field we're actively sorting by
+			sort_fields[field] = field if sort.startswith('-') else '-' + field
 		else:
-			# Default to sorting by created date in descending order
-			return '-created'
+			sort_fields[field] = '-' + field if direction == 'desc' else field
 
-	def get(self, request, *args, **kwargs):
-		#
-		# Sorting
-		# update the sorting field dict for table headers
-		#
-		sort = request.GET.get('sort')
-		if sort:
-			sort_field = sort[1:] if sort.startswith('-') else sort
+	#
+	# Pagination
+	#
+	paginator = Paginator(
+		packages,
+		request.GET.get('page_size', 21),
+	)
+	page_number = request.GET.get('page')
+	page = paginator.get_page(page_number)
 
-			if sort_field in self.sort_fields.keys():
-				# invert this sort field
-				self.sort_fields[sort_field] = 'asc' if sort.startswith('-') else 'desc'
-		else:
-			# Default is to sort by created in desc order
-			# so the link should be asc order
-			self.sort_fields['created'] = 'asc'
+	context = {
+		# package list table sort links
+		'sort_fields': sort_fields,
 
-		for field, descending in self.sort_fields.items():
-			# toggle the sort direction of the requested field
-			self.sort_fields[field] = '-' + field if descending == 'desc' else field
+		# set the main navbar section active
+		'active_section': 'packages',
 
-		self.object_list = self.get_queryset()
+		# list of authors being filtered on
+		'filtered_authors': request.GET.getlist('author', []),
 
-		#
-		# Author Filtering
-		#
-		authors = request.GET.getlist('author', [])
-		for author in authors:
-			self.object_list = self.object_list.filter(authors__slug=author).distinct()
+		# list of tags filtered for
+		'filtered_tags': request.GET.getlist('tag', []),
 
-		#
-		# Tag Filtering
-		#
-		try:
-			tags = request.GET.getlist('tag')
-		except KeyError:
-			tags = []
+		# search term being searched for
+		'filtered_term': request.GET.get('search', ''),
 
-		for tag in tags:
-			self.object_list = self.object_list.filter(tags__slug=tag).distinct()
-
-		#
-		# Rating Score Filtering
-		# e.g., ?rating=3
-		#
-		rating = request.GET.get('rating', None)
-		if rating is not None:
-			try:
-				self.object_list = self.object_list.filter(rating__gte=int(rating))
-			except ValueError:
-				pass
-
-		#
-		# Searching
-		#
-		search = request.GET.get('search', None)
-		if search is not None:
-			self.object_list = self.object_list.filter(
-				Q(name__icontains=search) |
-				Q(tags__name__icontains=search) |
-				Q(authors__name__icontains=search)
-			).distinct()
-
-		# get_context_data will add as package_list
-		self.object_list = self.object_list.order_by(self.get_ordering())
-
-		context = self.get_context_data(
-			# package list table sort links
-			sort_fields = self.sort_fields,
-
-			# set the main navbar section active
-			active_section = 'packages',
-
-			# we need the querystring dictionary to create filtering links
-			querydict = request.GET,
-
-			# list of authors being filtered on
-			filtered_authors = authors,
-
-			# list of tags filtered for
-			filtered_tags = tags,
-
-			# search term being searched for
-			filtered_term = search,
-		)
-
-		return self.render_to_response(context)
+		'page': page,
+	}
+	return context
 
 
 
-class PackageCardView(PackageListView):
-	template_name = 'packages/package_cards.html'
+def package_list(request):
+	context = package_list_context(request)
+
+	return render(request,
+	              'packages/package_list.html',
+	              context)
 
 
 
-def detail(request, package_hash):
+def package_list_cards(request):
+	context = package_list_context(request)
+
+	return render(request,
+	              'packages/package_cards.html',
+	              context)
+
+
+
+def package_detail(request, package_hash):
 	package = get_object_or_404(Package, file_hash=package_hash)
 
 	#
@@ -182,7 +187,7 @@ def detail(request, package_hash):
 	package_content_type = ContentType.objects.get_for_model(Package)
 
 	# Can't figure out how to do this with the ORM
-	tbl_rating = Rating._meta.db_table
+	tbl_rating = PackageRating._meta.db_table
 	# comments = Comment.objects.raw('SELECT * FROM quaddicted_comments_quaddictedcommentmodel LEFT JOIN quaddicted_packages_rating ON quaddicted_comments_quaddictedcommentmodel.user_id=quaddicted_packages_rating.user_id AND quaddicted_packages_rating.package_id=CAST(object_pk AS INTEGER) WHERE content_type_id=%s AND CAST(object_pk AS INTEGER)=%s', [package_content_type.id, package.id,])
 	comments = Comment.objects.raw('SELECT * FROM django_comments LEFT JOIN {tbl_rating} ON django_comments.user_id={tbl_rating}.user_id AND {tbl_rating}.package_id=CAST(object_pk AS INTEGER) WHERE content_type_id=%s AND CAST(object_pk AS INTEGER)=%s'.format(tbl_rating=tbl_rating), [package_content_type.id, package.id,])
 
@@ -196,7 +201,7 @@ def detail(request, package_hash):
 		if rating_form.is_valid():
 			score = rating_form.cleaned_data['score']
 
-			rating_obj, created = Rating.objects.update_or_create(
+			rating_obj, created = PackageRating.objects.update_or_create(
 				user=request.user,
 				package=package,
 				defaults={
@@ -213,7 +218,7 @@ def detail(request, package_hash):
 	#
 	# Screenshots
 	#
-	screenshots = Screenshot.objects.filter(package=package).order_by('pk')
+	screenshots = PackageScreenshot.objects.filter(package=package).order_by('pk')
 
 	return render(request, 'packages/package_detail.html', {
 		'package': package,
@@ -240,8 +245,8 @@ def package_form(request):
 
 
 class PackageCreate(LoginRequiredMixin, NamedFormsetsMixin, CreateWithInlinesView):
-	inlines = [ScreenshotInline,]
-	inlines_names = ['screenshot_inline',]
+	inlines = [ScreenshotInline, PackageUrlInline]
+	inlines_names = ['screenshot_inline', 'packageurl_inline']
 	template_name = 'packages/package_form.html'
 	model = Package
 	form_class = PackageCreateForm
@@ -259,17 +264,22 @@ class PackageCreate(LoginRequiredMixin, NamedFormsetsMixin, CreateWithInlinesVie
 @permission_required('quaddicted_packages.change_package')
 def package_edit(request, package_hash):
 	package = get_object_or_404(Package, file_hash=package_hash)
-	ScreenshotFormSet = inlineformset_factory(Package, Screenshot, exclude=())
+	ScreenshotFormSet = inlineformset_factory(Package, PackageScreenshot, exclude=())
+	PackageUrlFormSet = inlineformset_factory(Package, PackageUrl, exclude=())
 
 	if request.method == 'POST':
 		package_form = PackageEditForm(request.POST, request.FILES, instance=package)
 		screenshot_formset = ScreenshotFormSet(request.POST, request.FILES, instance=package)
+		packageurl_formset = PackageUrlFormSet(request.POST, request.FILES, instance=package)
 
 		if package_form.is_valid():
 			package_form.save()
 
 		if screenshot_formset.is_valid():
 			screenshot_formset.save()
+
+		if packageurl_formset.is_valid():
+			packageurl_formset.save()
 
 		if "_continue" in request.POST:
 			return HttpResponseRedirect(reverse('packages:edit', kwargs={'package_hash': package.file_hash}))
@@ -278,10 +288,12 @@ def package_edit(request, package_hash):
 	else:
 		package_form = PackageEditForm(instance=package)
 		screenshot_formset = ScreenshotFormSet(instance=package)
+		packageurl_formset = PackageUrlFormSet(instance=package)
 		return render(request, 'packages/package_form.html', {
 			'object': package,
 			'form': package_form,
 			'screenshot_inline': screenshot_formset,
+			'packageurl_inline': packageurl_formset,
 		})
 
 

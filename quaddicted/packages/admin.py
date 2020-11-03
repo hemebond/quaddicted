@@ -1,15 +1,15 @@
 from django.contrib import admin
-from .models import Package, Rating, Screenshot, Author
+from .models import Package, PackageRating, PackageScreenshot, PackageAuthor, PackageUrl
 
 
-@admin.register(Rating)
+@admin.register(PackageRating)
 class RatingAdmin(admin.ModelAdmin):
 	list_display = ('user', 'username', 'package', 'score', 'created')
 	search_fields = ['user', 'username', 'package__name']
 	list_filter = ('score',)
 
 
-@admin.register(Author)
+@admin.register(PackageAuthor)
 class AuthorAdmin(admin.ModelAdmin):
 	list_display = ('name', 'slug')
 
@@ -18,7 +18,7 @@ class AuthorAdmin(admin.ModelAdmin):
 class PackageAdmin(admin.ModelAdmin):
 	list_display = ('name', 'file_name', 'file_hash', 'uploaded_on', 'published')
 	search_fields = ['name', 'file_name', 'file_hash']
-	list_filter = ('published', 'game')
+	list_filter = ('published', 'game', 'type')
 	actions = ['make_published',]
 
 	def make_published(self, request, queryset):
@@ -34,6 +34,12 @@ class PackageAdmin(admin.ModelAdmin):
 	make_published.short_description = "Publish selected packages"
 
 
-@admin.register(Screenshot)
+@admin.register(PackageScreenshot)
 class ScreenshotAdmin(admin.ModelAdmin):
 	list_display = ('package', 'image',)
+
+
+
+@admin.register(PackageUrl)
+class PackageUrlAdmin(admin.ModelAdmin):
+	list_display = ('name', 'url')

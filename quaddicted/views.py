@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.views.generic.base import TemplateView
 from django.contrib.auth.views import SuccessURLAllowedHostsMixin
