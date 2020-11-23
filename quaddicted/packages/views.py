@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, QueryDict, HttpResponseRedirect, JsonResponse
 from django.template import loader
+from django.db import IntegrityError
 from django.db.models import Q, Count, F, FloatField
 from django.db.models.functions import Round
 from django.utils.http import urlencode
@@ -14,8 +15,9 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView
 from django.views.generic import DetailView, UpdateView, ListView
 from django.core.paginator import EmptyPage, Paginator
+from django.utils.text import slugify
 
-from django.forms import inlineformset_factory
+from django.forms import inlineformset_factory, modelformset_factory
 
 from extra_views import ModelFormSetView, NamedFormsetsMixin
 from extra_views import CreateWithInlinesView, UpdateWithInlinesView
@@ -23,7 +25,7 @@ from extra_views import CreateWithInlinesView, UpdateWithInlinesView
 
 import json
 
-from .models import Package, PackageRating, PackageScreenshot, PackageUrl
+from .models import Package, PackageRating, PackageScreenshot, PackageUrl, PackageAuthor
 from .forms import RatingForm, PackageEditForm, PackageCreateForm, ScreenshotInline, PackageUrlInline
 from django_comments.models import Comment
 
@@ -261,6 +263,63 @@ class PackageCreate(LoginRequiredMixin, NamedFormsetsMixin, CreateWithInlinesVie
 
 
 @login_required
+@permission_required('quaddicted_packages.add_package')
+def package_add(request):
+	ScreenshotFormSet = inlineformset_factory(Package, PackageScreenshot, exclude=())
+	PackageUrlFormSet = inlineformset_factory(Package, PackageUrl, exclude=())
+
+	if request.method == 'POST':
+		# print(request.POST)
+		package_form = PackageCreateForm(request.POST, request.FILES)
+		screenshot_formset = ScreenshotFormSet(request.POST, request.FILES)
+		packageurl_formset = PackageUrlFormSet(request.POST, request.FILES)
+
+		if package_form.is_valid():
+			author_names = package_form.cleaned_data.pop('authors')
+			pkg = package_form.save()
+
+			# print(author_names)
+			author_set = set()
+
+			# Take the comma-separated list of names and
+			# create or fetch the PackageAuthor objects for them
+			for author_name in author_names:
+				author_slug = slugify(author_name, allow_unicode=True)
+				# print(author_slug)
+				try:
+					author_obj = PackageAuthor(name=author_name, slug=author_slug)
+					author_obj.save()
+					author_set.add(author_obj.id)
+					# print("added new author " + str(author_obj))
+				except IntegrityError:
+					author_obj = PackageAuthor.objects.get(slug=author_slug)
+					author_set.add(author_obj.id)
+					# print("added existing author " + str(author_obj))
+
+			pkg.authors.set(author_set)
+
+			if screenshot_formset.is_valid():
+				screenshot_formset.save()
+
+			if packageurl_formset.is_valid():
+				packageurl_formset.save()
+
+			return HttpResponseRedirect(pkg.get_absolute_url())
+	else:
+		package_form = PackageCreateForm()
+		screenshot_formset = ScreenshotFormSet()
+		packageurl_formset = PackageUrlFormSet()
+
+	return render(request, 'packages/package_form.html', {
+		'form': package_form,
+		'screenshot_inline': screenshot_formset,
+		'packageurl_inline': packageurl_formset,
+		'active_section': 'packages',
+	})
+
+
+
+@login_required
 @permission_required('quaddicted_packages.change_package')
 def package_edit(request, package_hash):
 	package = get_object_or_404(Package, file_hash=package_hash)
@@ -268,12 +327,35 @@ def package_edit(request, package_hash):
 	PackageUrlFormSet = inlineformset_factory(Package, PackageUrl, exclude=())
 
 	if request.method == 'POST':
+		# print(request.POST)
 		package_form = PackageEditForm(request.POST, request.FILES, instance=package)
 		screenshot_formset = ScreenshotFormSet(request.POST, request.FILES, instance=package)
 		packageurl_formset = PackageUrlFormSet(request.POST, request.FILES, instance=package)
 
 		if package_form.is_valid():
-			package_form.save()
+			pkg = package_form.save(commit=False)
+
+			author_names = package_form.cleaned_data['authors']
+			# print(author_names)
+			author_set = set()
+
+			# Take the comma-separated list of names and
+			# create or fetch the PackageAuthor objects for them
+			for author_name in author_names:
+				author_slug = slugify(author_name, allow_unicode=True)
+				# print(author_slug)
+				try:
+					author_obj = PackageAuthor(name=author_name, slug=author_slug)
+					author_obj.save()
+					author_set.add(author_obj)
+					# print("added new author " + str(author_obj))
+				except IntegrityError:
+					author_obj = PackageAuthor.objects.get(slug=author_slug)
+					author_set.add(author_obj)
+					# print("added existing author " + str(author_obj))
+
+			pkg.authors.set(author_set)
+			pkg.save()
 
 		if screenshot_formset.is_valid():
 			screenshot_formset.save()
@@ -282,13 +364,16 @@ def package_edit(request, package_hash):
 			packageurl_formset.save()
 
 		if "_continue" in request.POST:
-			return HttpResponseRedirect(reverse('packages:edit', kwargs={'package_hash': package.file_hash}))
+			return HttpResponseRedirect(
+				reverse('packages:edit', kwargs={'package_hash': package.file_hash})
+			)
 		else:
 			return HttpResponseRedirect(package.get_absolute_url())
 	else:
 		package_form = PackageEditForm(instance=package)
 		screenshot_formset = ScreenshotFormSet(instance=package)
 		packageurl_formset = PackageUrlFormSet(instance=package)
+
 		return render(request, 'packages/package_form.html', {
 			'object': package,
 			'form': package_form,

@@ -1,19 +1,15 @@
-from django.db import models, IntegrityError
+from django.db import models
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.template.defaultfilters import slugify
-from django.db.models import Avg, Sum, Count, Min, Max, Q
+from django.utils.html import format_html, mark_safe
+from django.db.models import Avg, Sum, Count, Q
 from django.db.models.functions import Coalesce
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.auth.models import User
 from django.core import validators
 from django.core.exceptions import ValidationError
 
-from datetime import datetime
 from pathlib import Path
-
-from PIL import Image
 
 import os
 import hashlib
@@ -25,35 +21,22 @@ from taggit.managers import TaggableManager
 from django_comments.models import Comment
 
 # Receive the pre_delete signal and delete the file associated with the model instance.
-from django.db.models.signals import post_delete, pre_save, post_save
+from django.db.models.signals import post_delete, post_save
 from django.dispatch.dispatcher import receiver
 
 
 
-class PackageAuthor(models.Model):
-	name = models.CharField(verbose_name=_("name"), unique=True, max_length=100)
-	slug = models.SlugField(verbose_name=_("slug"), unique=True, max_length=100)
-
-	class Meta:
-		verbose_name = _("Package Author")
-		verbose_name_plural = _("Package Authors")
-
-	def __str__(self):
-		return self.name
-
-
-
-def get_package_hash(instance):
+def calculate_file_hash(file_object):
 	"""
 	Calculate the sha256 hash of an uploaded file
 	"""
 	ctx = hashlib.sha256()
 
-	if instance.file.multiple_chunks():
-		for data in instance.file.chunks(ctx.block_size):
+	if file_object.multiple_chunks():
+		for data in file_object.chunks(ctx.block_size):
 			ctx.update(data)
 	else:
-		ctx.update(instance.file.read())
+		ctx.update(file_object.read())
 
 	return ctx.hexdigest()
 
@@ -96,15 +79,15 @@ class Package(models.Model):
 
 	# package file properties
 	file = models.FileField(upload_to=package_upload_to, max_length=256, validators=[validate_package_file,])
-	file_name = models.CharField(max_length=128, blank=True, editable=False) # the filename of the file, e.g., something.zip
-	file_hash = models.CharField(max_length=64, blank=True, editable=False, unique=True) # sha256 hash of the .zip file and also the primary key
+	file_name = models.CharField(max_length=128, blank=True, editable=False)  # the filename of the file, e.g., something.zip
+	file_hash = models.CharField(max_length=64, blank=True, editable=False, unique=True)  # sha256 hash of the .zip file and also the primary key
 	file_size = models.BigIntegerField(blank=True, null=True, editable=False)
 
 	# package properties
-	name = models.CharField(max_length=128) # the name or title of the package
-	created = models.DateTimeField(auto_now_add=True) # timestamp of the newest file in the package
-	rating = models.FloatField(blank=True, null=True, editable=False) # average of all the user ratings, a value from 1.0 to 5.0
-	game = models.CharField(max_length=2, choices=PackageGame.choices, default=PackageGame.QUAKE1) # which game is this package for
+	name = models.CharField(max_length=128)  # the name or title of the package
+	created = models.DateTimeField(auto_now_add=True)  # timestamp of the newest file in the package
+	rating = models.FloatField(blank=True, null=True, editable=False)  # average of all the user ratings, a value from 1.0 to 5.0
+	game = models.CharField(max_length=2, choices=PackageGame.choices, default=PackageGame.QUAKE1)  # which game is this package for
 	description = models.TextField(blank=True)
 	type = models.IntegerField(choices=PackageType.choices, default=PackageType.UNDEFINED)
 
@@ -117,9 +100,9 @@ class Package(models.Model):
 	                           object_id_field="object_pk")
 
 	# management info
-	published = models.BooleanField(default=False) # package not public until published
+	published = models.BooleanField(default=False)  # package not public until published
 	uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
-	uploaded_on = models.DateTimeField(auto_now_add=True, editable=False) # when was this package uploaded?
+	uploaded_on = models.DateTimeField(auto_now_add=True, editable=False)  # when was this package uploaded?
 
 	# execution properties
 	base_dir = models.CharField(max_length=256,
@@ -136,26 +119,53 @@ class Package(models.Model):
 	                             null=True,
 	                             help_text="which map should be loaded")
 
+
+	def clean(self, *args, **kwargs):
+		if not self.file_hash:
+			update_file_details(self)
+		super().clean(*args, **kwargs)
+
+
 	def save(self, *args, **kwargs):
 		if not self.file_hash:
-			self.file_hash = get_package_hash(self.file)
-
-		if not self.file_name:
-			self.file_name = Path(self.file.name).name
-
-		if not self.file_size:
-			self.file_size = self.file.size
-
+			update_file_details(self)
 		super().save(*args, **kwargs)
+
 
 	def __str__(self):
 		return self.name
 
+
 	class Meta:
 		ordering = ('name',)
 
+
 	def get_absolute_url(self):
 		return reverse('packages:detail', args=[str(self.file_hash)])
+
+
+
+def update_file_details(package_instance):
+	"""
+	Update the package instance with extra detail about the uploaded file
+	"""
+	f = package_instance.file
+
+	package_instance.file_hash = calculate_file_hash(f)
+	package_instance.file_name = Path(f.name).name
+	package_instance.file_size = f.size
+
+	try:
+		existing_package = Package.objects.get(file_hash=package_instance.file_hash)
+	except Package.DoesNotExist:
+		pass
+	else:
+		err_msg = format_html(_("File <code>{}</code> has been uploaded to package <a href=\"{}\">{}</a>"),
+			str(f),
+			mark_safe(existing_package.get_absolute_url()),
+			str(existing_package)
+		)
+		raise ValidationError(err_msg)
 
 
 
@@ -164,7 +174,20 @@ def package_delete(sender, instance, **kwargs):
 	"""
 	Remove the file from disk when the Package instance is deleted
 	"""
-	instance.file.delete(False) # False so FileField doesn't save the model
+	instance.file.delete(False)  # False so FileField doesn't save the model
+
+
+
+class PackageAuthor(models.Model):
+	name = models.CharField(verbose_name=_("name"), unique=True, max_length=100)
+	slug = models.SlugField(verbose_name=_("slug"), unique=True, max_length=100)
+
+	class Meta:
+		verbose_name = _("Package Author")
+		verbose_name_plural = _("Package Authors")
+
+	def __str__(self):
+		return self.name
 
 
 
@@ -216,7 +239,6 @@ def calculate_bayesian_average(package_pk):
 	package = packages.get(pk=package_pk)
 
 	sum_ratings = package.ratings.aggregate(sum=Sum('score'))['sum']
-	num_ratings = package.ratings.count()
 
 	if sum_ratings and sum_ratings > 0:
 		avg_num_ratings = packages.filter(~Q(ratings=None)).aggregate(avg=Avg('num_ratings'))['avg']

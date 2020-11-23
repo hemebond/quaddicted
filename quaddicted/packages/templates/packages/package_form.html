@@ -41,9 +41,11 @@
 
 
 			{% if form.non_field_errors %}
-			<div class="alert alert-danger" role="alert">
-				{{ form.non_field_errors }}
-			</div>
+				{% for error in form.non_field_errors %}
+					<div class="alert alert-danger" role="alert">
+						{{ error }}
+					</div>
+				{% endfor %}
 			{% endif %}
 
 
@@ -61,9 +63,9 @@
 						       class="form-control {% if f.errors %}is-invalid{% endif %}"
 						       id="{{ f.id_for_label }}"
 						       name="{{ f.html_name }}"
-						       maxlength="32"
+						       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
 						       value="{% if f.value %}{{ f.value }}{% endif %}"
-						       required="">
+						       {% if f.required %}required="required"{% endif %}>
 						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
 						{% include 'packages/field_errors.html' %}
 					</div>
@@ -96,7 +98,7 @@
 				       class="form-control-file {% if f.errors %}is-invalid{% endif %}"
 				       id="{{ f.id_for_label }}"
 				       name="{{ f.html_name }}"
-				       required="">
+				       {% if f.required %}required="required"{% endif %}>
 				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
 				{% include 'packages/field_errors.html' %}
 			</div>
@@ -108,6 +110,7 @@
 				<label for="{{ f.id_for_label }}">{{ f.label }}</label>
 				<textarea class="form-control {% if f.errors %}is-invalid{% endif %}"
 				          id="{{ f.id_for_label }}"
+				          maxlength="{{ f.field.maxlength|default_if_none:'' }}"
 				          name="{{ f.html_name }}">{% if f.value %}{{ f.value }}{% endif %}</textarea>
 				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
 				{% include 'packages/field_errors.html' %}
@@ -122,13 +125,12 @@
 				       class="form-control {% if f.errors %}is-invalid{% endif %}"
 				       id="{{ f.id_for_label }}"
 				       name="{{ f.html_name }}"
-				       maxlength="32"
+				       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
 				       value="{{ f.value|edit_tags|default_if_none:'' }}">
 				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
 				{% include 'packages/field_errors.html' %}
 			</div>
 			{% endwith %}
-
 
 			{% with f=form.authors %}
 			<div class="form-group">
@@ -137,8 +139,8 @@
 				       class="form-control {% if f.errors %}is-invalid{% endif %}"
 				       id="{{ f.id_for_label }}"
 				       name="{{ f.html_name }}"
-				       maxlength="32"
-				       value="{{ f.value|edit_tags|default_if_none:'' }}">
+				       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
+				       value="{{ f.value|default_if_none:'' }}">
 				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
 				{% include 'packages/field_errors.html' %}
 			</div>
@@ -166,7 +168,7 @@
 								       class="form-control {% if f.errors %}is-invalid{% endif %}"
 								       id="{{ f.id_for_label }}"
 								       name="{{ f.html_name }}"
-								       maxlength="32"
+								       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
 								       value="{% if f.value %}{{ f.value }}{% endif %}"
 								       {% if f.required %}required="required"{% endif %}>
 								<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
@@ -185,7 +187,7 @@
 								       class="form-control {% if f.errors %}is-invalid{% endif %}"
 								       id="{{ f.id_for_label }}"
 								       name="{{ f.html_name }}"
-								       maxlength="256"
+								       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
 								       value="{% if f.value %}{{ f.value }}{% endif %}"
 								       {% if f.required %}required="required"{% endif %}>
 								<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>

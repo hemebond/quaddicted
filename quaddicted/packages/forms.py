@@ -1,24 +1,54 @@
 from django import forms
-from .models import Package, PackageScreenshot, PackageUrl
+from .models import Package, PackageScreenshot, PackageUrl, PackageAuthor
 from extra_views import InlineFormSetFactory
 from taggit.forms import TagField, TagWidgetMixin
+from django.utils.text import slugify
+from django.db import IntegrityError
 
 
-class MyTagWidgetMixin(TagWidgetMixin):
-	def format_value(self, value):
-		print('MyTagWidgetMixin.format_value()')
-		return super().format_value(value)
 
+class AuthorField(forms.CharField):
+	def __init__(self, delimiter=",", **kwargs):
+		self.delimiter = delimiter
+		super().__init__(**kwargs)
 
-class MyTagWidget(MyTagWidgetMixin, forms.TextInput):
-	pass
+	def to_python(self, value):
+		"""Return a set of PackageAuthor objects"""
+		# print("AuthorField.to_python()")
+		# print(value)
 
-class MyTagField(TagField):
-	widget = MyTagWidget
+		if self.disabled:
+			return value
 
-	@property
-	def value(self):
-		return self.widget.format_value(super().value)
+		if value in self.empty_values:
+			return None
+		elif isinstance(value, (list, set)):
+			return value
+
+		return [
+			author
+			for author
+			in [
+				author.strip() for author in value.split(self.delimiter)
+			]
+			if author
+		]
+
+	def prepare_value(self, value):
+		if not value:
+			return ""
+
+		if isinstance(value, str):
+			return value
+
+		# Make a list of just the names
+		author_names = [str(author) for author in value]
+
+		# Case-insensitive sort
+		sorted_author_names = sorted(author_names, key=str.casefold)
+
+		return self.delimiter.join(sorted_author_names)
+
 
 
 class RatingForm(forms.Form):
@@ -26,6 +56,8 @@ class RatingForm(forms.Form):
 
 
 class PackageEditForm(forms.ModelForm):
+	authors = AuthorField(help_text="A comma-separated list of author names")
+
 	class Meta:
 		model = Package
 		fields = [
@@ -38,6 +70,8 @@ class PackageEditForm(forms.ModelForm):
 
 
 class PackageCreateForm(forms.ModelForm):
+	authors = AuthorField(help_text="A comma-separated list of author names")
+
 	class Meta:
 		model = Package
 		fields = [
@@ -70,3 +104,10 @@ class ScreenshotInline(InlineFormSetFactory):
 class PackageUrlInline(InlineFormSetFactory):
 	model = PackageUrl
 	fields = '__all__'
+
+
+
+class PackageAuthorForm(forms.ModelForm):
+	class Meta:
+		model = PackageAuthor
+		fields = ['name',]

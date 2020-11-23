@@ -165,6 +165,8 @@
 								          id="{{ f.id_for_label }}"
 								          name="{{ f.html_name }}"
 								          rows="3"
+								          {% if f.field.max_length %}maxlength="{{ f.field.max_length }}"{% endif %}
+								          {% if f.field.min_length %}minlength="{{ f.field.min_length }}"{% endif %}
 								          {% if f.field.required %}required=""{% endif %}>{% if f.value %}{{ form.comment.value }}{% endif %}</textarea>
 								<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
 								{% include 'packages/field_errors.html' %}
