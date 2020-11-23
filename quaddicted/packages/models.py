@@ -113,7 +113,7 @@ class Package(models.Model):
 	                                blank=True,
 	                                null=True,
 	                                help_text="command-line arguments for running the package")
-	dependencies = models.ManyToManyField('self', symmetrical=False)
+	dependencies = models.ManyToManyField('self', blank=True, null=True, symmetrical=False)
 	start_map = models.CharField(max_length=64,
 	                             blank=True,
 	                             null=True,
