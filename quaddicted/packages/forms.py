@@ -1,9 +1,6 @@
 from django import forms
 from .models import Package, PackageScreenshot, PackageUrl, PackageAuthor
 from extra_views import InlineFormSetFactory
-from taggit.forms import TagField, TagWidgetMixin
-from django.utils.text import slugify
-from django.db import IntegrityError
 
 
 

@@ -1,29 +1,20 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, Http404, QueryDict, HttpResponseRedirect, JsonResponse
-from django.template import loader
-from django.db import IntegrityError
-from django.db.models import Q, Count, F, FloatField
-from django.db.models.functions import Round
-from django.utils.http import urlencode
-from django.core.exceptions import ObjectDoesNotExist
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.http import require_POST, require_http_methods, require_GET, require_safe
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.urls import reverse, reverse_lazy
-from django.views.generic.edit import CreateView
-from django.views.generic import DetailView, UpdateView, ListView
-from django.core.paginator import EmptyPage, Paginator
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator
+from django.db import IntegrityError
+from django.db.models import Q, Count, FloatField
+from django.db.models.functions import Round
+from django.forms import inlineformset_factory
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
 from django.utils.text import slugify
+from django.views.decorators.http import require_POST, require_GET, require_safe
 
-from django.forms import inlineformset_factory, modelformset_factory
-
-from extra_views import ModelFormSetView, NamedFormsetsMixin
-from extra_views import CreateWithInlinesView, UpdateWithInlinesView
-
-
-import json
+from extra_views import NamedFormsetsMixin
+from extra_views import CreateWithInlinesView
 
 from .models import Package, PackageRating, PackageScreenshot, PackageUrl, PackageAuthor
 from .forms import RatingForm, PackageEditForm, PackageCreateForm, ScreenshotInline, PackageUrlInline

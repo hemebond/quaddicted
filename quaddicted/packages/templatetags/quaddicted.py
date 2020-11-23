@@ -1,7 +1,6 @@
 import os
 from django import template
 from django.conf import settings
-from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
 from taggit.utils import edit_string_for_tags
 

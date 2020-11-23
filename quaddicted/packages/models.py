@@ -1,13 +1,13 @@
-from django.db import models
-from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
-from django.utils.html import format_html, mark_safe
-from django.db.models import Avg, Sum, Count, Q
-from django.db.models.functions import Coalesce
-from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core import validators
 from django.core.exceptions import ValidationError
+from django.db import models
+from django.db.models import Avg, Sum, Count, Q
+from django.db.models.functions import Coalesce
+from django.urls import reverse
+from django.utils.html import format_html, mark_safe
+from django.utils.translation import ugettext_lazy as _
 
 from pathlib import Path
 
