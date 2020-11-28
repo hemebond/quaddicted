@@ -1,0 +1,13 @@
+@import "../bootswatch/_variables.scss";
+@import "../bootstrap/scss/bootstrap";
+@import "../bootswatch/_bootswatch.scss";
+
+.navbar {
+  background-color: $light-brown;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+.navbar-expand-lg .navbar-nav .nav-link {
+	padding-right: 1rem;
+	padding-left: 1rem;
+}
