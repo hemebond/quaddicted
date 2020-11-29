@@ -1,0 +1,89 @@
+{% load quaddicted %}
+{# {% include "packages/includes/debug.html" with f=form.description only %} #}
+
+<h5>f</h5>
+<p><code>{% odir f %}</code></p>
+
+<ul>
+	<li>auto_id: {{ f.auto_id }}</li>
+	<li>build_widget_attrs: {{ f.build_widget_attrs }}</li>
+	<li>css_classes: {{ f.css_classes }}</li>
+	<li>data: {{ f.data }}</li>
+	<li>errors: {{ f.errors }}</li>
+	<li>field:
+		{{ f.field }}
+		<p><code>{% odir f.field %}</code></p>
+		<ul>
+			<li>allow_empty_file: {{ f.field.allow_empty_file }}</li>
+			<li>bound_data: {{ f.field.bound_data }}</li>
+			<li>clean: {{ f.field.clean }}</li>
+			<li>default_error_messages: {{ f.field.default_error_messages }}</li>
+			<li>default_validators: {{ f.field.default_validators }}</li>
+			<li>disabled: {{ f.field.disabled }}</li>
+			<li>empty_values: {{ f.field.empty_values }}</li>
+			<li>error_messages: {{ f.field.error_messages }}</li>
+			<li>get_bound_field: {{ f.field.get_bound_field }}</li>
+			<li>has_changed: {{ f.field.has_changed }}</li>
+			<li>help_text: {{ f.field.help_text }}</li>
+			<li>hidden_widget: {{ f.field.hidden_widget }}</li>
+			<li>initial: {{ f.field.initial }}</li>
+			<li>label: {{ f.field.label }}</li>
+			<li>label_suffix: {{ f.field.label_suffix }}</li>
+			<li>localize: {{ f.field.localize }}</li>
+			<li>max_length: {{ f.field.max_length }}</li>
+			<li>prepare_value: {{ f.field.prepare_value }}</li>
+			<li>required: {{ f.field.required }}</li>
+			<li>run_validators: {{ f.field.run_validators }}</li>
+			<li>show_hidden_initial: {{ f.field.show_hidden_initial }}</li>
+			<li>to_python: {{ f.field.to_python }}</li>
+			<li>validate: {{ f.field.validate }}</li>
+			<li>validators: {{ f.field.validators }}</li>
+			<li>widget:
+				{% with w=f.field.widget %}
+				{{ w }}
+				<p><code>{% odir w %}</code></p>
+				<ul>
+					<li>attrs: {{ w.attrs }}</li>
+					<li>build_attrs: {{ w.build_attrs }}</li>
+					<li>clear_checkbox_id: {{ w.clear_checkbox_id }}</li>
+					<li>clear_checkbox_label: {{ w.clear_checkbox_label }}</li>
+					<li>clear_checkbox_name: {{ w.clear_checkbox_name }}</li>
+					<li>format_value: {{ w.format_value }}</li>
+					<li>get_context: {{ w.get_context }}</li>
+					<li>id_for_label: {{ w.id_for_label }}</li>
+					<li>initial_text: {{ w.initial_text }}</li>
+					<li>input_text: {{ w.input_text }}</li>
+					<li>input_type: {{ w.input_type }}</li>
+					<li>is_hidden: {{ w.is_hidden }}</li>
+					<li>is_initial: {{ w.is_initial }}</li>
+					<li>is_localized: {{ w.is_localized }}</li>
+					<li>is_required: {{ w.is_required }}</li>
+					<li>media: {{ w.media }}</li>
+					<li>needs_multipart_form: {{ w.needs_multipart_form }}</li>
+					<li>render: {{ w.render }}</li>
+					<li>subwidgets: {{ w.subwidgets }}</li>
+					<li>supports_microseconds: {{ w.supports_microseconds }}</li>
+					<li>template_name: {{ w.template_name }}</li>
+					<li>use_required_attribute: {{ w.use_required_attribute }}</li>
+					<li>value_from_datadict: {{ w.value_from_datadict }}</li>
+					<li>value_omitted_from_data: {{ w.value_omitted_from_data }}</li>
+				</ul>
+				{% endwith %}
+			</li>
+			<li>widget_attrs: {{ f.field.widget_attrs }}</li>
+		</ul>
+	</li>
+	<li>help_text: {{ f.help_text }}</li>
+	<li>html_initial_id: {{ f.html_initial_id }}</li>
+	<li>html_initial_name: {{ f.html_initial_name }}</li>
+	<li>html_name: {{ f.html_name }}</li>
+	<li>id_for_label: {{ f.id_for_label }}</li>
+	<li>initial: {{ f.initial }}</li>
+	<li>is_hidden: {{ f.is_hidden }}</li>
+	<li>label: {{ f.label }}</li>
+	<li>label_tag: {{ f.label_tag }}</li>
+	<li>name: {{ f.name }}</li>
+	<li>subwidgets: {{ f.subwidgets }}</li>
+	<li>value: {{ f.value }}</li>
+	<li>widget_type: {{ f.widget_type }}</li>
+</ul>
