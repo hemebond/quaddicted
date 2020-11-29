@@ -113,7 +113,7 @@ class Package(models.Model):
 	                                blank=True,
 	                                null=True,
 	                                help_text="command-line arguments for running the package")
-	dependencies = models.ManyToManyField('self', blank=True, null=True, symmetrical=False)
+	dependencies = models.ManyToManyField('self', blank=True, symmetrical=False)
 	start_map = models.CharField(max_length=64,
 	                             blank=True,
 	                             null=True,
@@ -121,13 +121,13 @@ class Package(models.Model):
 
 
 	def clean(self, *args, **kwargs):
-		if not self.file_hash:
+		if self.file and not self.file_hash:
 			update_file_details(self)
 		super().clean(*args, **kwargs)
 
 
 	def save(self, *args, **kwargs):
-		if not self.file_hash:
+		if self.file and not self.file_hash:
 			update_file_details(self)
 		super().save(*args, **kwargs)
 

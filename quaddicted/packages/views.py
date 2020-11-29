@@ -262,12 +262,10 @@ def package_add(request):
 	if request.method == 'POST':
 		# print(request.POST)
 		package_form = PackageCreateForm(request.POST, request.FILES)
-		screenshot_formset = ScreenshotFormSet(request.POST, request.FILES)
-		packageurl_formset = PackageUrlFormSet(request.POST, request.FILES)
 
 		if package_form.is_valid():
 			author_names = package_form.cleaned_data.pop('authors')
-			pkg = package_form.save()
+			new_package = package_form.save()
 
 			# print(author_names)
 			author_set = set()
@@ -287,15 +285,20 @@ def package_add(request):
 					author_set.add(author_obj.id)
 					# print("added existing author " + str(author_obj))
 
-			pkg.authors.set(author_set)
+			new_package.authors.set(author_set)
 
+			screenshot_formset = ScreenshotFormSet(request.POST, request.FILES, instance=new_package)
 			if screenshot_formset.is_valid():
 				screenshot_formset.save()
 
+			packageurl_formset = PackageUrlFormSet(request.POST, request.FILES, instance=new_package)
 			if packageurl_formset.is_valid():
 				packageurl_formset.save()
 
-			return HttpResponseRedirect(pkg.get_absolute_url())
+			return HttpResponseRedirect(new_package.get_absolute_url())
+		else:
+			screenshot_formset = ScreenshotFormSet(request.POST, request.FILES)
+			packageurl_formset = PackageUrlFormSet(request.POST, request.FILES)
 	else:
 		package_form = PackageCreateForm()
 		screenshot_formset = ScreenshotFormSet()

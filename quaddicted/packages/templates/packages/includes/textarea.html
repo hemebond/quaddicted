@@ -1,0 +1,15 @@
+{# textarea widgets do not have an input_type #}
+<div class="form-group">
+	<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+	<textarea class="form-control {% if f.errors %}is-invalid{% endif %}"
+	          id="{{ f.id_for_label }}"
+	          maxlength="{{ f.field.maxlength|default_if_none:'' }}"
+	          name="{{ f.html_name }}"
+	          {% if f.form.use_required_attribute and f.field.required %}required="required"{% endif %}
+	          {% for k, v in f.field.widget.attrs.items %}
+	          {{ k }}="{{ v }}"
+	          {% endfor %}
+	          >{% if f.value %}{{ f.value }}{% endif %}</textarea>
+	<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+	{% include 'packages/includes/field_errors.html' %}
+</div>

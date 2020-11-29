@@ -94,6 +94,18 @@ def edit_tags(value):
 	return value
 
 
+@register.filter
+def strftags(value):
+	"""
+	Convert the "tags" value of a model
+	into a string for use as form field value, e.g.:
+	value="{{ f.value|edit_tags|default_if_none:'' }}"
+	"""
+	if value is not None and not isinstance(value, str):
+		return edit_string_for_tags(value)
+	return value
+
+
 @register.simple_tag
 def odir(obj):
 	"""
@@ -105,3 +117,9 @@ def odir(obj):
 @register.filter
 def basename(value):
 	return os.path.basename(value)
+
+
+
+@register.simple_tag
+def get(obj, key):
+	return obj.get(key, None)
