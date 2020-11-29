@@ -8,6 +8,7 @@ from django.db.models.functions import Coalesce
 from django.urls import reverse
 from django.utils.html import format_html, mark_safe
 from django.utils.translation import ugettext_lazy as _
+from django.utils.text import slugify
 
 from pathlib import Path
 
@@ -121,13 +122,13 @@ class Package(models.Model):
 
 
 	def clean(self, *args, **kwargs):
-		if not self.file_hash:
+		if self.file and not self.file_hash:
 			update_file_details(self)
 		super().clean(*args, **kwargs)
 
 
 	def save(self, *args, **kwargs):
-		if not self.file_hash:
+		if self.file and not self.file_hash:
 			update_file_details(self)
 		super().save(*args, **kwargs)
 
@@ -185,6 +186,11 @@ class PackageAuthor(models.Model):
 	class Meta:
 		verbose_name = _("Package Author")
 		verbose_name_plural = _("Package Authors")
+
+	def save(self, *args, **kwargs):
+		if not self.slug:
+			self.slug = slugify(self.name)
+		super().save(*args, **kwargs)
 
 	def __str__(self):
 		return self.name

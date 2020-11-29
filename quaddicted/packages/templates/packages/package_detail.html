@@ -326,58 +326,6 @@
 			</div>
 		</section>
 
-		<section class="card">
-			<h5 class="card-header">{% trans 'Demos' %}</h5>
-			<div class="card-body">
-				{% if package.demos %}
-				<table class="table table-sm">
-					<thead>
-						<tr>
-							<th>{% trans 'Player' %}</th>
-							<th>{% trans 'Skill' %}</th>
-							<th>{% trans 'Length' %}</th>
-							<th>{% trans 'Protocol' %}</th>
-							<th>{% trans 'Date' %}</th>
-						</tr>
-					</thead>
-					<tbody>
-				{% for demo in package.demos.all %}
-						<tr>
-							<td>{{ demo.player }}</td>
-							<td>{{ demo.skill }}</td>
-							<td>{{ demo.length }}</td>
-							<td>{{ demo.protocol }}</td>
-							<td>{{ demo.date|date:'Y-m-d' }}</td>
-						</tr>
-				{% endfor %}
-					</tbody>
-				</table>
-				{% else %}
-				<p>{% trans 'No demos' %}</p>
-				{% endif %}
-
-				{% if user.is_authenticated %}
-				<form action="" method="POST">
-					<div class="form-group">
-						<label for="id_demo_skill">{% trans 'Skill' %}</label>
-						<select class="form-control" id="id_demo_skill" name="demo_skill">
-							<option value="0">{% trans 'Easy' %}</option>
-							<option value="1">{% trans 'Normal' %}</option>
-							<option value="2">{% trans 'Hard' %}</option>
-							<option value="3">{% trans 'Nightmare' %}</option>
-						</select>
-					</div>
-					<div class="form-group">
-						<label for="id_demo_file">Demo (.dz) file</label>
-						<input type="file" class="form-control-file" id="id_demo_file" name="demo_file">
-					</div>
-
-					<button type="submit" class="btn btn-primary mb-2">{% trans 'Upload demo' %}</button>
-				</form>
-				{% endif %}
-			</div>
-		</section>
-
 	{% if package.package %}
 		<section class="card">
 			<h5 class="card-header">{% trans 'Files' %}</h5>
@@ -489,6 +437,5 @@
 
 
 {% block javascript %}
-	<script src="{% static 'packages/rating.js' %}"></script>
 	<script src="{% static 'packages/detail.js' %}"></script>
 {% endblock %}

@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
@@ -13,11 +12,8 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.views.decorators.http import require_POST, require_GET, require_safe
 
-from extra_views import NamedFormsetsMixin
-from extra_views import CreateWithInlinesView
-
 from .models import Package, PackageRating, PackageScreenshot, PackageUrl, PackageAuthor
-from .forms import RatingForm, PackageEditForm, PackageCreateForm, ScreenshotInline, PackageUrlInline
+from .forms import RatingForm, PackageEditForm, PackageCreateForm
 from django_comments.models import Comment
 
 
@@ -237,22 +233,6 @@ def package_form(request):
 
 
 
-class PackageCreate(LoginRequiredMixin, NamedFormsetsMixin, CreateWithInlinesView):
-	inlines = [ScreenshotInline, PackageUrlInline]
-	inlines_names = ['screenshot_inline', 'packageurl_inline']
-	template_name = 'packages/package_form.html'
-	model = Package
-	form_class = PackageCreateForm
-
-	def form_valid(self, form):
-		form.instance.uploaded_by = self.request.user
-		return super().form_valid(form)
-
-	def get_context_data(self, *args, **kwargs):
-		return super().get_context_data(*args, active_section='packages', **kwargs)
-
-
-
 @login_required
 @permission_required('quaddicted_packages.add_package')
 def package_add(request):
@@ -265,37 +245,43 @@ def package_add(request):
 		screenshot_formset = ScreenshotFormSet(request.POST, request.FILES)
 		packageurl_formset = PackageUrlFormSet(request.POST, request.FILES)
 
-		if package_form.is_valid():
+		if package_form.is_valid() and screenshot_formset.is_valid() and packageurl_formset.is_valid():
+			# Remove the authors field before saving the new package instance
 			author_names = package_form.cleaned_data.pop('authors')
-			pkg = package_form.save()
 
-			# print(author_names)
+			# Save new package instance so we can attach screenshots and URLs
+			new_package = package_form.save()
+
+			#
+			# Create Screenshots
+			#
+			screenshot_formset.instance = new_package
+			screenshot_formset.save()
+
+			#
+			# Create URLs
+			#
+			packageurl_formset.instance = new_package
+			packageurl_formset.save()
+
+			#
+			# Create Authors
+			#
 			author_set = set()
 
 			# Take the comma-separated list of names and
 			# create or fetch the PackageAuthor objects for them
 			for author_name in author_names:
 				author_slug = slugify(author_name, allow_unicode=True)
-				# print(author_slug)
-				try:
-					author_obj = PackageAuthor(name=author_name, slug=author_slug)
-					author_obj.save()
-					author_set.add(author_obj.id)
-					# print("added new author " + str(author_obj))
-				except IntegrityError:
-					author_obj = PackageAuthor.objects.get(slug=author_slug)
-					author_set.add(author_obj.id)
-					# print("added existing author " + str(author_obj))
+				author_obj, created = PackageAuthor.objects.get_or_create(name=author_name, slug=author_slug)
+				author_set.add(author_obj)
 
-			pkg.authors.set(author_set)
+			new_package.authors.set(author_set)
 
-			if screenshot_formset.is_valid():
-				screenshot_formset.save()
-
-			if packageurl_formset.is_valid():
-				packageurl_formset.save()
-
-			return HttpResponseRedirect(pkg.get_absolute_url())
+			return HttpResponseRedirect(new_package.get_absolute_url())
+		else:
+			screenshot_formset = ScreenshotFormSet(request.POST, request.FILES)
+			packageurl_formset = PackageUrlFormSet(request.POST, request.FILES)
 	else:
 		package_form = PackageCreateForm()
 		screenshot_formset = ScreenshotFormSet()
@@ -315,18 +301,19 @@ def package_add(request):
 def package_edit(request, package_hash):
 	package = get_object_or_404(Package, file_hash=package_hash)
 	ScreenshotFormSet = inlineformset_factory(Package, PackageScreenshot, exclude=())
-	PackageUrlFormSet = inlineformset_factory(Package, PackageUrl, exclude=())
+	PackageUrlFormSet = inlineformset_factory(Package, PackageUrl, exclude=(), extra=2)
 
 	if request.method == 'POST':
-		# print(request.POST)
 		package_form = PackageEditForm(request.POST, request.FILES, instance=package)
 		screenshot_formset = ScreenshotFormSet(request.POST, request.FILES, instance=package)
 		packageurl_formset = PackageUrlFormSet(request.POST, request.FILES, instance=package)
 
-		if package_form.is_valid():
-			pkg = package_form.save(commit=False)
+		if package_form.is_valid() and screenshot_formset.is_valid() and packageurl_formset.is_valid():
+			author_names = package_form.cleaned_data.pop('authors')
+			pkg = package_form.save()
+			screenshot_formset.save()
+			packageurl_formset.save()
 
-			author_names = package_form.cleaned_data['authors']
 			# print(author_names)
 			author_set = set()
 
@@ -334,43 +321,28 @@ def package_edit(request, package_hash):
 			# create or fetch the PackageAuthor objects for them
 			for author_name in author_names:
 				author_slug = slugify(author_name, allow_unicode=True)
-				# print(author_slug)
-				try:
-					author_obj = PackageAuthor(name=author_name, slug=author_slug)
-					author_obj.save()
-					author_set.add(author_obj)
-					# print("added new author " + str(author_obj))
-				except IntegrityError:
-					author_obj = PackageAuthor.objects.get(slug=author_slug)
-					author_set.add(author_obj)
-					# print("added existing author " + str(author_obj))
+				author_obj, created = PackageAuthor.objects.get_or_create(name=author_name, slug=author_slug)
+				author_set.add(author_obj)
 
 			pkg.authors.set(author_set)
-			pkg.save()
 
-		if screenshot_formset.is_valid():
-			screenshot_formset.save()
-
-		if packageurl_formset.is_valid():
-			packageurl_formset.save()
-
-		if "_continue" in request.POST:
-			return HttpResponseRedirect(
-				reverse('packages:edit', kwargs={'package_hash': package.file_hash})
-			)
-		else:
-			return HttpResponseRedirect(package.get_absolute_url())
+			if "_continue" in request.POST:
+				return HttpResponseRedirect(
+					reverse('packages:edit', kwargs={'package_hash': package.file_hash})
+				)
+			else:
+				return HttpResponseRedirect(package.get_absolute_url())
 	else:
 		package_form = PackageEditForm(instance=package)
 		screenshot_formset = ScreenshotFormSet(instance=package)
 		packageurl_formset = PackageUrlFormSet(instance=package)
 
-		return render(request, 'packages/package_form.html', {
-			'object': package,
-			'form': package_form,
-			'screenshot_inline': screenshot_formset,
-			'packageurl_inline': packageurl_formset,
-		})
+	return render(request, 'packages/package_form.html', {
+		'object': package,
+		'form': package_form,
+		'screenshot_inline': screenshot_formset,
+		'packageurl_inline': packageurl_formset,
+	})
 
 
 

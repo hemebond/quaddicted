@@ -56,95 +56,33 @@
 
 			<div class="row">
 				<div class="col">
-					{% with f=form.name %}
-					<div class="form-group">
-						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-						<input type="text"
-						       class="form-control {% if f.errors %}is-invalid{% endif %}"
-						       id="{{ f.id_for_label }}"
-						       name="{{ f.html_name }}"
-						       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
-						       value="{% if f.value %}{{ f.value }}{% endif %}"
-						       {% if f.required %}required="required"{% endif %}>
-						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-						{% include 'packages/field_errors.html' %}
-					</div>
-					{% endwith %}
+					{% include "packages/includes/input.html" with f=form.name only %}
 				</div>
 
 				<div class="col-4">
-					{% with f=form.game %}
-					<div class="form-group">
-						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-						<select id="{{ f.id_for_label }}"
-						        name="{{ f.html_name }}"
-						        class="form-control {% if f.errors %}is-invalid{% endif %}">
-						{% for v, label in f.field.choices %}
-							<option value="{{ v }}" {% if f.value == v %}selected="selected"{% endif %}>{{ label }}</option>
-						{% endfor %}
-						</select>
-						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-						{% include 'packages/field_errors.html' %}
-					</div>
-					{% endwith %}
+					{% include "packages/includes/input.html" with f=form.game only %}
 				</div>
 			</div>
 
-			{% if form.file %}
-			{% with f=form.file %}
-			<div class="form-group">
-				<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-				<input type="file"
-				       class="form-control-file {% if f.errors %}is-invalid{% endif %}"
-				       id="{{ f.id_for_label }}"
-				       name="{{ f.html_name }}"
-				       {% if f.required %}required="required"{% endif %}>
-				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-				{% include 'packages/field_errors.html' %}
+			<div class="row">
+				<div class="col">
+					{% include "packages/includes/input.html" with f=form.file only %}
+				</div>
 			</div>
-			{% endwith %}
-			{% endif %}
 
-			{% with f=form.description %}
-			<div class="form-group">
-				<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-				<textarea class="form-control {% if f.errors %}is-invalid{% endif %}"
-				          id="{{ f.id_for_label }}"
-				          maxlength="{{ f.field.maxlength|default_if_none:'' }}"
-				          name="{{ f.html_name }}">{% if f.value %}{{ f.value }}{% endif %}</textarea>
-				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-				{% include 'packages/field_errors.html' %}
+			<div class="row">
+				<div class="col">
+					{% include "packages/includes/textarea.html" with f=form.description only %}
+				</div>
 			</div>
-			{% endwith %}
 
-
-			{% with f=form.tags %}
-			<div class="form-group">
-				<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-				<input type="text"
-				       class="form-control {% if f.errors %}is-invalid{% endif %}"
-				       id="{{ f.id_for_label }}"
-				       name="{{ f.html_name }}"
-				       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
-				       value="{{ f.value|edit_tags|default_if_none:'' }}">
-				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-				{% include 'packages/field_errors.html' %}
+			<div class="row">
+				<div class="col">
+					{% include "packages/includes/input.html" with f=form.tags value=form.tags.value|strftags only %}
+				</div>
 			</div>
-			{% endwith %}
 
-			{% with f=form.authors %}
-			<div class="form-group">
-				<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-				<input type="text"
-				       class="form-control {% if f.errors %}is-invalid{% endif %}"
-				       id="{{ f.id_for_label }}"
-				       name="{{ f.html_name }}"
-				       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
-				       value="{{ f.value|default_if_none:'' }}">
-				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-				{% include 'packages/field_errors.html' %}
-			</div>
-			{% endwith %}
+			{% include "packages/includes/input.html" with f=form.authors only %}
 
 			{{ packageurl_inline.management_form }}
 
@@ -159,41 +97,21 @@
 							{{ hidden }}
 						{% endfor %}
 
-					<div class="row">
-						<div class="col">
-							{% with f=form.name %}
-							<div class="form-group">
-								<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-								<input type="text"
-								       class="form-control {% if f.errors %}is-invalid{% endif %}"
-								       id="{{ f.id_for_label }}"
-								       name="{{ f.html_name }}"
-								       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
-								       value="{% if f.value %}{{ f.value }}{% endif %}"
-								       {% if f.required %}required="required"{% endif %}>
-								<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-								{% include 'packages/field_errors.html' %}
-							</div>
-							{% endwith %}
-						</div>
-					</div>
+						{% if form.non_field_errors %}
+							{% for error in form.non_field_errors %}
+								<div class="alert alert-danger" role="alert">
+									{{ error }}
+								</div>
+							{% endfor %}
+						{% endif %}
 
 					<div class="row">
-						<div class="col">
-							{% with f=form.url %}
-							<div class="form-group">
-								<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-								<input type="text"
-								       class="form-control {% if f.errors %}is-invalid{% endif %}"
-								       id="{{ f.id_for_label }}"
-								       name="{{ f.html_name }}"
-								       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
-								       value="{% if f.value %}{{ f.value }}{% endif %}"
-								       {% if f.required %}required="required"{% endif %}>
-								<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-								{% include 'packages/field_errors.html' %}
-							</div>
-							{% endwith %}
+						<div class="col-4">
+							{% include "packages/includes/input.html" with f=form.name only %}
+						</div>
+
+						<div class="col-8">
+							{% include "packages/includes/input.html" with f=form.url only %}
 						</div>
 					</div>
 					{% endfor %}
@@ -225,28 +143,7 @@
 							</div>
 
 							<div class="col">
-								<div class="form-group row">
-								{% if f.value and not f.errors %}
-									<label for="{{ f.id_for_label }}" class="col-sm-3">{% trans "Current" %}:</label>
-									<div class="col-sm-9">
-										<a href="{{ f.value.url }}">{{ f.value.name|basename }}</a>
-									</div>
-								{% else %}
-									<small id="{{ f.id_for_label }}_help" class="form-text text-muted col-sm-12">{{ f.help_text }}</small>
-								{% endif %}
-								</div>
-
-								<div class="form-group row">
-									<label for="{{ f.id_for_label }}" class="col-sm-3">{% if f.value and not f.errors %}{% trans 'Replace' %}{% else %}{{ f.label }}{% endif %}</label>
-									<div class="col">
-										<input type="file"
-										       class="form-control-file {% if f.errors %}is-invalid{% endif %}"
-										       id="{{ f.id_for_label }}"
-										       name="{{ f.html_name }}"
-										       value="{{ f.file.url }}">
-										{% include 'packages/field_errors.html' %}
-									</div>
-								</div>
+								{% include "packages/includes/input.html" with f=f only %}
 
 								{% if form.image.value and not f.errors %}
 								{% if screenshot_inline.can_delete %}
@@ -262,7 +159,6 @@
 								{% endwith %}
 								{% endif %}
 								{% endif %}
-
 							</div>
 
 						{% endwith %}

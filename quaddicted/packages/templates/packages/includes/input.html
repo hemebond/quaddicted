@@ -1,0 +1,65 @@
+{% load i18n %}
+{% load quaddicted %}
+
+{% if f.field.widget.input_type == 'text' %}
+<div class="form-group">
+	<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+	<input type="text"
+	       class="form-control {% if f.errors %}is-invalid{% endif %}"
+	       id="{{ f.id_for_label }}"
+	       name="{{ f.html_name }}"
+	       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
+	       {#value="{% if f.value %}{{ f.value }}{% endif %}"#}
+	       value="{% firstof value f.value %}"
+	       {% if f.form.use_required_attribute and f.field.required %}required="required"{% endif %}>
+	<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+	{% include 'packages/includes/field_errors.html' %}
+</div>
+
+{% elif f.field.widget.input_type == 'file' %}
+<div class="form-group">
+	<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+	<input type="file"
+	       class="form-control-file{% if f.errors %} is-invalid{% endif %}"
+	       id="{{ f.id_for_label }}"
+	       name="{{ f.html_name }}"
+	       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
+	       {% if f.form.use_required_attribute and f.field.required %}required="required"{% endif %}
+	       value="{{ f.value.name|basename }}"
+	       >
+	<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+	{% include 'packages/includes/field_errors.html' %}
+</div>
+
+{% elif f.field.widget.input_type == 'select' %}
+<div class="form-group">
+	<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+	<select id="{{ f.id_for_label }}"
+	        name="{{ f.html_name }}"
+	        class="form-control {% if f.errors %}is-invalid{% endif %}"
+	        {% if f.form.use_required_attribute and f.field.required %}required="required"{% endif %}
+	        >
+	{% for v, label in f.field.choices %}
+		<option value="{{ v }}" {% if f.value == v %}selected="selected"{% endif %}>{{ label }}</option>
+	{% endfor %}
+	</select>
+	<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+	{% include 'packages/includes/field_errors.html' %}
+</div>
+
+{% elif f.field.widget.input_type == 'url' %}
+<div class="form-group">
+	<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+	<input type="text"
+	       class="form-control {% if f.errors %}is-invalid{% endif %}"
+	       id="{{ f.id_for_label }}"
+	       name="{{ f.html_name }}"
+	       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
+	       {#value="{% if f.value %}{{ f.value }}{% endif %}"#}
+	       value="{% firstof value f.value %}"
+	       {% if f.form.use_required_attribute and f.field.required %}required="required"{% endif %}
+	       >
+	<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
+	{% include 'packages/includes/field_errors.html' %}
+</div>
+{% endif %}
