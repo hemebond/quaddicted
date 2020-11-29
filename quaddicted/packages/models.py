@@ -188,7 +188,8 @@ class PackageAuthor(models.Model):
 		verbose_name_plural = _("Package Authors")
 
 	def save(self, *args, **kwargs):
-		self.slug = slugify(self.name)
+		if not self.slug:
+			self.slug = slugify(self.name)
 		super().save(*args, **kwargs)
 
 	def __str__(self):
