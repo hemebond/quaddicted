@@ -8,6 +8,7 @@ from django.db.models.functions import Coalesce
 from django.urls import reverse
 from django.utils.html import format_html, mark_safe
 from django.utils.translation import ugettext_lazy as _
+from django.utils.text import slugify
 
 from pathlib import Path
 
@@ -185,6 +186,10 @@ class PackageAuthor(models.Model):
 	class Meta:
 		verbose_name = _("Package Author")
 		verbose_name_plural = _("Package Authors")
+
+	def save(self, *args, **kwargs):
+		self.slug = slugify(self.name)
+		super().save(*args, **kwargs)
 
 	def __str__(self):
 		return self.name

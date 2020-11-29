@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.db.models import Q, Count, FloatField
 from django.db.models.functions import Round
 from django.forms import inlineformset_factory
@@ -273,14 +273,13 @@ def package_add(request):
 			# Take the comma-separated list of names and
 			# create or fetch the PackageAuthor objects for them
 			for author_name in author_names:
-				author_slug = slugify(author_name, allow_unicode=True)
-				# print(author_slug)
 				try:
-					author_obj = PackageAuthor(name=author_name, slug=author_slug)
+					author_obj = PackageAuthor(name=author_name)
 					author_obj.save()
 					author_set.add(author_obj.id)
 					# print("added new author " + str(author_obj))
 				except IntegrityError:
+					author_slug = slugify(author_name, allow_unicode=True)
 					author_obj = PackageAuthor.objects.get(slug=author_slug)
 					author_set.add(author_obj.id)
 					# print("added existing author " + str(author_obj))
