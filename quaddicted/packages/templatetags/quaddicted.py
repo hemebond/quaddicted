@@ -123,3 +123,25 @@ def basename(value):
 @register.simple_tag
 def get(obj, key):
 	return obj.get(key, None)
+
+
+
+@register.simple_tag
+def sort_th(request, sort_by, title):
+	"""
+	"sort_by" is the field name with "-" prefix for descending sort
+	"title" is the text for the TH element
+	"""
+	current_sort = request.GET.get('sort', None)
+
+	if current_sort is not None:
+		if current_sort == sort_by:
+			if sort_by[0] == "-":
+				sort_by = sort_by[1:]
+			else:
+				sort_by = "-" + sort_by
+
+	# if we're sorting by this field already, invert it
+
+
+	return ""

@@ -34,7 +34,7 @@ def package_list_filter(request, queryset):
 	#
 	authors = request.GET.getlist('author', [])
 	for author in authors:
-		queryset = queryset.filter(authors__slug=author)
+		queryset = queryset.filter(created_by__slug=author)
 
 	#
 	# Tag Filtering
@@ -64,7 +64,7 @@ def package_list_filter(request, queryset):
 		queryset = queryset.filter(
 			Q(name__icontains=search) |
 			Q(tags__name__icontains=search) |
-			Q(authors__name__icontains=search)
+			Q(created_by__name__icontains=search)
 		)
 
 	return queryset
@@ -75,31 +75,33 @@ def package_list_context(request):
 	#
 	# Filtering
 	#
-	sort = request.GET.get('sort', '-created')
 	packages = Package.objects.filter(published=True)
-	packages = package_list_filter(request, packages).distinct().order_by(sort)
+	# packages = package_list_filter(request, packages).distinct().order_by(sort)
+	packages = package_list_filter(request, packages).distinct()
 
 	#
-	# Sorting defaults
+	# Sorting order form request or use defaults
 	#
-	sort_fields = {
-		'name': 'asc',
-		'created': 'desc',
-		'rating': 'desc',
-	}
+	sort = request.GET.getlist('sort', [
+		"name",
+		"-rating",
+		"-uploaded_at",
+	])
 
 	#
 	# Update the sorting field dict for table headers
 	#
-	sort_field = sort[1:] if sort.startswith('-') else sort
-	for field, direction in sort_fields.items():
-		# invert the sort direction of each field
+	# sort_field = sort[1:] if sort.startswith('-') else sort
+	for sort_field in sort:
+		packages = packages.order_by(sort_field)
 
-		if field == sort_field:
-			# This is the field we're actively sorting by
-			sort_fields[field] = field if sort.startswith('-') else '-' + field
-		else:
-			sort_fields[field] = '-' + field if direction == 'desc' else field
+	# for field, direction in sort_fields.items():
+	# 	# invert the sort direction of each field
+	# 	if field == sort_field:
+	# 		# This is the field we're actively sorting by
+	# 		sort_fields[field] = field if sort.startswith('-') else '-' + field
+	# 	else:
+	# 		sort_fields[field] = '-' + field if direction == 'desc' else field
 
 	#
 	# Pagination
@@ -113,7 +115,7 @@ def package_list_context(request):
 
 	context = {
 		# package list table sort links
-		'sort_fields': sort_fields,
+		'sort_fields': sort,
 
 		# set the main navbar section active
 		'active_section': 'packages',
@@ -144,6 +146,7 @@ def package_list(request):
 
 def package_list_cards(request):
 	context = package_list_context(request)
+	context['package_list_type'] = "cards"
 
 	return render(request,
 	              'packages/package_cards.html',

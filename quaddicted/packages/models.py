@@ -86,16 +86,16 @@ class Package(models.Model):
 
 	# package properties
 	name = models.CharField(max_length=128)  # the name or title of the package
-	created = models.DateTimeField(auto_now_add=True)  # timestamp of the newest file in the package
 	rating = models.FloatField(blank=True, null=True, editable=False)  # average of all the user ratings, a value from 1.0 to 5.0
+	created_at = models.DateTimeField(auto_now_add=True)  # timestamp of the newest file in the package
+	created_by = models.ManyToManyField('PackageAuthor',
+	                                    related_name='packages',
+	                                    help_text="A comma-separated list of authors.")
 	game = models.CharField(max_length=2, choices=PackageGame.choices, default=PackageGame.QUAKE1)  # which game is this package for
 	description = models.TextField(blank=True)
 	type = models.IntegerField(choices=PackageType.choices, default=PackageType.UNDEFINED)
 
 	tags = TaggableManager(blank=True)
-	authors = models.ManyToManyField('PackageAuthor',
-	                                 related_name='packages',
-	                                 help_text="A comma-separated list of authors.")
 	comments = GenericRelation(Comment,
 	                           content_type_field="content_type",
 	                           object_id_field="object_pk")
@@ -103,7 +103,7 @@ class Package(models.Model):
 	# management info
 	published = models.BooleanField(default=False)  # package not public until published
 	uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
-	uploaded_on = models.DateTimeField(auto_now_add=True, editable=False)  # when was this package uploaded?
+	uploaded_at = models.DateTimeField(auto_now_add=True, editable=False)  # when was this package uploaded?
 
 	# execution properties
 	base_dir = models.CharField(max_length=256,

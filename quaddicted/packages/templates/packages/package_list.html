@@ -17,51 +17,77 @@
 	<div class="col">
 		<h1 class="text-center">Showing {{ page.paginator.count }} Packages</h1>
 
-		<div class="d-flex align-items-start">
-			<form class="form-inline flex-grow-1" action="?{{ request.GET.urlencode }}" method="get">
-				<div class="form-group mr-2 mb-2">
-					<input type="search"
-					       name="search"
-					       id="package-table-filter"
-					       class="form-control"
-					       data-table="package-list-table"
-					       placeholder="Filter/Search"
-					       value="{% if filtered_term %}{{ filtered_term }}{% endif %}">
-					{% for k, v in request.GET.lists %}
-					{% if k != 'search' %}
-					{% for i in v %}
-					<input type="hidden" name="{{ k }}" value="{{ i }}">
-					{% endfor %}
-					{% endif %}
-					{% endfor %}
+		<div class="row gx-2 justify-content-center">
+			<form class="col-12 col-md" action="?{{ request.GET.urlencode }}" method="get">
+				<div class="row gx-1">
+					<div class="col">
+						<label class="visually-hidden" for="package-table-filter">Search</label>
+						<input type="search"
+						       name="search"
+						       id="package-table-filter"
+						       class="form-control"
+						       placeholder="Filter/Search"
+						       value="{% if filtered_term %}{{ filtered_term }}{% endif %}">
+					</div>
+					<div class="col-auto">
+						<button type="submit" class="btn btn-primary">{% trans 'Search' %}</button>
+					</div>
 				</div>
-				<button type="submit" class="btn btn-primary mb-2 mr-2">{% trans 'Search' %}</button>
-				<a class="btn btn-primary mb-2" href="{% url 'packages:new' %}">{% icon 'upload' %} {% trans 'New Package' %}</a>
+
+
+				{% for k, v in request.GET.lists %}
+				{% if k != 'search' %}
+				{% for i in v %}
+				<input type="hidden" name="{{ k }}" value="{{ i }}">
+				{% endfor %}
+				{% endif %}
+				{% endfor %}
 			</form>
 
-			{% include 'packages/package_pagination.html' %}
-
-			<div class="btn-group ml-2" role="group" area-label="View modes">
-				<a class="btn btn-secondary disabled">
-					{% icon 'bars' %}
-				</a>
-				<a href="{% url 'packages:list' %}?{% qs_update request format='card' %}"
-				   class="btn btn-secondary"
-				   title="Card View">
-					{% icon 'th' %}
-				</a>
+			<div class="col-auto col-md-auto">
+				{% include 'packages/includes/pagination.html' %}
 			</div>
+
+			<div class="col-auto">
+				<div class="btn-group" role="group" area-label="View modes">
+					{% if package_list_type == "card" %}
+						<a href="{% url 'packages:list' %}?{% qs_update request format=None %}" class="btn btn-primary">
+							{% icon 'bars' %}
+						</a>
+						<a class="btn btn-primary disabled" title="Card View" tabindex="-1">
+							{% icon 'th' %}
+						</a>
+					{% else %}
+						<a class="btn btn-primary disabled" tabindex="-1">
+							{% icon 'bars' %}
+						</a>
+						<a href="{% url 'packages:list' %}?{% qs_update request format='card' %}"
+						   class="btn btn-primary"
+						   title="Card View">
+							{% icon 'th' %}
+						</a>
+					{% endif %}
+				</div>
+			</div>
+
+			{% if user.is_authenticated %}
+			<div class="col-auto">
+				<a class="btn btn-primary mb-2" href="{% url 'packages:new' %}" title="{% trans 'New Package' %}">{% icon 'upload' %}<span class="d-none d-xl-inline"> {% trans 'New Package' %}</span></a>
+			</div>
+			{% endif %}
 		</div>
 
 		{% if page.object_list %}
-		<table class="table" id="package-list-table">
-			<thead>
+		{% block package_list_content %}
+		<table class="table">
+			<thead class="bg-primary">
 				<tr>
-					<th><a href="?{% qs_update request sort=sort_fields.name %}">{% trans 'Title' %}</a></th>
+					{% sort_th request "name" "Title" %}
+					<th><a href="?{% qs_update request sort='name' %}" class="d-block">{% trans 'Title' %} <span class="float-right">{% icon 'sort-down' %}</span></a></th>
 					<th>{% trans 'Author(s)' %}</th>
-					<th><a href="?{% qs_update request sort=sort_fields.created %}">{% trans 'Date' %}</a></th>
-					<th><a href="?{% qs_update request sort=sort_fields.rating %}">{% trans 'Rating' %}</a></th>
-					<th>{% trans 'Comments' %}</th>
+					<th><a href="?{% qs_update request sort='-created_at' %}">{% trans 'Created' %}</a></th>
+					<th><a href="?{% qs_update request sort='-uploaded_at' %}">{% trans 'Uploaded' %}</a></th>
+					<th><a href="?{% qs_update request sort='-rating' %}">{% trans 'Rating' %}</a></th>
 					<th>{% trans 'Tags' %}</th>
 				</tr>
 			</thead>
@@ -70,21 +96,20 @@
 				<tr>
 					<td><a href="{% url 'packages:detail' package.file_hash %}">{{ package.name }}</a></td>
 					<td>
-						{% for author in package.authors.all %}
+						{% for author in package.created_by.all %}
 							{% if author.slug in filtered_authors %}<mark>{% endif %}<a href="?{% qs_update request author=author.slug %}" title="{% trans 'Show only this user\'s maps' %}">{{ author }}</a>{% if author.slug in filtered_authors %}</mark>{% endif %}{% if not forloop.last %}, {% endif %}
 						{% empty %}
 							{% trans 'Unknown' %}
 						{% endfor %}
 					</td>
-					<td>{{ package.created }}</td>
+					<td>{{ package.created_at }}</td>
+					<td>{{ package.uploaded_at }}</td>
 					<td class="text-nowrap">
 					{% if package.rating %}
 						{{ package.rating|floatformat:"-2" }}
 					{% endif %}
 					</td>
-					<td>{% get_comment_count for package as comment_count %}{{ comment_count }}</td>
 					<td>
-
 					{% for tag in package.tags.all %}
 						<div class="btn-group btn-group-sm mb-1">
 						{% if tag.slug in filtered_tags %}
@@ -105,9 +130,10 @@
 				{% endfor %}
 			</tbody>
 		</table>
+		{% endblock %}
 
 		<div class="justify-content-center">
-			{% include 'packages/package_pagination.html' %}
+			{% include 'packages/includes/pagination.html' %}
 		</div>
 		{% else %}
 			<p>{% trans 'No maps available' %}</p>

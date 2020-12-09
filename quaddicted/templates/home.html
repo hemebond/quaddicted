@@ -2,6 +2,7 @@
 {% load static %}
 {% load quaddicted %}
 {% load i18n %}
+{% load forum_extras %}
 
 
 {% block content %}
@@ -74,7 +75,7 @@
 
 	<div class="row">
 		<!-- Forum Activity -->
-		<div class="col-8">
+		<div class="col-lg-8">
 			<table class="table">
 				<thead>
 					<tr>
@@ -86,9 +87,18 @@
 					{% for topic in latest_topics %}
 						<tr>
 							<td>
-								{{ topic }}
+								<h5 class="">
+									<a href="{{ topic.last_post.get_absolute_url }}">
+										{{ topic }}
+									</a>
+								</h5>
+								<h6 class="card-subtitle text-muted">{{ topic.forum }}</h6>
 							</td>
 							<td>
+								<time datetime="{{ topic.last_post.create }}">{% forum_time topic.last_post.created %}</time>
+								<span class="byuser">
+									{% blocktranslate with username=topic.last_post.user.username %}by {{ username }}{% endblocktranslate %}
+								</span>
 							</td>
 						</tr>
 					{% endfor %}
@@ -97,7 +107,7 @@
 		</div>
 
 		<!-- Links -->
-		<div class="col-4">
+		<div class="col-lg-4">
 			<div class="card mb-3">
 				<div class="card-header">
 					{% trans 'The 5 Minute Quake Guide' %}

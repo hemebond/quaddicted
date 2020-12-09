@@ -1,53 +1,12 @@
-{% extends "base.html" %}
+{% extends "packages/package_list.html" %}
 
 {% load i18n %}
 {% load static %}
 {% load quaddicted %}
 
 
-{% block content %}
-{% if page.object_list %}
-<section class="row">
-	<div class="col">
-		<h1 class="text-center">Showing {{ page.paginator.count }} Packages</h1>
-
-		<div class="d-flex align-items-start">
-			<form class="form-inline flex-grow-1" action="" method="get">
-				<div class="form-group mr-2 mb-2">
-					<input type="search"
-					       name="search"
-					       id="package-card-filter"
-					       class="form-control"
-					       data-cards="package-list-cards"
-					       placeholder="Filter/Search"
-					       value="{% if filtered_term %}{{ filtered_term }}{% endif %}">
-					{% for k, v in request.GET.lists %}
-					{% if k != 'search' %}
-					{% for i in v %}
-					<input type="hidden" name="{{ k }}" value="{{ i }}">
-					{% endfor %}
-					{% endif %}
-					{% endfor %}
-				</div>
-				<button type="submit" class="btn btn-primary mb-2 mr-2">{% trans 'Search' %}</button>
-				<a class="btn btn-primary mb-2" href="{% url 'packages:new' %}">{% icon 'upload' %} {% trans 'New Package' %}</a>
-			</form>
-
-			{% include 'packages/package_pagination.html' %}
-
-			<div class="btn-group ml-2" role="group" area-label="Views modes">
-				<a href="{% url 'packages:list' %}?{% qs_update request format=None %}"
-				   class="btn btn-secondary"
-				   title="List View">
-					{% icon 'bars' %}
-				</a>
-				<a class="btn btn-secondary disabled">
-					{% icon 'th' %}
-				</a>
-			</div>
-		</div>
-
-		<div class="row row-cols-1 row-cols-lg-3" id="package-list-cards">
+{% block package_list_content %}
+		<div class="row row-cols-1 row-cols-lg-3">
 {%     for package in page.object_list %}
 			<div class="col mb-3">
 				<div class="card h-100">
@@ -66,7 +25,7 @@
 						</h5>
 
 						<p class="card-text">
-							{% for author in package.authors.all %}
+							{% for author in package.created_by.all %}
 								{% if author.slug in filtered_authors %}<mark>{% endif %}<a href="?{% qs_update request author=author.slug %}" title="{% trans 'Show only this user\'s maps' %}">{{ author }}</a>{% if author.slug in filtered_authors %}</mark>{% endif %}{% if not forloop.last %}, {% endif %}
 							{% empty %}
 								{% trans 'Unknown' %}
@@ -94,7 +53,7 @@
 					<div class="card-footer">
 						<div class="row">
 							<div class="col">
-								<time datetime="{{ package.created }}">{{ package.created }}</time>
+								<time datetime="{{ package.created_at }}">{{ package.created_at }}</time>
 							</div>
 						{% if package.rating %}
 							<div class="col">
@@ -109,20 +68,6 @@
 			</div>
 {%     endfor %}
 		</div>
-
-		{% include 'packages/package_pagination.html' %}
-	</div>
-</section>
-
-
-{%     else %}
-<section class="section">
-	<div class="container">
-		<p>{% trans 'No packages available' %}</p>
-	</div>
-</section>
-{%     endif %}
-
 {% endblock %}
 
 

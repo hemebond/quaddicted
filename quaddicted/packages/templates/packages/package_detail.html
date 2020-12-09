@@ -92,7 +92,7 @@
 					</dd>
 
 					<dt class="col-sm-4">{% trans 'Created' %}</dt>
-					<dd class="col-sm-8 text-right"><time datetime="{{ package.created }}">{{ package.created }}</time></dd>
+					<dd class="col-sm-8 text-right"><time datetime="{{ package.created_at }}">{{ package.created_at }}</time></dd>
 
 				{%  if package.modified %}
 					<dt class="col-sm-4">{% trans 'Modified' %}</dt>

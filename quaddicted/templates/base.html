@@ -7,13 +7,15 @@
 		<link rel="shortcut icon" type="image/png" href="{% static 'injector64.png' %}">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>{% block title %}{% endblock %} - Quaddicted</title>
-		<!--<link rel="stylesheet" href="{% static 'ext/bootstrap-4.4.1-dist/css/bootstrap.min.css' %}">-->
-		<!--<link rel="stylesheet" href="{% static 'quaddicted.css' %}">-->
-		<link rel="stylesheet" href="{% static 'bootstrap.css' %}">
+		<!-- <link rel="stylesheet" href="{% static 'ext/bootstrap-4.4.1-dist/css/bootstrap.min.css' %}"> -->
+		<link rel="stylesheet" href="{% static 'quaddicted.css' %}">
+		<!-- <link rel="stylesheet" href="{% static 'src/bootstrap-5.0.0-alpha3-dist/css/bootstrap.min.css' %}"> -->
 		<style type="text/css">
+		/*
 			.panel {
 				position:relative;
 			}
+		*/
 			.icon {
 				height: 1em;
 				width: 1em;
@@ -47,15 +49,15 @@
 {% block head %}{% endblock %}
 
 	</head>
-	<body class="" style="background-color: #0d0b05">
-		<div class="container border-left border-right border-secondary" style="background-color: #201810">
+	<body class="">
+		<main class="container border-left border-right border-secondary" style="background-color: #201810">
 			<div class="row">
 				<div class="col-xl-9">
 					<a class="" href="/">
-						<img src="{% static 'top.png' %}" alt="">
+						<img src="{% static 'top.png' %}" alt="" class="img-fluid">
 					</a>
 				</div>
-				<div class="col-xl-3 mt-3">
+				<div class="col-xl-3 mt-3 d-none d-xl-flex">
 					<div class="media border border-primary p-1 d-none d-xl-flex m-2">
 						<a href="/tools/quake_injector" class="mr-3">
 							<img src="{% static 'injector64.png' %}" alt="">
@@ -69,9 +71,9 @@
 
 			<div class="row">
 				<div class="col">
-					<nav class="navbar navbar-expand-lg mb-3">
-						<a class="navbar-brand d-sm-inline-block d-lg-none" href="#">
-							<img src="{% static 'injector64.png' %}" width="30" height="30" alt="" class="ml-3">
+					<nav class="navbar navbar-dark navbar-expand-lg mb-3 bg-dark">
+						<a class="navbar-brand d-sm-inline-block d-lg-none" href="/">
+							<img src="{% static 'injector64.png' %}" width="30" height="30" alt="" class="">
 						</a>
 						<button class="navbar-toggler"
 						        type="button"
@@ -87,7 +89,7 @@
 							<div class="text-lg-center mx-lg-auto">
 								<ul class="navbar-nav justify-content-center">
 									<li class="nav-item">
-										<a class="nav-link" href="/home/">{% trans 'Home' %}</a>
+										<a class="nav-link" href="/">{% trans 'Home' %}</a>
 									</li>
 									<li class="nav-item">
 										<a class="nav-link" href="/news/">{% trans 'News' %}</a>
@@ -143,10 +145,11 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</main>
 
 		<script src="{% static 'ext/jquery-3.4.1.min.js' %}"></script>
 		<script src="{% static 'ext/bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js' %}"></script>
+		<script src="{% static 'src/bootstrap-5.0.0-alpha3-dist/js/bootstrap.bundle.min.js' %}"></script>
 		<script src="{% static 'gdpr.min.js' %}"></script>
 
 		{% block javascript %}{% endblock %}

@@ -1,13 +1,29 @@
 @import "../bootswatch/_variables.scss";
-@import "../bootstrap/scss/bootstrap";
-@import "../bootswatch/_bootswatch.scss";
+@import "../bootstrap-5.0.0-alpha3/scss/bootstrap";
+// @import "../bootswatch/_bootswatch.scss";
 
-.navbar {
-  background-color: $light-brown;
+.navbar.bg-dark {
+  background-color: darken($brown, 5%) !important;
   font-size: 1.5em;
   font-weight: bold;
 }
-.navbar-expand-lg .navbar-nav .nav-link {
-	padding-right: 1rem;
-	padding-left: 1rem;
+// .navbar-expand-lg .navbar-nav .nav-link {
+// 	padding-right: 1rem;
+// 	padding-left: 1rem;
+// }
+
+
+/* Table sort indicators */
+
+th {
+	color: $white !important;
+}
+th a {
+	color: $white;
+}
+
+th.sortable a {
+	color: $white;
+  position: relative;
+  cursor: pointer;
 }
