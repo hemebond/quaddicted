@@ -279,7 +279,7 @@ def package_add(request):
 				author_obj, created = PackageAuthor.objects.get_or_create(name=author_name, slug=author_slug)
 				author_set.add(author_obj)
 
-			new_package.authors.set(author_set)
+			new_package.created_by.set(author_set)
 
 			return HttpResponseRedirect(new_package.get_absolute_url())
 		else:
@@ -312,7 +312,7 @@ def package_edit(request, package_hash):
 		packageurl_formset = PackageUrlFormSet(request.POST, request.FILES, instance=package)
 
 		if package_form.is_valid() and screenshot_formset.is_valid() and packageurl_formset.is_valid():
-			author_names = package_form.cleaned_data.pop('authors')
+			author_names = package_form.cleaned_data.pop('created_by')
 			pkg = package_form.save()
 			screenshot_formset.save()
 			packageurl_formset.save()
@@ -327,7 +327,7 @@ def package_edit(request, package_hash):
 				author_obj, created = PackageAuthor.objects.get_or_create(name=author_name, slug=author_slug)
 				author_set.add(author_obj)
 
-			pkg.authors.set(author_set)
+			pkg.created_by.set(author_set)
 
 			if "_continue" in request.POST:
 				return HttpResponseRedirect(

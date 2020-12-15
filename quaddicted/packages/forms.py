@@ -53,7 +53,7 @@ class RatingForm(forms.Form):
 
 
 class PackageEditForm(forms.ModelForm):
-	authors = AuthorField(help_text="A comma-separated list of author names")
+	created_by = AuthorField(help_text="A comma-separated list of author names")
 
 	class Meta:
 		model = Package
@@ -61,13 +61,13 @@ class PackageEditForm(forms.ModelForm):
 			'name',
 			'game',
 			'tags',
-			'authors',
+			'created_by',
 			'description',
 		]
 
 
 class PackageCreateForm(forms.ModelForm):
-	authors = AuthorField(help_text="A comma-separated list of author names")
+	created_by = AuthorField(help_text="A comma-separated list of author names")
 
 	class Meta:
 		model = Package
@@ -76,7 +76,7 @@ class PackageCreateForm(forms.ModelForm):
 			'name',
 			'game',
 			'tags',
-			'authors',
+			'created_by',
 			'description',
 		]
 
