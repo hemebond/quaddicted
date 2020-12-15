@@ -91,7 +91,6 @@ def package_list_context(request):
 	#
 	# Update the sorting field dict for table headers
 	#
-	print(sort)
 	packages = packages.order_by(*sort[::-1])
 
 	#
@@ -105,9 +104,6 @@ def package_list_context(request):
 	page = paginator.get_page(page_number)
 
 	context = {
-		# set the main navbar section active
-		'active_section': 'packages',
-
 		# list of authors being filtered on
 		'filtered_authors': request.GET.getlist('author', []),
 
@@ -282,7 +278,6 @@ def package_add(request):
 		'form': package_form,
 		'screenshot_inline': screenshot_formset,
 		'packageurl_inline': packageurl_formset,
-		'active_section': 'packages',
 	})
 
 

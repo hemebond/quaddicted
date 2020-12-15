@@ -41,8 +41,6 @@ class LogoutView(AuthLogoutView):
 	def get(self, request, *args, **kwargs):
 		context = self.get_context_data()
 
-		context['active_section'] = "login"
-
 		return self.render_to_response(context)
 
 	def post(self, request, *args, **kwargs):
@@ -101,7 +99,5 @@ class HomePageView(TemplateView):
 			('/engines/software_vs_glquake', 'Differences between software rendered Quake and GLQuake'),
 			('/quake/quake_arcade_tournament_edition', 'Quake Arcade Tournament Edition'),
 		]
-
-		context['active_section'] = "home"
 
 		return context
