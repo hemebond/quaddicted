@@ -6,6 +6,8 @@
 {% load comments %}
 
 
+{% block title %}Packages{% endblock %}
+
 
 {% block head %}
 <link rel="alternate" type="application/json" href="?{{ request.GET.urlencode }}&format=json">
@@ -79,15 +81,14 @@
 
 		{% if page.object_list %}
 		{% block package_list_content %}
-		<table class="table">
+		<table class="table" id="package-list">
 			<thead class="bg-primary">
 				<tr>
-					{% sort_th request "name" "Title" %}
-					<th><a href="?{% qs_update request sort='name' %}" class="d-block">{% trans 'Title' %} <span class="float-right">{% icon 'sort-down' %}</span></a></th>
+					{% sort_th request "Title" "name" "sort-alpha-down" "sort-alpha-down-alt" %}
 					<th>{% trans 'Author(s)' %}</th>
-					<th><a href="?{% qs_update request sort='-created_at' %}">{% trans 'Created' %}</a></th>
-					<th><a href="?{% qs_update request sort='-uploaded_at' %}">{% trans 'Uploaded' %}</a></th>
-					<th><a href="?{% qs_update request sort='-rating' %}">{% trans 'Rating' %}</a></th>
+					{% sort_th request "Created" "-created_at" "sort-numeric-down" "sort-numeric-down-alt" %}
+					{% sort_th request "Uploaded" "-uploaded_at" "sort-numeric-down" "sort-numeric-down-alt" %}
+					{% sort_th request "Rating" "-rating" "sort-numeric-down" "sort-numeric-down-alt" %}
 					<th>{% trans 'Tags' %}</th>
 				</tr>
 			</thead>

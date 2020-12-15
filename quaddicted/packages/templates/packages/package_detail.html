@@ -84,7 +84,7 @@
 				<dl class="row">
 					<dt class="col-md-4">{% trans 'Authors' %}</dt>
 					<dd class="col-md-8 text-right">
-					{% for author in package.authors.all %}
+					{% for author in package.created_by.all %}
 						<a href="{% url 'packages:list' %}?author={{ author.slug }}" title="Show only this users packages">{{ author }}</a>{% if not forloop.last %}, {% endif %}
 					{% empty %}
 						{% trans 'Unknown' %}

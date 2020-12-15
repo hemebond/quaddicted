@@ -77,7 +77,7 @@ def package_list_context(request):
 	#
 	packages = Package.objects.filter(published=True)
 	# packages = package_list_filter(request, packages).distinct().order_by(sort)
-	packages = package_list_filter(request, packages).distinct()
+	packages = package_list_filter(request, packages)
 
 	#
 	# Sorting order form request or use defaults
@@ -91,17 +91,8 @@ def package_list_context(request):
 	#
 	# Update the sorting field dict for table headers
 	#
-	# sort_field = sort[1:] if sort.startswith('-') else sort
-	for sort_field in sort:
-		packages = packages.order_by(sort_field)
-
-	# for field, direction in sort_fields.items():
-	# 	# invert the sort direction of each field
-	# 	if field == sort_field:
-	# 		# This is the field we're actively sorting by
-	# 		sort_fields[field] = field if sort.startswith('-') else '-' + field
-	# 	else:
-	# 		sort_fields[field] = '-' + field if direction == 'desc' else field
+	print(sort)
+	packages = packages.order_by(*sort[::-1])
 
 	#
 	# Pagination
@@ -114,9 +105,6 @@ def package_list_context(request):
 	page = paginator.get_page(page_number)
 
 	context = {
-		# package list table sort links
-		'sort_fields': sort,
-
 		# set the main navbar section active
 		'active_section': 'packages',
 
