@@ -99,53 +99,6 @@ class HomePageView(TemplateView):
 			('/quake/quake_arcade_tournament_edition', 'Quake Arcade Tournament Edition'),
 		]
 
-		return context
-
-
-
-class HomePageNewView(TemplateView):
-	"""
-	New home page layout and style
-	"""
-	template_name = "home_new.html"
-
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-
-		# 5 Minute Quake Guide Links
-		context['guide_links'] = [
-			('/quake/buy', 'Buy Quake'),
-			('/quake/download', 'Download Quake'),
-			('/quake/installation', 'Quake Installation'),
-			('/quake/recommended_engines', 'Recommended Quake Engines'),
-			('/quake/configuration', 'Quake Configuration'),
-			('/tools/quake_injector', 'One-click map installation with the Quake Injector'),
-			('/quaddicted.com/contribute', 'Be awesome, contribute!'),
-		]
-
-		# Guide and Help
-		context['help_links'] = [
-			('/help/how_to_package_and_release_a_file', 'How to package and release a file'),
-			('/help/installing_custom_content', 'Installing custom content'),
-			('/help/troubleshooting_common_errors', 'Troubleshooting / Common Errors'),
-			('https://quakewiki.org/wiki/Easter_eggs', 'Easter eggs'),
-			('/quake/cooperative', 'Cooperative Quake'),
-			('/start?do=index', 'Sitemap'),
-		]
-
-		# the the four newest packages
-		context['latest_pkgs'] = Package.objects.order_by('-uploaded_on')[:4]
-
-		# get the five topics with the newest posts
-		context['latest_topics'] = Topic.objects.order_by('-last_post__created')[:5]
-
-		# Wiki highlights
-		context['wiki_highlights'] = [
-			('/quake/episodes_maps', 'Quake\'s Episodes and Maps'),
-			('/quake/monsters', 'Quake\'s Monsters'),
-			('/tronyn-reviews/start', 'Tronyn reviews'),
-			('/engines/software_vs_glquake', 'Differences between software rendered Quake and GLQuake'),
-			('/quake/quake_arcade_tournament_edition', 'Quake Arcade Tournament Edition'),
-		]
+		context['active_section'] = "home"
 
 		return context

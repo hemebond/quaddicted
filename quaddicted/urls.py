@@ -19,7 +19,7 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from quaddicted.views import LogoutView, HomePageView, HomePageNewView
+from quaddicted.views import LogoutView, HomePageView
 from quaddicted.packages.views import package_add
 from quaddicted.api.views import package_list, package_detail, package_comments
 
@@ -35,8 +35,7 @@ urlpatterns = [
 	path('packages/', include('quaddicted.packages.urls')),
 	path('comments/', include('django_comments.urls')),
 	path('accounts/', include('registration.backends.default.urls')),
-	path('', HomePageView.as_view(), name='homepage'),
-	path('home/', HomePageNewView.as_view(), name='homepagenew'),
+	path('', HomePageView.as_view(), name='home'),
 ]
 
 
