@@ -87,12 +87,15 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            # Add project-level template tags
+            'libraries': {
+                'quaddicted': 'quaddicted.templatetags.quaddicted',
+            }
         },
     },
 ]
 
 WSGI_APPLICATION = 'quaddicted.wsgi.application'
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
