@@ -40,6 +40,9 @@ class LogoutView(AuthLogoutView):
 	@method_decorator(never_cache)
 	def get(self, request, *args, **kwargs):
 		context = self.get_context_data()
+
+		context['active_section'] = "login"
+
 		return self.render_to_response(context)
 
 	def post(self, request, *args, **kwargs):
