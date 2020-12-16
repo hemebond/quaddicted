@@ -129,7 +129,7 @@ def get(obj, key):
 
 
 
-@register.inclusion_tag("packages/includes/nav_links.html", takes_context=True)
+@register.inclusion_tag("includes/nav_links.html", takes_context=True)
 def nav_links(context):
 	user = context.request.user
 	resolver_match = context.request.resolver_match

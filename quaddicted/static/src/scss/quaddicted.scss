@@ -16,14 +16,14 @@
 /* Table sort indicators */
 
 th {
-	color: $white !important;
+	background-color: darken($pink, 5%) !important;
+	color: $white;
 }
 th a {
 	color: $white;
 }
-
 th.sortable a {
 	color: $white;
-  position: relative;
-  cursor: pointer;
+	position: relative;
+	cursor: pointer;
 }

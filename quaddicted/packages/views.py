@@ -77,7 +77,7 @@ def package_list_context(request):
 	#
 	packages = Package.objects.filter(published=True)
 	# packages = package_list_filter(request, packages).distinct().order_by(sort)
-	packages = package_list_filter(request, packages)
+	packages = package_list_filter(request, packages).distinct()
 
 	#
 	# Sorting order form request or use defaults
