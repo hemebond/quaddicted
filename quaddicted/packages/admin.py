@@ -12,6 +12,7 @@ class RatingAdmin(admin.ModelAdmin):
 @admin.register(PackageAuthor)
 class AuthorAdmin(admin.ModelAdmin):
 	list_display = ('name', 'slug')
+	search_fields = ('name', 'slug')
 
 
 @admin.register(Package)

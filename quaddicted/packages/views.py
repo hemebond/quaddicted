@@ -307,7 +307,10 @@ def package_edit(request, package_hash):
 			# create or fetch the PackageAuthor objects for them
 			for author_name in author_names:
 				author_slug = slugify(author_name, allow_unicode=True)
-				author_obj, created = PackageAuthor.objects.get_or_create(name=author_name, slug=author_slug)
+				try:
+					author_obj, created = PackageAuthor.objects.get_or_create(name=author_name, slug=author_slug)
+				except IntegrityError:
+					author_obj = PackageAuthor.objects.get(slug=author_slug)
 				author_set.add(author_obj)
 
 			pkg.created_by.set(author_set)
