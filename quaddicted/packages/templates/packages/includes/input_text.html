@@ -8,5 +8,5 @@
 	       value="{% if f.value %}{{ f.value }}{% endif %}"
 	       {% if f.required %}required="required"{% endif %}>
 	<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-	{% include 'packages/field_errors.html' %}
+	{% include 'packages/includes/field_errors.html' %}
 </div>

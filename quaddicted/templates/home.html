@@ -95,10 +95,12 @@
 								<h6 class="card-subtitle text-muted">{{ topic.forum }}</h6>
 							</td>
 							<td>
-								<time datetime="{{ topic.last_post.create }}">{% forum_time topic.last_post.created %}</time>
-								<span class="byuser">
-									{% blocktranslate with username=topic.last_post.user.username %}by {{ username }}{% endblocktranslate %}
-								</span>
+								{% if topic.last_post %}
+									<time datetime="{{ topic.last_post.create }}">{% forum_time topic.last_post.created %}</time>
+									<span class="byuser">
+										{% blocktranslate with username=topic.last_post.user.username %}by {{ username }}{% endblocktranslate %}
+									</span>
+								{% endif %}
 							</td>
 						</tr>
 					{% endfor %}
