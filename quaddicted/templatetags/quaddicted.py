@@ -4,6 +4,8 @@ from django import template
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from taggit.utils import edit_string_for_tags
+from django.utils.translation import gettext as _
+from django.urls import reverse
 
 register = template.Library()
 
@@ -127,9 +129,52 @@ def get(obj, key):
 
 
 
-@register.simple_tag
-def nav_link(request, id):
-	return ""
+@register.inclusion_tag("packages/includes/nav_links.html", takes_context=True)
+def nav_links(context):
+	user = context.request.user
+	resolver_match = context.request.resolver_match
+
+	links = {
+		"home": {
+			"href": "/",
+			"text": _("Home"),
+			"active": resolver_match.url_name == 'home',
+		},
+		"news": {
+			"href": "/news/",
+			"text": _("News"),
+			"active": resolver_match.url_name == 'news',
+		},
+		"packages": {
+			"href": reverse("packages:list"),
+			"text": _("Maps"),
+			"active": resolver_match.route.startswith("packages/")
+		},
+		"forum": {
+			"href": reverse("djangobb:index"),
+			"text": _("Forum"),
+			"active": resolver_match.route.startswith("forum/")
+		},
+		"help": {
+			"href": "/help/",
+			"text": _("Help"),
+		},
+		"login": {
+			"href": reverse("auth_login"),
+			"text": _("Login"),
+			"active": resolver_match.url_name in ("auth_login", "auth_logout")
+		},
+	}
+
+	# give logged-in users a logout link instead
+	if user.is_authenticated:
+		links['login'].update({
+			"href": reverse("auth_logout"),
+			"text": _("Logout"),
+		})
+
+	# return just the plain list of links
+	return {"links": links.values()}
 
 
 

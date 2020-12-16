@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load static %}
+{% load quaddicted %}
 <!DOCTYPE html>
 <html>
 	<head>
@@ -11,11 +12,6 @@
 		<link rel="stylesheet" href="{% static 'quaddicted.css' %}">
 		<!-- <link rel="stylesheet" href="{% static 'src/bootstrap-5.0.0-alpha3-dist/css/bootstrap.min.css' %}"> -->
 		<style type="text/css">
-		/*
-			.panel {
-				position:relative;
-			}
-		*/
 			.icon {
 				height: 1em;
 				width: 1em;
@@ -58,7 +54,7 @@
 					</a>
 				</div>
 				<div class="col-xl-3 mt-3 d-none d-xl-flex">
-					<div class="media border border-primary p-1 d-none d-xl-flex m-2">
+					<div class="media border border-primary p-1 d-none d-xl-flex mb-3">
 						<a href="/tools/quake_injector" class="mr-3">
 							<img src="{% static 'injector64.png' %}" alt="">
 						</a>
@@ -88,33 +84,7 @@
 						<div class="collapse navbar-collapse" id="navbarSupportedContent">
 							<div class="text-lg-center mx-lg-auto">
 								<ul class="navbar-nav justify-content-center">
-									<li class="nav-item">
-										<a class="nav-link{% if request.resolver_match.url_name == 'home' %} active{% endif %}" href="/">{% trans 'Home' %}</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link{% if request.resolver_match.url_name == 'news' %} active{% endif %}" href="/news/">{% trans 'News' %}</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link{% if request.resolver_match.url_name == 'package_list' %} active{% endif %}" href="{% url 'packages:list' %}">{% trans 'Packages' %}</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="/wiki/">{% trans 'Wiki' %}</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link{% if request.resolver_match.url_name == 'forum' %} active{% endif %}" href="{% url 'djangobb:index' %}">{% trans 'Forum' %}</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link{% if request.resolver_match.url_name == 'help' %} active{% endif %}" href="/help/">{% trans 'Help' %}</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link{% if request.resolver_match.url_name == 'auth_logout' %} active{% endif %}"
-										{% if user.is_authenticated %}
-											 href="{% url 'auth_logout' %}">{% trans 'Logout' %}
-										{% else %}
-											href="{% url 'auth_login' %}?next={{ request.path }}">{% trans 'Login' %}
-										{% endif %}
-										</a>
-									</li>
+									{% nav_links %}
 								</ul>
 							</div>
 						</div>
@@ -124,7 +94,6 @@
 
 			{% block content %}{% endblock %}
 
-										{{ request.resolver_match }}
 			<div class="modal fade cookieModal" id="cookieModal" tabindex="-1" role="dialog" aria-labelledby="cookieModalLabel">
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">

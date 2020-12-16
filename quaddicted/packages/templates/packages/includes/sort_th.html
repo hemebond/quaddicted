@@ -1,0 +1,10 @@
+{% load i18n %}
+{% load quaddicted %}
+<th class="text-nowrap">
+	<a href="?{{ querystring }}#package-list" class="d-block text-decoration-none">
+		{% if sorted %}
+			<span class="float-right">{% icon sort_icon %}</span>
+		{% endif %}
+		<span class="mr-3">{% trans text %}</span>
+	</a>
+</th>
