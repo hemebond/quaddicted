@@ -233,8 +233,8 @@ def package_add(request):
 		packageurl_formset = PackageUrlFormSet(request.POST, request.FILES)
 
 		if package_form.is_valid() and screenshot_formset.is_valid() and packageurl_formset.is_valid():
-			# Remove the authors field before saving the new package instance
-			author_names = package_form.cleaned_data.pop('authors')
+			# Remove the created_by field before saving the new package instance
+			author_names = package_form.cleaned_data.pop('created_by')
 
 			# Save new package instance so we can attach screenshots and URLs
 			new_package = package_form.save()
