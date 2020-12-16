@@ -86,7 +86,7 @@ class HomePageView(TemplateView):
 		]
 
 		# the the four newest packages
-		context['latest_pkgs'] = Package.objects.order_by('-uploaded_at')[:5]
+		context['latest_pkgs'] = Package.objects.filter(published=True).order_by('-uploaded_at')[:5]
 
 		# get the five topics with the newest posts
 		context['latest_topics'] = Topic.objects.order_by('-last_post__created')[:5]
