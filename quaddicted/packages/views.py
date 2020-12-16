@@ -221,7 +221,6 @@ def package_form(request):
 
 
 @login_required
-@permission_required('quaddicted_packages.add_package')
 def package_add(request):
 	ScreenshotFormSet = inlineformset_factory(Package, PackageScreenshot, exclude=())
 	PackageUrlFormSet = inlineformset_factory(Package, PackageUrl, exclude=())
@@ -283,7 +282,6 @@ def package_add(request):
 
 
 @login_required
-@permission_required('quaddicted_packages.change_package')
 def package_edit(request, package_hash):
 	package = get_object_or_404(Package, file_hash=package_hash)
 	ScreenshotFormSet = inlineformset_factory(Package, PackageScreenshot, exclude=())

@@ -52,7 +52,7 @@
 
 			<div class="col-auto">
 				<div class="btn-group" role="group" area-label="View modes">
-					{% if package_list_type == "card" %}
+					{% if package_list_type == "cards" %}
 						<a href="{% url 'packages:list' %}?{% qs_update request format=None %}" class="btn btn-primary">
 							{% icon 'bars' %}
 						</a>
@@ -60,7 +60,7 @@
 							{% icon 'th' %}
 						</a>
 					{% else %}
-						<a class="btn btn-primary disabled" tabindex="-1">
+						<a class="btn btn-primary disabled" title="Table View" tabindex="-1">
 							{% icon 'bars' %}
 						</a>
 						<a href="{% url 'packages:list' %}?{% qs_update request format='card' %}"
