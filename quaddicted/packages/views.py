@@ -205,6 +205,7 @@ def package_detail(request, package_hash):
 		'comments': comments,
 		'rating_qset': rating_qset,
 		'screenshots': screenshots,
+		'can_edit': request.user.has_perm("quaddicted_packages.change_package") or request.user == package.uploaded_by,
 	})
 
 
@@ -236,7 +237,12 @@ def package_add(request):
 			author_names = package_form.cleaned_data.pop('created_by')
 
 			# Save new package instance so we can attach screenshots and URLs
-			new_package = package_form.save()
+			new_package = package_form.save(commit=False)
+			new_package.uploaded_by = request.user
+			new_package.save()
+
+			# save the tags
+			package_form.save_m2m()
 
 			#
 			# Create Screenshots

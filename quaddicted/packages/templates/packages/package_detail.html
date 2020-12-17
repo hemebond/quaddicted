@@ -18,10 +18,8 @@
 	<div class="col">
 		<h1 class="title is-1">
 			{{ package }}
-			{% if user.is_authenticated %}
-			{% if perms.quaddicted_packages.change_package %}
+			{% if can_edit %}
 			<a href="{% url 'packages:edit' package.file_hash %}" class="btn btn-primary float-right">{% icon 'edit' %}</a>
-			{% endif %}
 			{% endif %}
 		</h1>
 	</div>
