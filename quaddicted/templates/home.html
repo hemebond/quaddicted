@@ -8,9 +8,31 @@
 {% block content %}
 	<div class="row">
 		<div class="col">
+			<h2>Latest Releases</h2>
+
+			<div class="card-group mb-3">
+				{% for pkg in latest_pkgs %}
+					<div class="card m-1">
+						<a href="{% url 'packages:detail' pkg.file_hash %}" class="bg-secondary ratio ratio-16x9">
+							<img class="card-img-top overflow-hidden"
+								{% if pkg.screenshots.exists %}
+									src="{{ pkg.screenshots.first.thumbnail.url }}">
+								{% else %}
+									src="{% static '/384x216.svg' %}">
+								{% endif %}
+						</a>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<!-- Forum Activity -->
+		<div class="col-lg-8">
 			<h2>Featured Releases</h2>
 
-			<div id="latest_pkgs" class="carousel slide" data-ride="carousel">
+			<div id="latest_pkgs" class="carousel slide mb-3" data-ride="carousel">
 				<ol class="carousel-indicators">
 					{% for pkg in latest_pkgs %}
 						<li data-target="#latest_pkgs" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
@@ -18,7 +40,7 @@
 				</ol>
 
 
-				<div class="carousel-inner">
+				<div class="carousel-inner ratio ratio-16x9">
 					{% for pkg in latest_pkgs %}
 						<div class="carousel-item {% if forloop.first %}active{% endif %} overflow-hidden" style="max-height: 625px;">
 							<img class="d-block w-100"
@@ -48,34 +70,7 @@
 					<span class="visually-hidden">Next</span>
 				</a>
 			</div>
-		</div>
-	</div>
 
-
-	<div class="row">
-		<div class="col">
-			<h2>Latest Releases</h2>
-
-			<div class="card-group mb-3">
-				{% for pkg in latest_pkgs %}
-					<div class="card m-1">
-						<a href="{% url 'packages:detail' pkg.file_hash %}" class="bg-secondary">
-							<img class="card-img-top overflow-hidden"
-								{% if pkg.screenshots.exists %}
-									src="{{ pkg.screenshots.first.thumbnail.url }}">
-								{% else %}
-									src="{% static '/384x216.svg' %}">
-								{% endif %}
-						</a>
-					</div>
-				{% endfor %}
-			</div>
-		</div>
-	</div>
-
-	<div class="row">
-		<!-- Forum Activity -->
-		<div class="col-lg-8">
 			<table class="table">
 				<thead>
 					<tr>

@@ -74,8 +74,8 @@ def icon_rating_for_user(package, user):
 
 
 @register.simple_tag
-def rating_stars(rating):
-	return mark_safe(icon('star') * int(rating))
+def rating_stars(score):
+	return mark_safe('<span class="rating-%s">%s</span>' % (int(score), icon('star') * int(score)))
 
 
 @register.simple_tag
@@ -83,6 +83,13 @@ def icon(icon):
 	# return mark_safe('<svg class="icon" viewBox="0 0 10 10"><use href="' + settings.STATIC_URL + '/ext/fontawesome-free-5.12.0-web/sprites/solid.svg#' + icon + '"></use></svg>')
 	# return mark_safe('<svg class="icon" viewBox="0 0 10 10"><use href="' + settings.STATIC_URL + '/fa/' + icon + '.svg"></use></svg>')
 	return mark_safe('<svg class="icon" viewBox="0 0 1 1"><use href="' + settings.STATIC_URL + 'fontawesome.svg#' + icon + '"></use></svg>')
+
+
+
+@register.simple_tag
+def rating_badge(score):
+	return mark_safe('<span class="badge rating-bg-%s">%s</span>' % (int(score), int(score)))
+
 
 
 @register.filter
@@ -178,7 +185,7 @@ def nav_links(context):
 
 
 
-@register.inclusion_tag("packages/includes/sort_th.html")
+@register.inclusion_tag("includes/sort_th.html")
 def sort_th(request, text, sort_by, icon_asc="sort-up", icon_desc="sort-down"):
 	"""
 	"sort_by" is the field name with "-" prefix for descending sort

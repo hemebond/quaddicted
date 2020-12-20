@@ -10,12 +10,14 @@
 {%     for package in page.object_list %}
 			<div class="col mb-3">
 				<div class="card h-100">
-					<a href="{% url 'packages:detail' package.file_hash %}" class="bg-secondary">
+					<a href="{% url 'packages:detail' package.file_hash %}" class="bg-secondary ratio ratio-16x9">
+						<img class="card-img-top" src="
 						{% if package.screenshots.exists %}
-							<img class="card-img-top" src="{{ package.screenshots.first.thumbnail.url }}" alt="">
+							{{ package.screenshots.first.thumbnail.url }}
 						{% else %}
-							<img class="card-img-top" src="{% static '/384x216.svg' %}" alt="">
+							{% static '/384x216.svg' %}
 						{% endif %}
+						" alt="">
 					</a>
 					<div class="card-body">
 						<h5 class="card-text">
@@ -37,12 +39,12 @@
 								<div class="btn-group btn-group-sm mb-1">
 									{% if tag.slug in filtered_tags %}
 										<a href="?{% filter_del_tag request tag.slug %}"
-										   class="btn btn-warning">
+										   class="btn btn-primary btn-sm">
 											{% icon 'times' %} {{ tag }}
 										</a>
 									{% else %}
 										<a href="?{% filter_add_tag request tag.slug %}"
-										   class="btn btn-primary">
+										   class="btn btn-secondary btn-sm">
 											{% icon 'plus' %} {{ tag }}
 										</a>
 									{% endif %}

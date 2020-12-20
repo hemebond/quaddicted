@@ -95,35 +95,40 @@
 			<tbody>
 				{% for package in page.object_list %}
 				<tr>
-					<td><a href="{% url 'packages:detail' package.file_hash %}">{{ package.name }}</a></td>
+					<td data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-img="{{ package.screenshots.first.thumbnail.url }}">
+						<a href="{% url 'packages:detail' package.file_hash %}">{{ package.name }}</a>
+					</td>
 					<td>
 						{% for author in package.created_by.all %}
-							{% if author.slug in filtered_authors %}<mark>{% endif %}<a href="?{% qs_update request author=author.slug %}" title="{% trans 'Show only this user\'s maps' %}">{{ author }}</a>{% if author.slug in filtered_authors %}</mark>{% endif %}{% if not forloop.last %}, {% endif %}
+							{% if author.slug in filtered_authors %}
+								<mark class="rounded">{{ author }}</mark>{% else %}
+								<a href="?{% qs_update request author=author.slug %}" title="{% blocktranslate %}Show packages by {{ author }}{% endblocktranslate %}">{{ author }}</a>{% endif %}{% if not forloop.last %}, {% endif %}
 						{% empty %}
 							{% trans 'Unknown' %}
 						{% endfor %}
 					</td>
-					<td>{{ package.created_at }}</td>
-					<td>{{ package.uploaded_at }}</td>
-					<td class="text-nowrap">
-					{% if package.rating %}
-						{{ package.rating|floatformat:"-2" }}
-					{% endif %}
+					<td class="text-nowrap text-center"><time datetime="{{ package.created_at | date:'c' }}">{{ package.created_at | date:"DATE_FORMAT" }}</time></td>
+					<td class="text-nowrap text-center"><time datetime="{{ package.uploaded_at | date:'c' }}">{{ package.uploaded_at | date:"DATE_FORMAT" }}</time></td>
+					<td class="text-nowrap text-center">
+						{% if package.rating %}
+							{# {{ package.rating|floatformat:"-2" }} #}
+							{% rating_badge package.rating %}
+						{% endif %}
 					</td>
 					<td>
 					{% for tag in package.tags.all %}
 						<div class="btn-group btn-group-sm mb-1">
-						{% if tag.slug in filtered_tags %}
-							<a href="?{% filter_del_tag request tag.slug %}"
-							   class="btn btn-warning">
-								{% icon 'minus' %} {{ tag }}
-							</a>
-						{% else %}
-							<a href="?{% filter_add_tag request tag.slug %}"
-							   class="btn btn-primary">
-								{% icon 'plus' %} {{ tag }}
-							</a>
-						{% endif %}
+							{% if tag.slug in filtered_tags %}
+								<a href="?{% filter_del_tag request tag.slug %}"
+								   class="btn btn-primary btn-sm">
+									{% icon 'times' %} {{ tag }}
+								</a>
+							{% else %}
+								<a href="?{% filter_add_tag request tag.slug %}"
+								   class="btn btn-secondary btn-sm">
+									{% icon 'plus' %} {{ tag }}
+								</a>
+							{% endif %}
 						</div>
 						{% endfor %}
 					</td>
@@ -145,4 +150,15 @@
 {% endblock %}
 
 
-{% block javascript %}{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+	$(window).on("load", function(){
+		// popovers initialization - on hover
+		$('[data-bs-toggle="popover"]').popover({
+			html: true,
+			trigger: 'hover',
+			content: function () { return '<img src="' + $(this).data('bs-img') + '" />'; }
+		});
+	});
+</script>
+{% endblock %}
