@@ -21,26 +21,9 @@
 	border-right-color:#ddd;
 	border-width:8px;
 }
-/*
-.carousel-item img {
-	max-height: 286.875px;
-}
-@media (min-width: 768px) {
-	.carousel-item img {
-		max-height: 388.125px;
-	}
-}
-@media (min-width: 992px) {
-	.carousel-item img {
-		max-height: 523.125px;
-	}
-}
-@media (min-width: 1200px) {
-	.carousel-item img {
-		max-height: 624.375px;
-	}
-}
-*/
+
+
+
 .carousel-item {
 	height: 286.875px;
 }
@@ -75,11 +58,6 @@
  *
  */
 .user-rating {
-	display: flex;
-	align-items: center;
-	width: 100%;
-}
-.user-rating > div {
 	padding-right: 0.5em;
 	display: flex;
 	flex-direction: row-reverse;
@@ -99,16 +77,24 @@ label.star svg.icon {
 	width: 2em;
 	height: 2em;
 }
-input.star:checked ~ label.star svg.icon {
-	fill: #fd4;
-	transition: all .25s;
-}
 input.star-5:checked ~ label.star svg.icon {
-	fill: #fe7;
+	fill: #00ff00;
+	text-shadow: 0 0 20px #952;
+}
+input.star-4:checked ~ label.star svg.icon {
+	fill: #a0d600;
+	text-shadow: 0 0 20px #952;
+}
+input.star-3:checked ~ label.star svg.icon {
+	fill: #d7a700;
+	text-shadow: 0 0 20px #952;
+}
+input.star-2:checked ~ label.star svg.icon {
+	fill: #f66d00;
 	text-shadow: 0 0 20px #952;
 }
 input.star-1:checked ~ label.star svg.icon {
-	fill: #f62;
+	fill: #ff0000;
 }
 label.star:hover {
 	transform: rotate(-15deg) scale(1.3);

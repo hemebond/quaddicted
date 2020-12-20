@@ -8,14 +8,22 @@
 
 
 {% block forum_content %}
-	<div class="d-flex">
-		{% include "djangobb_forum/includes/breadcrumbs.html" %}
-		{% include 'djangobb_forum/includes/paginator-inline.html' with page=topics_page request=request only %}
-		{% if user.is_authenticated %}
-			<a href="{% url 'djangobb:add_topic' forum.id %}" class="btn btn-primary ml-3 mb-3 py-2">
-				{% icon 'edit' %} {% trans "New topic" %}
-			</a>
-		{% endif %}
+	<div class="row g-3 justify-content-between">
+		<div class="col-12 col-lg">
+			{% include "djangobb_forum/includes/breadcrumbs.html" %}
+		</div>
+
+		<div class="col-auto">
+			{% include 'djangobb_forum/includes/paginator-inline.html' with page=topics_page request=request only %}
+		</div>
+
+		<div class="col-auto">
+			{% if user.is_authenticated %}
+				<a href="{% url 'djangobb:add_topic' forum.id %}" class="btn btn-primary">
+					{% icon 'edit' %} {% trans "New topic" %}
+				</a>
+			{% endif %}
+		</div>
 	</div>
 
 
@@ -57,12 +65,11 @@
 					<td>
 						{{ topic.reply_count }}
 					</td>
-					<td>
-						<a href="{{ topic.last_post.get_absolute_url }}">
-							{% forum_time topic.updated %}
-						</a>
+					<td><!-- last post -->
+						<a href="{{ topic.last_post.get_absolute_url }}"><time datetime="{{ topic.updated | date:'c' }}">{{ topic.updated | timesince }}</time></a>
+						ago by
 						<span class="byuser">
-							{% trans "by" %} {{ topic.last_post.user.username }}
+							{{ topic.last_post.user.username }}
 						</span>
 					</td>
 				</tr>

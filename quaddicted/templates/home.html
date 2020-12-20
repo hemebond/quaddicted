@@ -55,7 +55,7 @@
 							<div class="carousel-caption d-none d-md-block rounded" style="background-color: rgba(0,0,0,0.5)">
 								<h5><a href="{{ pkg.get_absolute_url }}">{{ pkg.name }}</a></h5>
 								<p>
-									{{ pkg.description }}
+									{{ pkg.description | truncatechars:128 }}
 								</p>
 							</div>
 						</div>

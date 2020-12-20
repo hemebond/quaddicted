@@ -12,39 +12,44 @@
 
 {% block forum_content %}
 
-	<div class="d-flex">
+	<div class="row g-3 justify-content-between">
+		<div class="col-12 col-lg">
+			<nav aria-label="breadcrumb" class="">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="{% url 'djangobb:index' %}">{% trans "Forum" %}</a></li>
+					{% if forum %}
+						<li class="breadcrumb-item active" aria-current="page">{{ forum.name }}</li>
+					{% else %}
+						<li class="breadcrumb-item">{% link topic.forum %}</li>
+						<li class="breadcrumb-item active" aria-current="page">{{ topic }}</li>
+					{% endif %}
+				</ol>
+			</nav>
+		</div>
 
-		<nav aria-label="breadcrumb" class="flex-grow-1">
-			<ol class="breadcrumb">
-				<li class="breadcrumb-item"><a href="{% url 'djangobb:index' %}">{% trans "Forum" %}</a></li>
-				{% if forum %}
-					<li class="breadcrumb-item active" aria-current="page">{{ forum.name }}</li>
+		<div class="col-auto">
+			{% include 'djangobb_forum/includes/paginator-inline.html' with page=posts_page request=request only %}
+		</div>
+
+		<div class="col-auto">
+			{% if user.is_authenticated %}
+				{% if subscribed %}
+					<a id="topic-subscribe-button"
+					   href="{% url 'djangobb:forum_delete_subscription' topic.id %}?from_topic"
+					   title="{% trans "Unsubscribe" %}"
+					   class="btn btn-primary ml-3">
+						{% icon 'eye-slash' %}
+					</a>
 				{% else %}
-					<li class="breadcrumb-item">{% link topic.forum %}</li>
-					<li class="breadcrumb-item active" aria-current="page">{{ topic }}</li>
+					<a id="topic-subscribe-button"
+					   href="{% url 'djangobb:forum_add_subscription' topic.id %}"
+					   title="{% trans "Subscribe" %}"
+					   class="btn btn-primary ml-3">
+						{% icon 'eye' %}
+					</a>
 				{% endif %}
-			</ol>
-		</nav>
-
-		{% include 'djangobb_forum/includes/paginator-inline.html' with page=posts_page request=request only %}
-
-		{% if user.is_authenticated %}
-			{% if subscribed %}
-				<a id="topic-subscribe-button"
-				   href="{% url 'djangobb:forum_delete_subscription' topic.id %}?from_topic"
-				   title="{% trans "Unsubscribe" %}"
-				   class="btn btn-primary ml-3">
-					{% icon 'eye-slash' %}
-				</a>
-			{% else %}
-				<a id="topic-subscribe-button"
-				   href="{% url 'djangobb:forum_add_subscription' topic.id %}"
-				   title="{% trans "Subscribe" %}"
-				   class="btn btn-primary ml-3">
-					{% icon 'eye' %}
-				</a>
 			{% endif %}
-		{% endif %}
+		</div>
 	</div>
 
 
@@ -115,7 +120,7 @@
 						<input class="btn btn-primary"
 						       type="submit"
 						       name="{{ poll_form.FORM_NAME }}"
-						       value="{% trans "Vote" %}">
+						       value="{% trans 'Vote' %}">
 					</form>
 				{% else %}
 					{% for choice in poll.choices.all %}
@@ -140,7 +145,7 @@
 		<article class="row mb-3" id="p{{ post.id }}">
 			<a name="post-{{ post.id }}"></a>
 
-			<div class="col-sm-2">
+			<div class="d-none d-lg-block col-lg-2">
 				{% if post.user.forum_profile.avatar and post.user.forum_profile.show_avatar %}
 					<img class="img-thumbnail img-responsive user-photo w-100 mb-3" src="{{ post.user.forum_profile.avatar.url }}" />
 				{% else %}
@@ -158,7 +163,7 @@
 				{% endif %}
 			</div>
 
-			<div class="col-sm-10">
+			<div class="col-12 col-lg-10">
 				<div class="card">
 					<div class="card-header">
 						<strong class="comment-user">{{ post.user.username }}</strong>
