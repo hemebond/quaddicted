@@ -179,7 +179,7 @@ $pre-color:                         inherit;
 $mark-bg:                     $gray-900;
 $mark-color:                  $pink;
 
-@import "../bootstrap-5.0.0-alpha3/scss/bootstrap";
+@import "../bootstrap-5.0.0-beta1/scss/bootstrap";
 
 .navbar.bg-dark {
   background-color: darken($brown, 5%) !important;

@@ -35,20 +35,22 @@
 			<div id="latest_pkgs" class="carousel slide mb-3" data-bs-ride="carousel">
 				<ol class="carousel-indicators">
 					{% for pkg in latest_pkgs %}
-						<li data-bs-target="#latest_pkgs" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
+						<li data-bs-target="#latest_pkgs"
+						    data-bs-slide-to="{{ forloop.counter0 }}"
+						    {% if forloop.first %}class="active"{% endif %}></li>
 					{% endfor %}
 				</ol>
 
-
 				<div class="carousel-inner ratio ratio-16x9">
 					{% for pkg in latest_pkgs %}
-						<div class="carousel-item {% if forloop.first %}active{% endif %} overflow-hidden" style="max-height: 625px;">
+						<div class="carousel-item{% if forloop.first %} active{% endif %}">
 							<img class="d-block w-100"
-								{% if pkg.screenshots.exists %}
-								src="{{ pkg.screenshots.first.image.url }}">
-								{% else %}
-								src="{% static '/1280x720.svg' %}">
-								{% endif %}
+							     {% if pkg.screenshots.exists %}
+							     src="{{ pkg.screenshots.first.image.url }}"
+							     {% else %}
+							     src="{% static '/1280x720.svg' %}"
+							     {% endif %}
+							>
 
 							<div class="carousel-caption d-none d-md-block rounded" style="background-color: rgba(0,0,0,0.5)">
 								<h5><a href="{{ pkg.get_absolute_url }}">{{ pkg.name }}</a></h5>
@@ -60,12 +62,18 @@
 					{% endfor %}
 				</div>
 
-				<a class="carousel-control-prev" href="#latest_pkgs" role="button" data-bs-slide="prev">
+				<a class="carousel-control-prev"
+				   href="#latest_pkgs"
+				   role="button"
+				   data-bs-slide="prev">
 					<span class="carousel-control-prev-icon" aria-hidden="true">
 						<span class="visually-hidden">Previous</span>
 					</span>
 				</a>
-				<a class="carousel-control-next" href="#latest_pkgs" role="button" data-bs-slide="next">
+				<a class="carousel-control-next"
+				   href="#latest_pkgs"
+				   role="button"
+				   data-bs-slide="next">
 					<span class="carousel-control-next-icon" aria-hidden="true"></span>
 					<span class="visually-hidden">Next</span>
 				</a>
