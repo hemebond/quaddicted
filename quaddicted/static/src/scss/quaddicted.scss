@@ -114,7 +114,7 @@ $navbar-light-toggler-border-color: rgba($gray-900, .1);
 
 $pagination-color:                  $gray-200;
 $pagination-bg:                     $pink;
-$pagination-border-color:           $black;
+$pagination-border-color:           $pink;
 $pagination-focus-color:            $black;
 $pagination-focus-bg:               lighten($pink, 5%);
 $pagination-hover-color:            $black;
@@ -124,7 +124,7 @@ $pagination-active-bg:              $pagination-hover-bg;
 $pagination-active-border-color:    $black;
 $pagination-disabled-color:         $white;
 $pagination-disabled-bg:            rgba($pink, .6);
-$pagination-disabled-border-color:  $black;
+$pagination-disabled-border-color:  rgba($pink, .6);
 
 // Jumbotron
 

@@ -32,10 +32,10 @@
 		<div class="col-lg-8">
 			<h2>Featured Releases</h2>
 
-			<div id="latest_pkgs" class="carousel slide mb-3" data-ride="carousel">
+			<div id="latest_pkgs" class="carousel slide mb-3" data-bs-ride="carousel">
 				<ol class="carousel-indicators">
 					{% for pkg in latest_pkgs %}
-						<li data-target="#latest_pkgs" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
+						<li data-bs-target="#latest_pkgs" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
 					{% endfor %}
 				</ol>
 
@@ -60,12 +60,12 @@
 					{% endfor %}
 				</div>
 
-				<a class="carousel-control-prev" href="#latest_pkgs" role="button" data-slide="prev">
+				<a class="carousel-control-prev" href="#latest_pkgs" role="button" data-bs-slide="prev">
 					<span class="carousel-control-prev-icon" aria-hidden="true">
 						<span class="visually-hidden">Previous</span>
 					</span>
 				</a>
-				<a class="carousel-control-next" href="#latest_pkgs" role="button" data-slide="next">
+				<a class="carousel-control-next" href="#latest_pkgs" role="button" data-bs-slide="next">
 					<span class="carousel-control-next-icon" aria-hidden="true"></span>
 					<span class="visually-hidden">Next</span>
 				</a>

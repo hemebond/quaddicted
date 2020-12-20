@@ -19,8 +19,8 @@
 	<div class="col">
 		<h1 class="text-center">Showing {{ page.paginator.count }} Packages</h1>
 
-		<div class="row gx-2 justify-content-center">
-			<form class="col-12 col-md" action="?{{ request.GET.urlencode }}" method="get">
+		<div class="row gx-2 justify-content-between">
+			<form class="col-12 col-md mb-3" action="?{{ request.GET.urlencode }}" method="get">
 				<div class="row gx-1">
 					<div class="col">
 						<label class="visually-hidden" for="package-table-filter">Search</label>
@@ -151,6 +151,7 @@
 
 
 {% block javascript %}
+<!--
 <script type="text/javascript">
 	$(window).on("load", function(){
 		// popovers initialization - on hover
@@ -161,4 +162,5 @@
 		});
 	});
 </script>
+-->
 {% endblock %}
