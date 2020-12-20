@@ -53,15 +53,13 @@
 						</p>
 					</div>
 					<div class="card-footer">
-						<div class="row">
+						<div class="row justify-content-between">
 							<div class="col">
-								<time datetime="{{ package.created_at }}">{{ package.created_at }}</time>
+								<time datetime="{{ package.created_at | date:'c' }}">{{ package.created_at | date:"DATE_FORMAT" }}</time>
 							</div>
 						{% if package.rating %}
-							<div class="col">
-								<span class="float-right">
-									{% rating_stars package.rating %}
-								</span>
+							<div class="col text-end">
+								{% rating_stars package.rating %}
 							</div>
 						{% endif %}
 						</div>
