@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
 from quaddicted.packages.models import Package
-from quaddicted.packages.views import package_list as package_list_html, package_list_cards, package_list_filter, package_detail as package_detail_html
+from quaddicted.packages.views import package_list as package_list_html, package_list_cards, package_list_filter, package_list_context, package_detail as package_detail_html
 from .serializers import PackageSerializer, CommentSerializer
 from rest_framework.pagination import PageNumberPagination
 
@@ -43,9 +43,8 @@ def package_list(request):
 	if format == 'card':
 		return package_list_cards(request)
 
-	sort = request.GET.get('sort', '-created')
 	packages = Package.objects.filter(published=True)
-	packages = package_list_filter(request, packages).distinct().order_by(sort)
+	packages = package_list_filter(request, packages).distinct()
 
 	paginator = PackageListPaginator()
 	page = paginator.paginate_queryset(packages, request)
