@@ -23,6 +23,8 @@ from quaddicted.views import LogoutView, HomePageView
 from quaddicted.packages.views import package_add
 from quaddicted.api.views import package_list, package_detail, package_comments
 
+from quaddicted.views import RegistrationView
+
 
 
 urlpatterns = [
@@ -34,7 +36,8 @@ urlpatterns = [
 	path('packages/', include('quaddicted.api.urls')),
 	path('packages/', include('quaddicted.packages.urls')),
 	path('comments/', include('django_comments.urls')),
-	path('accounts/', include('registration.backends.default.urls')),
+	path('accounts/register/', RegistrationView.as_view()),
+	path('accounts/', include('registration.backends.simple.urls')),
 	path('', HomePageView.as_view(), name='home'),
 ]
 

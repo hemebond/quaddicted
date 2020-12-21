@@ -14,6 +14,7 @@ from django.contrib.auth.views import LogoutView as AuthLogoutView
 
 from quaddicted.packages.models import Package
 from djangobb_forum.models import Topic
+from registration.backends.simple.views import RegistrationView as BaseRegistrationView
 
 
 
@@ -101,3 +102,8 @@ class HomePageView(TemplateView):
 		]
 
 		return context
+
+
+
+class RegistrationView(BaseRegistrationView):
+	success_url = 'home'

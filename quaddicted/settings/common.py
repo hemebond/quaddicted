@@ -144,8 +144,7 @@ USE_TZ = True
 ACCOUNT_ACTIVATION_DAYS = 2
 ATTACHMENT_SUPPORT = True
 LOGIN_REDIRECT_URL = 'packages:list'
-
-
+REGISTRATION_FORM = "quaddicted.forms.RegistrationForm"
 
 #
 # DjangoBB
