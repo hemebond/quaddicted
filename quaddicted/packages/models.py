@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.utils.html import format_html, mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.utils.text import slugify
+from django.utils.timezone import now
 
 from pathlib import Path
 
@@ -79,7 +80,7 @@ class Package(models.Model):
 		UNDEFINED = 6, _("undefined, please tell Spirit")
 
 	# package file properties
-	file = models.FileField(upload_to=package_upload_to, max_length=256, validators=[validate_package_file,])
+	file = models.FileField(upload_to=package_upload_to, max_length=256, validators=[validate_package_file,], help_text="A zip file containing your Quake map or mod")
 	file_name = models.CharField(max_length=128, blank=True, editable=False)  # the filename of the file, e.g., something.zip
 	file_hash = models.CharField(max_length=64, blank=True, editable=False, unique=True)  # sha256 hash of the .zip file and also the primary key
 	file_size = models.BigIntegerField(blank=True, null=True, editable=False)
@@ -87,7 +88,7 @@ class Package(models.Model):
 	# package properties
 	name = models.CharField(max_length=128)  # the name or title of the package
 	rating = models.FloatField(blank=True, null=True, editable=False)  # average of all the user ratings, a value from 1.0 to 5.0
-	created_at = models.DateTimeField(auto_now_add=True)  # timestamp of the newest file in the package
+	created_at = models.DateTimeField(default=now)  # timestamp of the newest file in the package
 	created_by = models.ManyToManyField('PackageAuthor',
 	                                    related_name='packages',
 	                                    help_text="A comma-separated list of authors.")

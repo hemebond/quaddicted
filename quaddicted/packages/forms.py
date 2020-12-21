@@ -60,9 +60,9 @@ class PackageEditForm(forms.ModelForm):
 		model = Package
 		fields = [
 			'name',
-			'game',
 			'tags',
 			'created_by',
+			'created_at',
 			'description',
 		]
 
@@ -75,11 +75,14 @@ class PackageCreateForm(forms.ModelForm):
 		fields = [
 			'file',
 			'name',
-			'game',
 			'tags',
 			'created_by',
+			'created_at',
 			'description',
 		]
+		labels = {
+			'created_at': _('Created'),
+		}
 
 
 class ScreenshotForm(forms.ModelForm):

@@ -40,6 +40,11 @@
 		<h1 class="text-center">{% trans "Comment Preview" %}</h1>
 
 		<form action="{% comment_form_target %}" method="post">
+			{% csrf_token %}
+
+			{% for hidden in form.hidden_fields %}
+				{{ hidden }}
+			{% endfor %}
 
 			<article class="row mb-3 comment" id="c{{ comment.id }}">
 				<div class="col-sm-2">
@@ -50,9 +55,9 @@
 					<div class="card">
 						<div class="card-header">
 							{% if user.is_authenticated %}
-							<strong class="comment-user">{{ user.username }}</strong>
+								<strong class="comment-user">{{ user.username }}</strong>
 							{% else %}
-							<strong class="comment-user">Guest (<small>{{ form.name.value }}</small>)</strong>
+								<strong class="comment-user">Guest (<small>{{ form.name.value }}</small>)</strong>
 							{% endif %}
 							<time class="text-muted small"
 							      datetime="{{ comment.submit_date }}">
@@ -68,62 +73,40 @@
 				</div>
 			</article>
 
-
-			{% csrf_token %}
-
-
 			{% if form.non_field_errors %}
-			<div class="alert alert-danger" role="alert">
-				{{ form.non_field_errors }}
-			</div>
+				{% for error in form.non_field_errors %}
+					<div class="alert alert-danger" role="alert">
+						{{ error }}
+					</div>
+				{% endfor %}
 			{% endif %}
-
-
-			{% for hidden in form.hidden_fields %}
-				{{ hidden }}
-			{% endfor %}
-
 
 			{% if not user.is_authenticated %}
-			{% with f=form.name %}
-			<div class="form-group">
-				<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-				<input type="text"
-				       class="form-control {% if f.errors %}is-invalid{% endif %}"
-				       id="{{ f.id_for_label }}"
-				       name="{{ f.html_name }}"
-				       {% if f.field.max_length %}maxlength="{{ f.field.max_length }}"{% endif %}
-				       value="{% if f.value %}{{ f.value }}{% endif %}"
-				       {% if f.field.required %}required=""{% endif %}>
-				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-				{% include 'packages/field_errors.html' %}
+			<div class="row mb-1">
+				<div class="col">
+					{% include "packages/includes/input.html" with f=form.name only %}
+				</div>
 			</div>
-			{% endwith %}
 			{% endif %}
-
 
 			{% if next %}
 				<input type="hidden" name="next" value="{{ next }}"/>
 			{% endif %}
 
-
-			{% with f=form.comment %}
-			<div class="form-group">
-				<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-				<textarea class="form-control {% if f.errors %}is-invalid{% endif %}"
-				          id="{{ f.id_for_label }}"
-				          name="{{ f.html_name }}"
-				          rows="3"
-				          {% if f.field.required %}required=""{% endif %}>{% if f.value %}{{ f.value }}{% endif %}</textarea>
-				<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-				{% include 'packages/field_errors.html' %}
+			<div class="row mb-1">
+				<div class="col">
+					{% include "packages/includes/textarea.html" with f=form.comment only %}
+				</div>
 			</div>
-			{% endwith %}
 
 			<div class="d-none">{{ form.honeypot }}</div>
 
-			<button type="submit" class="btn btn-primary mb-2" name="submit">{% trans "Post" %}</button>
-			<button type="submit" class="btn btn-secondary mb-2" name="preview">{% trans "Preview" %}</button>
+			<div class="row">
+				<div class="col">
+					<button type="submit" class="btn btn-primary mb-2" name="submit">{% trans "Post" %}</button>
+					<button type="submit" class="btn btn-secondary mb-2" name="preview">{% trans "Preview" %}</button>
+				</div>
+			</div>
 		</form>
 	</div>
 </section>

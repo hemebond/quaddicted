@@ -9,11 +9,10 @@
 	       id="{{ f.id_for_label }}"
 	       name="{{ f.html_name }}"
 	       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
-	       {#value="{% if f.value %}{{ f.value }}{% endif %}"#}
 	       value="{% firstof value f.value %}"
 	       {% if f.form.use_required_attribute and f.field.required %}required="required"{% endif %}>
 	<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-	{% include 'packages/includes/field_errors.html' %}
+	{% include 'includes/field_errors.html' %}
 </div>
 
 {% elif f.field.widget.input_type == 'file' %}
@@ -28,7 +27,7 @@
 	       value="{{ f.value.name|basename }}"
 	       >
 	<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-	{% include 'packages/includes/field_errors.html' %}
+	{% include 'includes/field_errors.html' %}
 </div>
 
 {% elif f.field.widget.input_type == 'select' %}
@@ -44,7 +43,7 @@
 	{% endfor %}
 	</select>
 	<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-	{% include 'packages/includes/field_errors.html' %}
+	{% include 'includes/field_errors.html' %}
 </div>
 
 {% elif f.field.widget.input_type == 'url' %}
@@ -55,11 +54,10 @@
 	       id="{{ f.id_for_label }}"
 	       name="{{ f.html_name }}"
 	       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
-	       {#value="{% if f.value %}{{ f.value }}{% endif %}"#}
 	       value="{% firstof value f.value %}"
 	       {% if f.form.use_required_attribute and f.field.required %}required="required"{% endif %}
 	       >
 	<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-	{% include 'packages/includes/field_errors.html' %}
+	{% include 'includes/field_errors.html' %}
 </div>
 {% endif %}
