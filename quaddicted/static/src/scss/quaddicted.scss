@@ -175,6 +175,12 @@ $pre-color:                         inherit;
 $mark-bg:                     $gray-900;
 $mark-color:                  $pink;
 
+
+// Carousel
+
+$carousel-indicator-height: 6px;
+
+
 @import "../bootstrap-5.0.0-beta1/scss/bootstrap";
 
 .navbar.bg-dark {
