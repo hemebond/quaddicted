@@ -45,12 +45,12 @@
 					{% for pkg in latest_pkgs %}
 						<div class="carousel-item{% if forloop.first %} active{% endif %}">
 							<img class="d-block w-100"
-							     {% if pkg.screenshots.exists %}
-							     src="{{ pkg.screenshots.first.image.url }}"
-							     {% else %}
-							     src="{% static '/1280x720.svg' %}"
-							     {% endif %}
-							>
+								{% if pkg.screenshots.exists %}
+									src="{{ pkg.screenshots.first.image.url }}"
+								{% else %}
+									src="{% static '/1280x720.svg' %}"
+								{% endif %}
+							     loading="lazy">
 
 							<div class="carousel-caption d-none d-md-block rounded" style="background-color: rgba(0,0,0,0.5)">
 								<h5><a href="{{ pkg.get_absolute_url }}">{{ pkg.name }}</a></h5>

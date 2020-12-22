@@ -42,7 +42,7 @@
 			<div class="carousel-inner">
 			{% for x in screenshots %}
 				<div class="carousel-item{% if forloop.first %} active{% endif %} bg-dark">
-					<a href="/media/{{ x }}" target="_blank"><img src="/media/{{ x }}" class="d-block m-auto ratio ratio-16x9"></a>
+					<a href="/media/{{ x }}" target="_blank"><img src="/media/{{ x }}" class="d-block m-auto ratio ratio-16x9" loading="lazy"></a>
 				</div>
 			{% empty %}
 				<div class="carousel-item active">
