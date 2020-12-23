@@ -95,8 +95,22 @@
 			<tbody>
 				{% for package in page.object_list %}
 				<tr>
-					<td data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-img="{{ package.screenshots.first.thumbnail.url }}">
-						<a href="{% url 'packages:detail' package.file_hash %}">{{ package.name }}</a>
+					<!-- bs-animation false is workaround for popup bug https://github.com/twbs/bootstrap/issues/32372 -->
+					<td>
+						<a href="{% url 'packages:detail' package.file_hash %}"
+						   class="text-decoration-none"
+							{% if package.screenshots.first.thumbnail.url %}
+							{% endif %}>{{ package.name }}
+
+							{% if package.screenshots.first.thumbnail.url %}
+								<span class="align-text-bottom"
+								      data-bs-toggle="popover"
+								      data-bs-trigger="hover focus"
+								      data-bs-html="true"
+								      data-bs-img="{{ package.screenshots.first.thumbnail.url }}"
+								      data-bs-animation="false">{% icon 'image' %}</span>
+							{% endif %}
+						</a>
 					</td>
 					<td>
 						{% for author in package.created_by.all %}
@@ -151,16 +165,16 @@
 
 
 {% block javascript %}
-<!--
 <script type="text/javascript">
 	$(window).on("load", function(){
 		// popovers initialization - on hover
 		$('[data-bs-toggle="popover"]').popover({
 			html: true,
 			trigger: 'hover',
-			content: function () { return '<img src="' + $(this).data('bs-img') + '" />'; }
+			content: function () {
+				return '<img class="ratio ratio-16x9" style="width:20rem" src="' + $(this).data('bs-img') + '" loading="lazy">';
+			}
 		});
 	});
 </script>
--->
 {% endblock %}
