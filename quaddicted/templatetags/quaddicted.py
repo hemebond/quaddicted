@@ -1,6 +1,7 @@
 import os
 import sys
 from django import template
+from django.template.defaultfilters import stringfilter
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from taggit.utils import edit_string_for_tags
@@ -124,7 +125,9 @@ def odir(obj):
 	return str(dir(obj))
 
 
+
 @register.filter
+@stringfilter
 def basename(value):
 	return os.path.basename(value)
 
@@ -244,7 +247,7 @@ def sort_th(request, text, sort_by, icon_asc="sort-up", icon_desc="sort-down"):
 
 			is_last_sort = True
 	else:
-		new_sort_list = [sort_by,]
+		new_sort_list = [sort_by, ]
 
 	# make new sort list into querystring
 	querydict = request.GET.copy()
@@ -270,7 +273,8 @@ This code is based on django's markup contrib.
 if sys.version_info.major == 2:
     from django.utils.encoding import force_unicode
 else:
-    force_unicode = lambda text: text
+	def force_unicode(text):
+		return text
 
 @register.filter
 def markdown(value, arg=''):

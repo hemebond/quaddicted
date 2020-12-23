@@ -3,7 +3,6 @@
 	<label for="{{ f.id_for_label }}">{{ f.label }}</label>
 	<textarea class="form-control {% if f.errors %}is-invalid{% endif %}"
 	          id="{{ f.id_for_label }}"
-	          maxlength="{{ f.field.maxlength|default_if_none:'' }}"
 	          name="{{ f.html_name }}"
 	          {% if f.form.use_required_attribute and f.field.required %}required="required"{% endif %}
 	          {% for k, v in f.field.widget.attrs.items %}

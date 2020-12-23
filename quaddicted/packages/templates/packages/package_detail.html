@@ -75,7 +75,9 @@
 <div class="row">
 	<!-- left column -->
 	<div class="col-lg-8">
-		<!-- package listing details -->
+		<!--
+			package listing details
+		-->
 		<section class="card mb-3">
 			<div class="card-header fs-4">
 				{{ package.name }}
@@ -85,8 +87,8 @@
 			</div>
 			<div class="card-body">
 				<dl class="row">
-					<dt class="col-md-4">{% trans 'Authors' %}</dt>
-					<dd class="col-md-8 text-end">
+					<dt class="col">{% trans 'Authors' %}</dt>
+					<dd class="col text-end">
 					{% for author in package.created_by.all %}
 						<a href="{% url 'packages:list' %}?author={{ author.slug }}" title="Show only this users packages">{{ author }}</a>{% if not forloop.last %}, {% endif %}
 					{% empty %}
@@ -94,20 +96,20 @@
 					{% endfor %}
 					</dd>
 
-					<dt class="col-sm-4">{% trans 'Created' %}</dt>
-					<dd class="col-sm-8 text-end"><time datetime="{{ package.created_at | date:'c' }}">{{ package.created_at | date:"DATE_FORMAT" }}</time></dd>
+					<dt class="col">{% trans 'Created' %}</dt>
+					<dd class="col text-end"><time datetime="{{ package.created_at | date:'c' }}">{{ package.created_at | date:"DATE_FORMAT" }}</time></dd>
 
-					<dt class="col-sm-4">{% trans 'Uploaded' %}</dt>
-					<dd class="col-sm-8 text-end"><time datetime="{{ package.uploaded_at | date:'c' }}">{{ package.uploaded_at | date:"DATE_FORMAT" }}</time></dd>
+					<dt class="col">{% trans 'Uploaded' %}</dt>
+					<dd class="col text-end"><time datetime="{{ package.uploaded_at | date:'c' }}">{{ package.uploaded_at | date:"DATE_FORMAT" }}</time></dd>
 
 				{%  if package.modified %}
-					<dt class="col-sm-4">{% trans 'Modified' %}</dt>
-					<dd class="col-sm-8 text-end"><time datetime="{{ package.modified }}">{{ package.modified }}</time></dd>
+					<dt class="col">{% trans 'Modified' %}</dt>
+					<dd class="col text-end"><time datetime="{{ package.modified }}">{{ package.modified }}</time></dd>
 				{%  endif %}
 
 				{% if package.urls.all %}
-					<dt class="col-sm-4">{% trans 'Additional Links' %}</dt>
-					<dd class="col-sm-8 text-end">
+					<dt class="col">{% trans 'Additional Links' %}</dt>
+					<dd class="col text-end">
 						<ul class="list-unstyled mb-0">
 						{% for u in package.urls.all %}
 							<li><a href="{{ u.url }}">{{ u.name }}</a></li>
@@ -116,8 +118,8 @@
 					</dd>
 				{% endif %}
 
-					<dt class="col-sm-4">{% trans 'Type' %}</dt>
-					<dd class="col-sm-8 text-end">{{ package.map_type|default:'map'|capfirst }}</dd>
+					<dt class="col">{% trans 'Type' %}</dt>
+					<dd class="col text-end">{{ package.map_type|default:'map'|capfirst }}</dd>
 				</dl>
 
 				<div class="text-end">
@@ -142,8 +144,7 @@
 			<div class="card-header">{% trans 'Comments' %}</div>
 			<div class="card-body">
 				<div class="row">
-					<div class="col-sm-2"></div>
-					<div class="col-sm-10">
+					<div class="col-12">
 						{% get_comment_form for package as form %}
 						<form action="{% comment_form_target %}" method="POST">
 							{% csrf_token %}
@@ -194,12 +195,12 @@
 				Comment List
 			-->
 			{% for comment in comments %}
-				<article class="row mb-3" id="c{{ comment.id }}">
-					<div class="col-sm-2">
+				<article class="row mb-3 g-1" id="c{{ comment.id }}">
+					<div class="d-none d-sm-block col-sm-2">
 						<svg class="img-thumbnail img-responsive user-photo" viewBox="0 0 1 1"><use href="{% static 'fontawesome.svg' %}#user"></use></svg>
 					</div>
 
-					<div class="col-sm-10">
+					<div class="col-12 col-sm-10">
 						<div class="card">
 							<div class="card-header">
 								{% if comment.user %}
@@ -444,4 +445,21 @@
 
 {% block javascript %}
 	<script src="{% static 'packages/detail.js' %}"></script>
+	<script type="application/ld+json">
+		{
+			"@context": "https://schema.org/",
+			"@type": "CreativeWork",
+			"name": "{{ package.name }}",
+			"author": [
+			{% for author in package.created_by.all %}
+				{
+					"@type": "Person",
+					"name": "{{ author }}"
+				}{% if not forloop.last %},{% endif %}
+			{% endfor %}
+			],
+			"datePublished": "{{ package.uploaded_at | date:'c' }}",
+			"description": "A Quake 1 map"
+		}
+	</script>
 {% endblock %}
