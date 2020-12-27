@@ -9,6 +9,9 @@
 
 
 
+{% block title %}{{ package.name }}{% endblock %}
+
+
 {% block css %}
 		<link rel="stylesheet" href="{% static 'packages/detail.css' %}" />
 {% endblock %}
@@ -18,11 +21,6 @@
 	<div class="col">
 		<h1 class="title is-1">
 			{{ package }}
-			{% if user.is_authenticated %}
-			{% if perms.quaddicted_packages.change_package %}
-			<a href="{% url 'packages:edit' package.file_hash %}" class="btn btn-primary float-right">{% icon 'edit' %}</a>
-			{% endif %}
-			{% endif %}
 		</h1>
 	</div>
 </section>
@@ -34,8 +32,8 @@
 			<ol class="carousel-indicators">
 				{% if screenshots.count > 1 %}
 					{% for x in screenshots %}
-				<li data-target="#screenshots"
-					data-slide-to="{{ forloop.counter0 }}"
+				<li data-bs-target="#screenshots"
+					data-bs-slide-to="{{ forloop.counter0 }}"
 					{% if forloop.first %}class="active"{% endif %}>
 				</li>
 					{% endfor %}
@@ -44,7 +42,7 @@
 			<div class="carousel-inner">
 			{% for x in screenshots %}
 				<div class="carousel-item{% if forloop.first %} active{% endif %} bg-dark">
-					<a href="/media/{{ x }}" target="_blank"><img src="/media/{{ x }}" class="d-block m-auto"></a>
+					<a href="/media/{{ x }}" target="_blank"><img src="/media/{{ x }}" class="d-block m-auto ratio ratio-16x9" loading="lazy"></a>
 				</div>
 			{% empty %}
 				<div class="carousel-item active">
@@ -57,16 +55,16 @@
 			<a class="carousel-control-prev"
 			   href="#screenshots"
 			   role="button"
-			   data-slide="prev">
+			   data-bs-slide="prev">
 				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-				<span class="sr-only">{% trans 'Previous' %}</span>
+				<span class="visually-hidden">{% trans 'Previous' %}</span>
 			</a>
 			<a class="carousel-control-next"
 			   href="#screenshots"
 			   role="button"
-			   data-slide="next">
+			   data-bs-slide="next">
 				<span class="carousel-control-next-icon" aria-hidden="true"></span>
-				<span class="sr-only">{% trans 'Next' %}</span>
+				<span class="visually-hidden">{% trans 'Next' %}</span>
 			</a>
 			{% endif %}
 		</div>
@@ -77,31 +75,41 @@
 <div class="row">
 	<!-- left column -->
 	<div class="col-lg-8">
-		<!-- package listing details -->
+		<!--
+			package listing details
+		-->
 		<section class="card mb-3">
-			<h5 class="card-header">{{ package.name }}</h5>
+			<div class="card-header fs-4">
+				{{ package.name }}
+				{% if can_edit %}
+				<a title="{% trans 'Edit' %}" href="{% url 'packages:edit' package.file_hash %}" class="btn btn-primary float-end">{% icon 'edit' %}</a>
+				{% endif %}
+			</div>
 			<div class="card-body">
 				<dl class="row">
-					<dt class="col-md-4">{% trans 'Authors' %}</dt>
-					<dd class="col-md-8 text-right">
-					{% for author in package.authors.all %}
+					<dt class="col-12 col-sm-3">{% trans 'Authors' %}</dt>
+					<dd class="col-12 col-sm-9 text-end">
+					{% for author in package.created_by.all %}
 						<a href="{% url 'packages:list' %}?author={{ author.slug }}" title="Show only this users packages">{{ author }}</a>{% if not forloop.last %}, {% endif %}
 					{% empty %}
 						{% trans 'Unknown' %}
 					{% endfor %}
 					</dd>
 
-					<dt class="col-sm-4">{% trans 'Created' %}</dt>
-					<dd class="col-sm-8 text-right"><time datetime="{{ package.created }}">{{ package.created }}</time></dd>
+					<dt class="col-12 col-sm-3">{% trans 'Created' %}</dt>
+					<dd class="col-12 col-sm-9 text-end"><time datetime="{{ package.created_at | date:'c' }}">{{ package.created_at | date:"DATE_FORMAT" }}</time></dd>
+
+					<dt class="col-12 col-sm-3">{% trans 'Uploaded' %}</dt>
+					<dd class="col-12 col-sm-9 text-end"><time datetime="{{ package.uploaded_at | date:'c' }}">{{ package.uploaded_at | date:"DATE_FORMAT" }}</time></dd>
 
 				{%  if package.modified %}
-					<dt class="col-sm-4">{% trans 'Modified' %}</dt>
-					<dd class="col-sm-8 text-right"><time datetime="{{ package.modified }}">{{ package.modified }}</time></dd>
+					<dt class="col-12 col-sm-3">{% trans 'Modified' %}</dt>
+					<dd class="col-12 col-sm-9 text-end"><time datetime="{{ package.modified }}">{{ package.modified }}</time></dd>
 				{%  endif %}
 
 				{% if package.urls.all %}
-					<dt class="col-sm-4">{% trans 'Additional Links' %}</dt>
-					<dd class="col-sm-8 text-right">
+					<dt class="col-12 col-sm-3">{% trans 'Additional Links' %}</dt>
+					<dd class="col-12 col-sm-9 text-end">
 						<ul class="list-unstyled mb-0">
 						{% for u in package.urls.all %}
 							<li><a href="{{ u.url }}">{{ u.name }}</a></li>
@@ -110,11 +118,11 @@
 					</dd>
 				{% endif %}
 
-					<dt class="col-sm-4">{% trans 'Type' %}</dt>
-					<dd class="col-sm-8 text-right">{{ package.map_type|default:'map'|capfirst }}</dd>
+					<dt class="col-12 col-sm-3">{% trans 'Type' %}</dt>
+					<dd class="col-12 col-sm-9 text-end">{{ package.map_type|default:'map'|capfirst }}</dd>
 				</dl>
 
-				<div class="text-right">
+				<div class="text-end">
 					<a class="btn btn-primary" href="{{ package.file.url }}">{% trans 'Download' %}</a>
 					{% comment %}
 					<a class="btn bg-danger text-white" href="">{% icon 'flag' %}</a>
@@ -125,7 +133,7 @@
 
 		<!-- package description -->
 		<section class="card mb-3">
-			<h5 class="card-header">{% trans 'Description' %}</h5>
+			<div class="card-header">{% trans 'Description' %}</div>
 			<div class="card-body"><p>{{ package.description|linebreaks }}</p></div>
 		</section>
 
@@ -133,48 +141,13 @@
 			Comment Form
 		-->
 		<section class="card mb-3 package-comments" id="comments">
-			<h5 class="card-header">{% trans 'Comments' %}</h5>
+			<div class="card-header">{% trans 'Comments' %}</div>
 			<div class="card-body">
 				<div class="row">
-					<div class="col-sm-2"></div>
-					<div class="col-sm-10">
-					{% get_comment_form for package as form %}
+					<div class="col-12">
+						{% get_comment_form for package as form %}
 						<form action="{% comment_form_target %}" method="POST">
-						{% csrf_token %}
-						{% if not user.is_authenticated %}
-							{% with f=form.name %}
-							<div class="form-group">
-								<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-								<input type="text"
-								       class="form-control {% if f.errors %}is-invalid{% endif %}"
-								       id="{{ f.id_for_label }}"
-								       name="{{ f.html_name }}"
-								       {% if f.field.max_length %}maxlength="{{ f.field.max_length }}"{% endif %}
-								       value="{% if f.value %}{{ f.value }}{% endif %}"
-								       {% if f.field.required %}required=""{% endif %}>
-								<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-								{% include 'packages/field_errors.html' %}
-							</div>
-							{% endwith %}
-						{% endif %}
-
-							{% with f=form.comment %}
-							<div class="form-group">
-								<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-								<textarea class="form-control {% if f.errors %}is-invalid{% endif %}"
-								          id="{{ f.id_for_label }}"
-								          name="{{ f.html_name }}"
-								          rows="3"
-								          {% if f.field.max_length %}maxlength="{{ f.field.max_length }}"{% endif %}
-								          {% if f.field.min_length %}minlength="{{ f.field.min_length }}"{% endif %}
-								          {% if f.field.required %}required=""{% endif %}>{% if f.value %}{{ form.comment.value }}{% endif %}</textarea>
-								<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-								{% include 'packages/field_errors.html' %}
-							</div>
-							{% endwith %}
-
-
-							<div class="d-none">{{ form.honeypot }}</div>
+							{% csrf_token %}
 
 							{% for hidden in form.hidden_fields %}
 								{{ hidden }}
@@ -182,8 +155,36 @@
 
 							<input type="hidden" name="next" value="{% url 'packages:detail' package.file_hash %}#comments" />
 
-							<button type="submit" class="btn btn-primary mb-2">{% trans "Post" %}</button>
-							<button type="submit" class="btn btn-secondary mb-2" name="preview">{% trans "Preview" %}</button>
+							<div class="d-none">{{ form.honeypot }}</div>
+
+							{% if form.non_field_errors %}
+								{% for error in form.non_field_errors %}
+									<div class="alert alert-danger" role="alert">
+										{{ error }}
+									</div>
+								{% endfor %}
+							{% endif %}
+
+							{% if not user.is_authenticated %}
+								<div class="row mb-1">
+									<div class="col">
+										{% include "packages/includes/input.html" with f=form.name only %}
+									</div>
+								</div>
+							{% endif %}
+
+							<div class="row mb-1">
+								<div class="col">
+									{% include "packages/includes/textarea.html" with f=form.comment only %}
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<div class="col">
+									<button type="submit" class="btn btn-primary" name="submit">{% trans "Post" %}</button>
+									<button type="submit" class="btn btn-secondary" name="preview">{% trans "Preview" %}</button>
+								</div>
+							</div>
 
 							{{ form.media }}
 						</form>
@@ -194,19 +195,20 @@
 				Comment List
 			-->
 			{% for comment in comments %}
-				<article class="row mb-3" id="c{{ comment.id }}">
-					<div class="col-sm-2">
+				<article class="row mb-3 g-1" id="c{{ comment.id }}">
+					<div class="d-none d-sm-block col-sm-2">
 						<svg class="img-thumbnail img-responsive user-photo" viewBox="0 0 1 1"><use href="{% static 'fontawesome.svg' %}#user"></use></svg>
 					</div>
 
-					<div class="col-sm-10">
+					<div class="col-12 col-sm-10">
 						<div class="card">
 							<div class="card-header">
 								{% if comment.user %}
-								<strong class="comment-user">{{ comment.user_name }}</strong>
+									<strong class="comment-user">{{ comment.user_name }}</strong>
 								{% else %}
-								<strong class="comment-user">{% trans 'Guest' %} (<small>{{ comment.user_name }}</small>)</strong>
+									<strong class="comment-user">{% trans 'Guest' %} (<small>{{ comment.user_name }}</small>)</strong>
 								{% endif %}
+
 								<time class="text-muted small"
 								      datetime="{{ comment.submit_date }}">
 									{% trans 'commented' %}
@@ -214,6 +216,7 @@
 										{{ comment.submit_date|timesince }} {% trans 'ago' %}
 									</a>
 								</time>
+
 								{% if comment.score %}
 								<span class="float-right">
 									{% rating_stars comment.score %}
@@ -225,7 +228,7 @@
 									{{ comment.comment|linebreaks }}
 								</blockquote>
 
-								<div class="text-right text-sm text-white">
+								<div class="text-end text-sm text-white">
 									<a class="btn btn-danger btn-sm"
 									   data-toggle="modal"
 									   data-target="#flagCommentModal"
@@ -248,23 +251,26 @@
 			<!--
 				Ratings
 			-->
-			<h5 class="card-header">{% trans 'Ratings' %}</h5>
+			<div class="card-header">{% trans 'Ratings' %}</div>
 			<div class="card-body">
-				<div class="d-flex">
-					<h5 class="align-self-center">{% trans 'Average' %}</h5>
-					<div class="col text-right">
-						<h2 class="bold mb-1">{{ package.rating|default:0|floatformat }} <small>/ 5</small></h2>
+				<div class="row mb-2 d-flex">
+					<div class="col align-self-center">
+						<h5 class="mb-0">{% trans 'Score' %}</h5>
+					</div>
+					<div class="col text-end">
+						<h2>{{ package.rating|default:0|floatformat }} <small>/ 5</small></h2>
 					</div>
 				</div>
 
 				{% if user.is_authenticated %}
-				<div class="d-flex">
-					<form action="" method="POST" class="user-rating" name="rating-form">
-						<h5 class="align-self-center">{% trans 'You' %}</h5>
+					<form action="" method="POST" class="row mb-2 d-flex" name="rating-form">
+						<div class="col align-self-center">
+							<h5 class="mb-0">{% trans 'You' %}</h5>
+						</div>
 
 						{% csrf_token %}
 
-						<div>
+						<div class="col-auto user-rating">
 							<input type="radio" name="score" class="star star-5" id="star-5" value="5" {% if user_rating == 5 %}checked{% endif %}><label class="star star-5" for="star-5" title="5 stars">{% icon 'star' %}</label>
 							<input type="radio" name="score" class="star star-4" id="star-4" value="4" {% if user_rating == 4 %}checked{% endif %}><label class="star star-4" for="star-4" title="4 stars">{% icon 'star' %}</label>
 							<input type="radio" name="score" class="star star-3" id="star-3" value="3" {% if user_rating == 3 %}checked{% endif %}><label class="star star-3" for="star-3" title="3 stars">{% icon 'star' %}</label>
@@ -272,20 +278,21 @@
 							<input type="radio" name="score" class="star star-1" id="star-1" value="1" {% if user_rating == 1 %}checked{% endif %}><label class="star star-1" for="star-1" title="1 stars">{% icon 'star' %}</label>
 						</div>
 
-						<button type="submit"
-								class="btn btn-primary">
-							{% trans 'Save' %}
-						</button>
+						<div class="col-auto">
+							<button type="submit"
+									class="btn btn-primary">
+								{% trans 'Save' %}
+							</button>
+						</div>
 					</form>
-				</div>
 				{% endif %}
 
 				{% for rating in rating_list reversed %}
-				<div class="row">
-						<div class="col px-1 text-right">{% icon 'star' %} {{ forloop.revcounter }}</div>
-						<div class="col-8 px-1 align-self-center">
+					<div class="row">
+						<div class="col-auto text-end">{% icon 'star' %} {{ forloop.revcounter }}</div>
+						<div class="col px-1 align-self-center">
 							<div class="progress">
-								<div class="progress-bar {% if forloop.revcounter == 5 %}bg-success{% elif forloop.revcounter == 2 %}bg-warning{% elif forloop.revcounter == 1 %}bg-danger{% else %}bg-info{% endif %}"
+								<div class="progress-bar rating-bg-{{ forloop.revcounter }}"
 									 role="progressbar"
 									 aria-valuenow="5"
 									 aria-valuemin="0"
@@ -293,16 +300,16 @@
 									 style="width: {% widthratio rating num_ratings 100 %}%"></div>
 							</div>
 						</div>
-						<div class="col px-1">
+						<div class="col-auto">
 							{{ rating }}
 						</div>
-				</div>
+					</div>
 				{% endfor %}
 			</div>
 		</section>
 
 		<section class="card mb-3">
-			<h5 class="card-header">{% trans 'URLs' %}</h5>
+			<div class="card-header">{% trans 'URLs' %}</div>
 			<div class="card-body">
 				<ul class="">
 				{% for url in package.urls.all %}
@@ -313,7 +320,7 @@
 		</section>
 
 		<section class="card mb-3">
-			<h5 class="card-header">{% trans 'Tags' %}</h5>
+			<div class="card-header">{% trans 'Tags' %}</div>
 			<div class="card-body">
 				<p>
 				{% for tag in package.tags.all %}
@@ -328,7 +335,7 @@
 
 	{% if package.package %}
 		<section class="card">
-			<h5 class="card-header">{% trans 'Files' %}</h5>
+			<div class="card-header">{% trans 'Files' %}</div>
 			<div class="card-body">
 				<table class="table table-sm">
 					<thead>

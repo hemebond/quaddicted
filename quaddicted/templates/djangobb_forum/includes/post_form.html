@@ -34,8 +34,8 @@
 				<button class="btn btn-link"
 				        style="padding-left: 0 !important"
 				        type="button"
-				        data-toggle="collapse"
-				        data-target="#poll_form"
+				        data-bs-toggle="collapse"
+				        data-bs-target="#poll_form"
 				        aria-expanded="true"
 				        aria-controls="poll_form">
 					{% trans "Create a poll" %}
@@ -54,7 +54,7 @@
 						       maxlength="{{ f.field.maxlength|default_if_none:'' }}"
 						       value="{{ f.value|default_if_none:'' }}">
 						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-						{% include 'packages/field_errors.html' %}
+						{% include 'packages/includes/field_errors.html' %}
 					</div>
 				{% endwith %}
 
@@ -70,7 +70,7 @@
 						          rows="{{ f.field.widget.attrs.rows }}"
 						          >{{ f.value|default_if_none:'' }}</textarea>
 						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-						{% include 'packages/field_errors.html' %}
+						{% include 'packages/includes/field_errors.html' %}
 					</div>
 				{% endwith %}
 
@@ -87,7 +87,7 @@
 						       {% if f.required %}required="required"{% endif %}
 						       class="form-control {% if f.errors %}is-invalid{% endif %}">
 						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-						{% include 'packages/field_errors.html' %}
+						{% include 'packages/includes/field_errors.html' %}
 					</div>
 				{% endwith %}
 
@@ -104,7 +104,7 @@
 						       {% if f.required %}required="required"{% endif %}
 						       class="form-control {% if f.errors %}is-invalid{% endif %}">
 						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-						{% include 'packages/field_errors.html' %}
+						{% include 'packages/includes/field_errors.html' %}
 					</div>
 				{% endwith %}
 			</div>
@@ -129,7 +129,7 @@
 						       value="{{ f.value|default_if_none:'' }}"
 						       {% if f.required %}required="required"{% endif %}>
 						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-						{% include 'packages/field_errors.html' %}
+						{% include 'packages/includes/field_errors.html' %}
 					</div>
 				{% endwith %}
 			{% endif %}
@@ -145,7 +145,7 @@
 					          rows="{{ f.field.widget.attrs.rows }}"
 					          name="{{ f.html_name }}">{{ f.value|default_if_none:'' }}</textarea>
 					<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-					{% include 'packages/field_errors.html' %}
+					{% include 'packages/includes/field_errors.html' %}
 
 					<small id="{{ f.id_for_label }}_help" class="form-text text-muted">
 						Note: A list of all supported source code highlighter for [code <strong>XXX</strong>]...[/code] can be found here: <a href="http://pygments.org/docs/lexers/">pygments.org</a> (Use 'Short name')
@@ -181,7 +181,7 @@
 						       name="{{ f.html_name }}"
 						       {% if f.required %}required="required"{% endif %}>
 						<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-						{% include 'packages/field_errors.html' %}
+						{% include 'packages/includes/field_errors.html' %}
 					</div>
 				{% endwith %}
 			{% endif %}

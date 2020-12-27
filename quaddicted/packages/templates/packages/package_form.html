@@ -54,41 +54,52 @@
 			{% endfor %}
 
 
-			<div class="row">
-				<div class="col">
-					{% include "packages/includes/input.html" with f=form.name only %}
+			<div class="card mt-3">
+				<div class="card-header">
+					{% trans "Details" %}
 				</div>
 
-				<div class="col-4">
-					{% include "packages/includes/input.html" with f=form.game only %}
+				<div class="card-body">
+					<div class="row">
+						<div class="col">
+							{% include "packages/includes/input.html" with f=form.name only %}
+						</div>
+						<div class="col-auto">
+							{% include "packages/includes/input_datetime.html" with f=form.created_at only %}
+						</div>
+					</div>
+
+					<div class="row my-3">
+						<div class="col">
+							{% include "packages/includes/input.html" with f=form.file only %}
+						</div>
+					</div>
+
+					<div class="row my-3">
+						<div class="col">
+							{% include "packages/includes/textarea.html" with f=form.description only %}
+						</div>
+					</div>
+
+					<div class="row my-3">
+						<div class="col">
+							{% include "packages/includes/input.html" with f=form.tags value=form.tags.value|strftags only %}
+						</div>
+					</div>
+
+					<div class="row my-3">
+						<div class="col">
+							{% include "packages/includes/input.html" with f=form.created_by only %}
+						</div>
+					</div>
 				</div>
 			</div>
-
-			<div class="row">
-				<div class="col">
-					{% include "packages/includes/input.html" with f=form.file only %}
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col">
-					{% include "packages/includes/textarea.html" with f=form.description only %}
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col">
-					{% include "packages/includes/input.html" with f=form.tags value=form.tags.value|strftags only %}
-				</div>
-			</div>
-
-			{% include "packages/includes/input.html" with f=form.authors only %}
 
 			{{ packageurl_inline.management_form }}
 
 			<div class="card mt-3">
 				<div class="card-header">
-					URLs
+					{% trans "URLs" %}
 				</div>
 
 				<div class="card-body">
@@ -122,7 +133,7 @@
 
 			<div class="card mt-3">
 				<div class="card-header">
-					Screenshots
+					{% trans "Screenshots" %}
 				</div>
 
 				<div class="card-body">
@@ -169,7 +180,7 @@
 				</div>
 			</div>
 
-			<div class="form-group row mt-3">
+			<div class="form-group row my-3">
 				<div class="col-sm-10">
 					{% if object %}
 						<button name="_save" type="submit" class="btn btn-primary">{% trans 'Save' %}</button>

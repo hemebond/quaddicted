@@ -2,53 +2,117 @@
 {% load static %}
 {% load quaddicted %}
 {% load i18n %}
+{% load forum_extras %}
 
 
 {% block content %}
-	<div class="card text-white bg-secondary mb-3">
-		<div class="card-body">
-			<p>
-				Welcome to a Quake fan-site offering a complete-as-can-be <a href="{% url 'packages:list' %}">singleplayer map archive</a> with an accompanying <a href="/tools/quake_injector">install &amp; launcher tool</a>, several rather messy archives (<a href="/files/engines/">engines</a>, <a href="/files/tools/">tools</a>, <a href="/files/wads/">wads</a>, <a href="/files/maps/multiplayer/">multiplayer maps</a>, <a href="/webarchive/">websites</a>) and a variety of articles, knowledge and help.
-			</p>
+	<div class="row">
+		<div class="col">
+			<h2>Latest Releases</h2>
+
+			<div class="card-group mb-3">
+				{% for pkg in latest_pkgs %}
+					<div class="card m-1">
+						<a href="{% url 'packages:detail' pkg.file_hash %}" class="bg-secondary ratio ratio-16x9">
+							<img class="card-img-top overflow-hidden"
+								{% if pkg.screenshots.exists %}
+									src="{{ pkg.screenshots.first.thumbnail.url }}">
+								{% else %}
+									src="{% static '/384x216.svg' %}">
+								{% endif %}
+						</a>
+					</div>
+				{% endfor %}
+			</div>
 		</div>
 	</div>
 
-
-	<div class="card-group mb-3">
-		{% for pkg in latest_pkgs %}
-			<div class="card">
-
-				<a href="{% url 'packages:detail' pkg.file_hash %}" class="bg-secondary">
-					<img class="card-img-top overflow-hidden" style="height: 156px"
-						{% if pkg.screenshots.exists %}
-							src="{{ pkg.screenshots.first.thumbnail.url }}">
-						{% else %}
-							src="{% static '/384x216.svg' %}">
-						{% endif %}
-				</a>
-
-
-				<div class="card-body">
-					<h5 class="card-text">
-						<a href="{% url 'packages:detail' pkg.file_hash %}" class="text-reset">
-							{{ pkg.name }}
-						</a>
-					</h5>
-
-						<p class="card-text">
-							{% for author in pkg.authors.all %}
-								<a href="?author={{ author.slug }}" title="Show only this users packages">{{ author }}</a>{% if not forloop.last %}, {% endif %}
-							{% endfor %}
-						</p>
-				</div>
-			</div>
-		{% endfor %}
-	</div>
-
-
-
 	<div class="row">
-		<div class="col-6">
+		<!-- Forum Activity -->
+		<div class="col-lg-8">
+			<h2>Featured Releases</h2>
+
+			<div id="latest_pkgs" class="carousel slide mb-3" data-bs-ride="carousel">
+				<ol class="carousel-indicators">
+					{% for pkg in latest_pkgs %}
+						<li data-bs-target="#latest_pkgs"
+						    data-bs-slide-to="{{ forloop.counter0 }}"
+						    {% if forloop.first %}class="active"{% endif %}></li>
+					{% endfor %}
+				</ol>
+
+				<div class="carousel-inner ratio ratio-16x9">
+					{% for pkg in latest_pkgs %}
+						<div class="carousel-item{% if forloop.first %} active{% endif %}">
+							<img class="d-block w-100"
+								{% if pkg.screenshots.exists %}
+									src="{{ pkg.screenshots.first.image.url }}"
+								{% else %}
+									src="{% static '/1280x720.svg' %}"
+								{% endif %}
+							     loading="lazy">
+
+							<div class="carousel-caption d-none d-md-block rounded" style="background-color: rgba(0,0,0,0.5)">
+								<h5><a href="{{ pkg.get_absolute_url }}">{{ pkg.name }}</a></h5>
+								<p>
+									{{ pkg.description | truncatechars:128 }}
+								</p>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+
+				<a class="carousel-control-prev"
+				   href="#latest_pkgs"
+				   role="button"
+				   data-bs-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true">
+						<span class="visually-hidden">Previous</span>
+					</span>
+				</a>
+				<a class="carousel-control-next"
+				   href="#latest_pkgs"
+				   role="button"
+				   data-bs-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Next</span>
+				</a>
+			</div>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Title</th>
+						<th>Last Message</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for topic in latest_topics %}
+						<tr>
+							<td>
+								<h5 class="">
+									<a href="{{ topic.last_post.get_absolute_url }}">
+										{{ topic }}
+									</a>
+								</h5>
+								<h6 class="card-subtitle text-muted">{{ topic.forum }}</h6>
+							</td>
+							<td>
+								{% if topic.last_post %}
+									<time datetime="{{ topic.last_post.create }}">{% forum_time topic.last_post.created %}</time>
+									<span class="byuser">
+										{% blocktranslate with username=topic.last_post.user.username %}by {{ username }}{% endblocktranslate %}
+									</span>
+								{% endif %}
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<!-- Links -->
+		<div class="col-lg-4">
 			<div class="card mb-3">
 				<div class="card-header">
 					{% trans 'The 5 Minute Quake Guide' %}
@@ -70,35 +134,6 @@
 					<ul class="list-custom" role="list">
 						{% for link in help_links %}
 							<li>{% icon 'book' %} <a href="{{ link.0 }}">{{ link.1 }}</a></li>
-						{% endfor %}
-					</ul>
-				</div>
-			</div>
-		</div>
-
-
-		<div class="col-6">
-			<div class="card mb-3">
-				<div class="card-header">
-					{% trans 'Forum' %}
-				</div>
-				<div class="card-body">
-					<ul class="list-custom" role="list">
-						{% for topic in latest_topics %}
-							<li>{% icon 'comment' %} <a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></li>
-						{% endfor %}
-					</ul>
-				</div>
-			</div>
-
-			<div class="card mb-3">
-				<div class="card-header">
-					{% trans 'Wiki Highlights' %}
-				</div>
-				<div class="card-body">
-					<ul class="list-custom" role="list">
-						{% for hlight in wiki_highlights %}
-							<li>{% icon 'star' %} <a href="{{ hlight.0 }}">{{ hlight.1 }}</a></li>
 						{% endfor %}
 					</ul>
 				</div>

@@ -1,85 +1,9 @@
-.package-comments .card > .card-header:after,
-.package-comments .card > .card-header:before {
-	position:absolute;
-	top:11px;left:-16px;
-	right:100%;
-	width:0;
-	height:0;
-	display:block;
-	content:" ";
-	border-color:transparent;
-	border-style:solid solid outset;
-	pointer-events:none;
-}
-.package-comments .card > .card-header:after {
-	border-width:7px;
-	border-right-color:#f7f7f7;
-	margin-top:1px;
-	margin-left:2px;
-}
-.package-comments .card > .card-header:before {
-	border-right-color:#ddd;
-	border-width:8px;
-}
-/*
-.carousel-item img {
-	max-height: 286.875px;
-}
-@media (min-width: 768px) {
-	.carousel-item img {
-		max-height: 388.125px;
-	}
-}
-@media (min-width: 992px) {
-	.carousel-item img {
-		max-height: 523.125px;
-	}
-}
-@media (min-width: 1200px) {
-	.carousel-item img {
-		max-height: 624.375px;
-	}
-}
-*/
-.carousel-item {
-	height: 286.875px;
-}
-.carousel-item img {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	max-width: 100%;
-	max-height: 100%;
-}
-@media (min-width: 768px) {
-	.carousel-item {
-		height: 388.125px;
-	}
-}
-@media (min-width: 992px) {
-	.carousel-item {
-		height: 523.125px;
-	}
-}
-@media (min-width: 1200px) {
-	.carousel-item {
-		height: 624.375px;
-	}
-}
-
-
 /*
  *
  * User Rating
  *
  */
 .user-rating {
-	display: flex;
-	align-items: center;
-	width: 100%;
-}
-.user-rating > div {
 	padding-right: 0.5em;
 	display: flex;
 	flex-direction: row-reverse;
@@ -99,16 +23,24 @@ label.star svg.icon {
 	width: 2em;
 	height: 2em;
 }
-input.star:checked ~ label.star svg.icon {
-	fill: #fd4;
-	transition: all .25s;
-}
 input.star-5:checked ~ label.star svg.icon {
-	fill: #fe7;
+	fill: #00ff00;
+	text-shadow: 0 0 20px #952;
+}
+input.star-4:checked ~ label.star svg.icon {
+	fill: #a0d600;
+	text-shadow: 0 0 20px #952;
+}
+input.star-3:checked ~ label.star svg.icon {
+	fill: #d7a700;
+	text-shadow: 0 0 20px #952;
+}
+input.star-2:checked ~ label.star svg.icon {
+	fill: #f66d00;
 	text-shadow: 0 0 20px #952;
 }
 input.star-1:checked ~ label.star svg.icon {
-	fill: #f62;
+	fill: #ff0000;
 }
 label.star:hover {
 	transform: rotate(-15deg) scale(1.3);

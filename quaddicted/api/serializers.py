@@ -55,7 +55,7 @@ class PackageUrlSerializer(serializers.ModelSerializer):
 
 
 class PackageSerializer(serializers.ModelSerializer):
-	authors = serializers.SlugRelatedField(
+	created_by = serializers.SlugRelatedField(
 		many=True,
 		read_only=True,
 		slug_field='name')
@@ -87,11 +87,11 @@ class PackageSerializer(serializers.ModelSerializer):
 		model = Package
 		depth = 0
 		fields = [
-			'authors',
+			'created_by',
 			'base_dir',
 			'command_line',
 			'comments',
-			'created',
+			'created_at',
 			'dependencies',
 			'file',
 			'file_size',
@@ -103,7 +103,7 @@ class PackageSerializer(serializers.ModelSerializer):
 			'start_map',
 			'tags',
 			'type',
-			'uploaded_on',
+			'uploaded_at',
 			'url',
 			'urls',
 		]

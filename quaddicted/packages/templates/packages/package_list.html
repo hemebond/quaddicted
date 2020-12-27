@@ -6,6 +6,8 @@
 {% load comments %}
 
 
+{% block title %}Packages{% endblock %}
+
 
 {% block head %}
 <link rel="alternate" type="application/json" href="?{{ request.GET.urlencode }}&format=json">
@@ -17,87 +19,130 @@
 	<div class="col">
 		<h1 class="text-center">Showing {{ page.paginator.count }} Packages</h1>
 
-		<div class="d-flex align-items-start">
-			<form class="form-inline flex-grow-1" action="?{{ request.GET.urlencode }}" method="get">
-				<div class="form-group mr-2 mb-2">
-					<input type="search"
-					       name="search"
-					       id="package-table-filter"
-					       class="form-control"
-					       data-table="package-list-table"
-					       placeholder="Filter/Search"
-					       value="{% if filtered_term %}{{ filtered_term }}{% endif %}">
-					{% for k, v in request.GET.lists %}
-					{% if k != 'search' %}
-					{% for i in v %}
-					<input type="hidden" name="{{ k }}" value="{{ i }}">
-					{% endfor %}
-					{% endif %}
-					{% endfor %}
+		<div class="row gx-2 justify-content-between">
+			<form class="col-12 col-md mb-3" action="?{{ request.GET.urlencode }}" method="get">
+				<div class="row gx-1">
+					<div class="col">
+						<label class="visually-hidden" for="package-table-filter">Search</label>
+						<input type="search"
+						       name="search"
+						       id="package-table-filter"
+						       class="form-control"
+						       placeholder="Filter/Search"
+						       value="{% if filtered_term %}{{ filtered_term }}{% endif %}">
+					</div>
+					<div class="col-auto">
+						<button type="submit" class="btn btn-primary">{% trans 'Search' %}</button>
+					</div>
 				</div>
-				<button type="submit" class="btn btn-primary mb-2 mr-2">{% trans 'Search' %}</button>
-				<a class="btn btn-primary mb-2" href="{% url 'packages:new' %}">{% icon 'upload' %} {% trans 'New Package' %}</a>
+
+
+				{% for k, v in request.GET.lists %}
+				{% if k != 'search' %}
+				{% for i in v %}
+				<input type="hidden" name="{{ k }}" value="{{ i }}">
+				{% endfor %}
+				{% endif %}
+				{% endfor %}
 			</form>
 
-			{% include 'packages/package_pagination.html' %}
-
-			<div class="btn-group ml-2" role="group" area-label="View modes">
-				<a class="btn btn-secondary disabled">
-					{% icon 'bars' %}
-				</a>
-				<a href="{% url 'packages:list' %}?{% qs_update request format='card' %}"
-				   class="btn btn-secondary"
-				   title="Card View">
-					{% icon 'th' %}
-				</a>
+			<div class="col-auto col-md-auto">
+				{% include 'packages/includes/pagination.html' %}
 			</div>
+
+			<div class="col-auto">
+				<div class="btn-group" role="group" area-label="View modes">
+					{% if package_list_type == "cards" %}
+						<a href="{% url 'packages:list' %}?{% qs_update request format=None %}" class="btn btn-primary">
+							{% icon 'bars' %}
+						</a>
+						<a class="btn btn-primary disabled" title="Card View" tabindex="-1">
+							{% icon 'th' %}
+						</a>
+					{% else %}
+						<a class="btn btn-primary disabled" title="Table View" tabindex="-1">
+							{% icon 'bars' %}
+						</a>
+						<a href="{% url 'packages:list' %}?{% qs_update request format='card' %}"
+						   class="btn btn-primary"
+						   title="Card View">
+							{% icon 'th' %}
+						</a>
+					{% endif %}
+				</div>
+			</div>
+
+			{% if user.is_authenticated %}
+			<div class="col-auto">
+				<a class="btn btn-primary mb-2" href="{% url 'packages:new' %}" title="{% trans 'New Package' %}">{% icon 'upload' %}<span class="d-none d-xl-inline"> {% trans 'New Package' %}</span></a>
+			</div>
+			{% endif %}
 		</div>
 
 		{% if page.object_list %}
-		<table class="table" id="package-list-table">
-			<thead>
+		{% block package_list_content %}
+		<table class="table" id="package-list">
+			<thead class="bg-primary">
 				<tr>
-					<th><a href="?{% qs_update request sort=sort_fields.name %}">{% trans 'Title' %}</a></th>
+					{% sort_th request "Title" "name" "sort-alpha-down" "sort-alpha-down-alt" %}
 					<th>{% trans 'Author(s)' %}</th>
-					<th><a href="?{% qs_update request sort=sort_fields.created %}">{% trans 'Date' %}</a></th>
-					<th><a href="?{% qs_update request sort=sort_fields.rating %}">{% trans 'Rating' %}</a></th>
-					<th>{% trans 'Comments' %}</th>
+					{% sort_th request "Created" "-created_at" "sort-numeric-down" "sort-numeric-down-alt" %}
+					{% sort_th request "Uploaded" "-uploaded_at" "sort-numeric-down" "sort-numeric-down-alt" %}
+					{% sort_th request "Rating" "-rating" "sort-numeric-down" "sort-numeric-down-alt" %}
 					<th>{% trans 'Tags' %}</th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for package in page.object_list %}
 				<tr>
-					<td><a href="{% url 'packages:detail' package.file_hash %}">{{ package.name }}</a></td>
+					<!-- bs-animation false is workaround for popup bug https://github.com/twbs/bootstrap/issues/32372 -->
 					<td>
-						{% for author in package.authors.all %}
-							{% if author.slug in filtered_authors %}<mark>{% endif %}<a href="?{% qs_update request author=author.slug %}" title="{% trans 'Show only this user\'s maps' %}">{{ author }}</a>{% if author.slug in filtered_authors %}</mark>{% endif %}{% if not forloop.last %}, {% endif %}
+						<a href="{% url 'packages:detail' package.file_hash %}"
+						   class="text-decoration-none"
+							{% if package.screenshots.first.thumbnail.url %}
+							{% endif %}>{{ package.name }}
+
+							{% if package.screenshots.first.thumbnail.url %}
+								<span class="align-text-bottom"
+								      data-bs-toggle="popover"
+								      data-bs-trigger="hover focus"
+								      data-bs-html="true"
+								      data-bs-img="{{ package.screenshots.first.thumbnail.url }}"
+								      data-bs-animation="false">{% icon 'image' %}</span>
+							{% endif %}
+						</a>
+					</td>
+					<td>
+						{% for author in package.created_by.all %}
+							{% if author.slug in filtered_authors %}
+								<mark class="rounded">{{ author }}</mark>{% else %}
+								<a href="?{% qs_update request author=author.slug %}" title="{% blocktranslate %}Show packages by {{ author }}{% endblocktranslate %}">{{ author }}</a>{% endif %}{% if not forloop.last %}, {% endif %}
 						{% empty %}
 							{% trans 'Unknown' %}
 						{% endfor %}
 					</td>
-					<td>{{ package.created }}</td>
-					<td class="text-nowrap">
-					{% if package.rating %}
-						{{ package.rating|floatformat:"-2" }}
-					{% endif %}
+					<td class="text-nowrap text-center"><time datetime="{{ package.created_at | date:'c' }}">{{ package.created_at | date:"DATE_FORMAT" }}</time></td>
+					<td class="text-nowrap text-center"><time datetime="{{ package.uploaded_at | date:'c' }}">{{ package.uploaded_at | date:"DATE_FORMAT" }}</time></td>
+					<td class="text-nowrap text-center">
+						{% if package.rating %}
+							{# {{ package.rating|floatformat:"-2" }} #}
+							{% rating_badge package.rating %}
+						{% endif %}
 					</td>
-					<td>{% get_comment_count for package as comment_count %}{{ comment_count }}</td>
 					<td>
-
 					{% for tag in package.tags.all %}
 						<div class="btn-group btn-group-sm mb-1">
-						{% if tag.slug in filtered_tags %}
-							<a href="?{% filter_del_tag request tag.slug %}"
-							   class="btn btn-warning">
-								{% icon 'minus' %} {{ tag }}
-							</a>
-						{% else %}
-							<a href="?{% filter_add_tag request tag.slug %}"
-							   class="btn btn-primary">
-								{% icon 'plus' %} {{ tag }}
-							</a>
-						{% endif %}
+							{% if tag.slug in filtered_tags %}
+								<a href="?{% filter_del_tag request tag.slug %}"
+								   class="btn btn-primary btn-sm">
+									{% icon 'times' %} {{ tag }}
+								</a>
+							{% else %}
+								<a href="?{% filter_add_tag request tag.slug %}"
+								   class="btn btn-secondary btn-sm">
+									{% icon 'plus' %} {{ tag }}
+								</a>
+							{% endif %}
 						</div>
 						{% endfor %}
 					</td>
@@ -105,9 +150,10 @@
 				{% endfor %}
 			</tbody>
 		</table>
+		{% endblock %}
 
 		<div class="justify-content-center">
-			{% include 'packages/package_pagination.html' %}
+			{% include 'packages/includes/pagination.html' %}
 		</div>
 		{% else %}
 			<p>{% trans 'No maps available' %}</p>
@@ -118,4 +164,17 @@
 {% endblock %}
 
 
-{% block javascript %}{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+	$(window).on("load", function(){
+		// popovers initialization - on hover
+		$('[data-bs-toggle="popover"]').popover({
+			html: true,
+			trigger: 'hover',
+			content: function () {
+				return '<img class="ratio ratio-16x9" style="width:20rem" src="' + $(this).data('bs-img') + '" loading="lazy">';
+			}
+		});
+	});
+</script>
+{% endblock %}

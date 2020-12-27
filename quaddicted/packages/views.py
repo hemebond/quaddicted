@@ -34,7 +34,7 @@ def package_list_filter(request, queryset):
 	#
 	authors = request.GET.getlist('author', [])
 	for author in authors:
-		queryset = queryset.filter(authors__slug=author)
+		queryset = queryset.filter(created_by__slug=author)
 
 	#
 	# Tag Filtering
@@ -64,7 +64,7 @@ def package_list_filter(request, queryset):
 		queryset = queryset.filter(
 			Q(name__icontains=search) |
 			Q(tags__name__icontains=search) |
-			Q(authors__name__icontains=search)
+			Q(created_by__name__icontains=search)
 		)
 
 	return queryset
@@ -75,31 +75,23 @@ def package_list_context(request):
 	#
 	# Filtering
 	#
-	sort = request.GET.get('sort', '-created')
 	packages = Package.objects.filter(published=True)
-	packages = package_list_filter(request, packages).distinct().order_by(sort)
+	# packages = package_list_filter(request, packages).distinct().order_by(sort)
+	packages = package_list_filter(request, packages).distinct()
 
 	#
-	# Sorting defaults
+	# Sorting order form request or use defaults
 	#
-	sort_fields = {
-		'name': 'asc',
-		'created': 'desc',
-		'rating': 'desc',
-	}
+	sort = request.GET.getlist('sort', [
+		"name",
+		"-rating",
+		"-uploaded_at",
+	])
 
 	#
 	# Update the sorting field dict for table headers
 	#
-	sort_field = sort[1:] if sort.startswith('-') else sort
-	for field, direction in sort_fields.items():
-		# invert the sort direction of each field
-
-		if field == sort_field:
-			# This is the field we're actively sorting by
-			sort_fields[field] = field if sort.startswith('-') else '-' + field
-		else:
-			sort_fields[field] = '-' + field if direction == 'desc' else field
+	packages = packages.order_by(*sort[::-1])
 
 	#
 	# Pagination
@@ -112,12 +104,6 @@ def package_list_context(request):
 	page = paginator.get_page(page_number)
 
 	context = {
-		# package list table sort links
-		'sort_fields': sort_fields,
-
-		# set the main navbar section active
-		'active_section': 'packages',
-
 		# list of authors being filtered on
 		'filtered_authors': request.GET.getlist('author', []),
 
@@ -144,6 +130,7 @@ def package_list(request):
 
 def package_list_cards(request):
 	context = package_list_context(request)
+	context['package_list_type'] = "cards"
 
 	return render(request,
 	              'packages/package_cards.html',
@@ -218,6 +205,7 @@ def package_detail(request, package_hash):
 		'comments': comments,
 		'rating_qset': rating_qset,
 		'screenshots': screenshots,
+		'can_edit': request.user.has_perm("quaddicted_packages.change_package") or request.user == package.uploaded_by,
 	})
 
 
@@ -234,7 +222,6 @@ def package_form(request):
 
 
 @login_required
-@permission_required('quaddicted_packages.add_package')
 def package_add(request):
 	ScreenshotFormSet = inlineformset_factory(Package, PackageScreenshot, exclude=())
 	PackageUrlFormSet = inlineformset_factory(Package, PackageUrl, exclude=())
@@ -246,11 +233,16 @@ def package_add(request):
 		packageurl_formset = PackageUrlFormSet(request.POST, request.FILES)
 
 		if package_form.is_valid() and screenshot_formset.is_valid() and packageurl_formset.is_valid():
-			# Remove the authors field before saving the new package instance
-			author_names = package_form.cleaned_data.pop('authors')
+			# Remove the created_by field before saving the new package instance
+			author_names = package_form.cleaned_data.pop('created_by')
 
 			# Save new package instance so we can attach screenshots and URLs
-			new_package = package_form.save()
+			new_package = package_form.save(commit=False)
+			new_package.uploaded_by = request.user
+			new_package.save()
+
+			# save the tags
+			package_form.save_m2m()
 
 			#
 			# Create Screenshots
@@ -273,10 +265,13 @@ def package_add(request):
 			# create or fetch the PackageAuthor objects for them
 			for author_name in author_names:
 				author_slug = slugify(author_name, allow_unicode=True)
-				author_obj, created = PackageAuthor.objects.get_or_create(name=author_name, slug=author_slug)
+				try:
+					author_obj, created = PackageAuthor.objects.get_or_create(name=author_name, slug=author_slug)
+				except IntegrityError:
+					author_obj = PackageAuthor.objects.get(slug=author_slug)
 				author_set.add(author_obj)
 
-			new_package.authors.set(author_set)
+			new_package.created_by.set(author_set)
 
 			return HttpResponseRedirect(new_package.get_absolute_url())
 		else:
@@ -291,13 +286,11 @@ def package_add(request):
 		'form': package_form,
 		'screenshot_inline': screenshot_formset,
 		'packageurl_inline': packageurl_formset,
-		'active_section': 'packages',
 	})
 
 
 
 @login_required
-@permission_required('quaddicted_packages.change_package')
 def package_edit(request, package_hash):
 	package = get_object_or_404(Package, file_hash=package_hash)
 	ScreenshotFormSet = inlineformset_factory(Package, PackageScreenshot, exclude=())
@@ -309,7 +302,7 @@ def package_edit(request, package_hash):
 		packageurl_formset = PackageUrlFormSet(request.POST, request.FILES, instance=package)
 
 		if package_form.is_valid() and screenshot_formset.is_valid() and packageurl_formset.is_valid():
-			author_names = package_form.cleaned_data.pop('authors')
+			author_names = package_form.cleaned_data.pop('created_by')
 			pkg = package_form.save()
 			screenshot_formset.save()
 			packageurl_formset.save()
@@ -321,10 +314,13 @@ def package_edit(request, package_hash):
 			# create or fetch the PackageAuthor objects for them
 			for author_name in author_names:
 				author_slug = slugify(author_name, allow_unicode=True)
-				author_obj, created = PackageAuthor.objects.get_or_create(name=author_name, slug=author_slug)
+				try:
+					author_obj, created = PackageAuthor.objects.get_or_create(name=author_name, slug=author_slug)
+				except IntegrityError:
+					author_obj = PackageAuthor.objects.get(slug=author_slug)
 				author_set.add(author_obj)
 
-			pkg.authors.set(author_set)
+			pkg.created_by.set(author_set)
 
 			if "_continue" in request.POST:
 				return HttpResponseRedirect(

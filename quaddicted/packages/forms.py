@@ -1,6 +1,7 @@
 from django import forms
 from .models import Package, PackageScreenshot, PackageUrl, PackageAuthor
 from extra_views import InlineFormSetFactory
+from django.utils.translation import gettext as _
 
 
 
@@ -53,32 +54,35 @@ class RatingForm(forms.Form):
 
 
 class PackageEditForm(forms.ModelForm):
-	authors = AuthorField(help_text="A comma-separated list of author names")
+	created_by = AuthorField(label=_("Authors"), help_text="A comma-separated list of author names")
 
 	class Meta:
 		model = Package
 		fields = [
 			'name',
-			'game',
 			'tags',
-			'authors',
+			'created_by',
+			'created_at',
 			'description',
 		]
 
 
 class PackageCreateForm(forms.ModelForm):
-	authors = AuthorField(help_text="A comma-separated list of author names")
+	created_by = AuthorField(label=_("Authors"), help_text="A comma-separated list of author names")
 
 	class Meta:
 		model = Package
 		fields = [
 			'file',
 			'name',
-			'game',
 			'tags',
-			'authors',
+			'created_by',
+			'created_at',
 			'description',
 		]
+		labels = {
+			'created_at': _('Created'),
+		}
 
 
 class ScreenshotForm(forms.ModelForm):

@@ -5,7 +5,7 @@ from quaddicted.settings.common import *
 DEBUG = False
 SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', '116.203.37.22']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', '116.203.37.22', 'beta.quaddicted.com']
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases

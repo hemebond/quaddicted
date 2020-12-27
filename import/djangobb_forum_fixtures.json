@@ -1,0 +1,128 @@
+[
+	{
+		"model": "djangobb_forum.category",
+		"pk": 1,
+		"fields": {
+			"name": "Quake",
+			"position": 0,
+			"groups": []
+		}
+	},
+	{
+		"model": "djangobb_forum.category",
+		"pk": 2,
+		"fields": {
+			"name": "Quaddicted",
+			"position": 0,
+			"groups": []
+		}
+	},
+	{
+		"model": "djangobb_forum.forum",
+		"pk": 1,
+		"fields": {
+			"category": 1,
+			"name": "General Discussion about Quake",
+			"position": 0,
+			"description": "",
+			"updated": "2020-11-28T10:37:09.045Z",
+			"post_count": 0,
+			"topic_count": 0,
+			"last_post": null,
+			"forum_logo": "",
+			"moderators": []
+		}
+	},
+	{
+		"model": "djangobb_forum.forum",
+		"pk": 2,
+		"fields": {
+			"category": 1,
+			"name": "Quake Maps",
+			"position": 0,
+			"description": "",
+			"updated": "2020-11-28T10:36:28.605Z",
+			"post_count": 0,
+			"topic_count": 0,
+			"last_post": null,
+			"forum_logo": "",
+			"moderators": []
+		}
+	},
+	{
+		"model": "djangobb_forum.forum",
+		"pk": 3,
+		"fields": {
+			"category": 2,
+			"name": "Quaddicted.com Discussion",
+			"position": 0,
+			"description": "",
+			"updated": "2020-11-28T10:36:42.408Z",
+			"post_count": 0,
+			"topic_count": 0,
+			"last_post": null,
+			"forum_logo": "",
+			"moderators": []
+		}
+	},
+	{
+		"model": "djangobb_forum.forum",
+		"pk": 4,
+		"fields": {
+			"category": 2,
+			"name": "News Submissions",
+			"position": 0,
+			"description": "",
+			"updated": "2020-11-28T10:36:50.389Z",
+			"post_count": 0,
+			"topic_count": 0,
+			"last_post": null,
+			"forum_logo": "",
+			"moderators": []
+		}
+	},
+	{
+		"model": "djangobb_forum.forum",
+		"pk": 5,
+		"fields": {
+			"category": 2,
+			"name": "News",
+			"position": 0,
+			"description": "",
+			"updated": "2020-11-28T10:36:57.622Z",
+			"post_count": 0,
+			"topic_count": 0,
+			"last_post": null,
+			"forum_logo": "",
+			"moderators": []
+		}
+	},
+	{
+		"model": "djangobb_forum.profile",
+		"pk": 1,
+		"fields": {
+			"user": 1,
+			"status": "",
+			"site": "",
+			"jabber": "",
+			"icq": "",
+			"msn": "",
+			"aim": "",
+			"yahoo": "",
+			"location": "",
+			"signature": "",
+			"signature_html": "",
+			"time_zone": "UTC",
+			"language": "",
+			"avatar": "",
+			"theme": "default",
+			"show_avatar": true,
+			"show_signatures": true,
+			"show_smilies": true,
+			"privacy_permission": 1,
+			"auto_subscribe": false,
+			"markup": "bbcode",
+			"post_count": 0
+		}
+	}
+]

@@ -37,29 +37,6 @@
 				</div>
 			{% endwith %}
 
-			{% with f=form.email %}
-				<div class="form-group">
-					<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-					<input type="email"
-					       class="form-control {% if f.errors %}is-invalid{% endif %}"
-					       id="{{ f.id_for_label }}"
-					       name="{{ f.html_name }}"
-					       maxlength="32"
-					       value="{% if f.value %}{{ f.value }}{% endif %}"
-					       required="">
-					<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-				{% if f.errors %}
-					<div class="invalid-feedback">
-						<ul class="list-unstyled">
-						{% for e in f.errors %}
-							<li>{{ e }}</li>
-						{% endfor %}
-						</ul>
-					</div>
-				{% endif %}
-				</div>
-			{% endwith %}
-
 			{% with f=form.password1 %}
 				<div class="form-group">
 					<label for="{{ f.id_for_label }}">{{ f.label }}</label>

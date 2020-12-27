@@ -12,11 +12,12 @@ class RatingAdmin(admin.ModelAdmin):
 @admin.register(PackageAuthor)
 class AuthorAdmin(admin.ModelAdmin):
 	list_display = ('name', 'slug')
+	search_fields = ('name', 'slug')
 
 
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
-	list_display = ('name', 'file_name', 'file_hash', 'uploaded_on', 'published')
+	list_display = ('name', 'file_name', 'file_hash', 'uploaded_at', 'published')
 	search_fields = ['name', 'file_name', 'file_hash']
 	list_filter = ('published', 'game', 'type')
 	actions = ['make_published',]

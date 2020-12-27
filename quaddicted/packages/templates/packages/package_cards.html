@@ -1,62 +1,23 @@
-{% extends "base.html" %}
+{% extends "packages/package_list.html" %}
 
 {% load i18n %}
 {% load static %}
 {% load quaddicted %}
 
 
-{% block content %}
-{% if page.object_list %}
-<section class="row">
-	<div class="col">
-		<h1 class="text-center">Showing {{ page.paginator.count }} Packages</h1>
-
-		<div class="d-flex align-items-start">
-			<form class="form-inline flex-grow-1" action="" method="get">
-				<div class="form-group mr-2 mb-2">
-					<input type="search"
-					       name="search"
-					       id="package-card-filter"
-					       class="form-control"
-					       data-cards="package-list-cards"
-					       placeholder="Filter/Search"
-					       value="{% if filtered_term %}{{ filtered_term }}{% endif %}">
-					{% for k, v in request.GET.lists %}
-					{% if k != 'search' %}
-					{% for i in v %}
-					<input type="hidden" name="{{ k }}" value="{{ i }}">
-					{% endfor %}
-					{% endif %}
-					{% endfor %}
-				</div>
-				<button type="submit" class="btn btn-primary mb-2 mr-2">{% trans 'Search' %}</button>
-				<a class="btn btn-primary mb-2" href="{% url 'packages:new' %}">{% icon 'upload' %} {% trans 'New Package' %}</a>
-			</form>
-
-			{% include 'packages/package_pagination.html' %}
-
-			<div class="btn-group ml-2" role="group" area-label="Views modes">
-				<a href="{% url 'packages:list' %}?{% qs_update request format=None %}"
-				   class="btn btn-secondary"
-				   title="List View">
-					{% icon 'bars' %}
-				</a>
-				<a class="btn btn-secondary disabled">
-					{% icon 'th' %}
-				</a>
-			</div>
-		</div>
-
-		<div class="row row-cols-1 row-cols-lg-3" id="package-list-cards">
+{% block package_list_content %}
+		<div class="row row-cols-1 row-cols-lg-3" id="package-list">
 {%     for package in page.object_list %}
 			<div class="col mb-3">
 				<div class="card h-100">
-					<a href="{% url 'packages:detail' package.file_hash %}" class="bg-secondary">
+					<a href="{% url 'packages:detail' package.file_hash %}" class="bg-secondary ratio ratio-16x9">
+						<img class="card-img-top" src="
 						{% if package.screenshots.exists %}
-							<img class="card-img-top" src="{{ package.screenshots.first.thumbnail.url }}" alt="">
+							{{ package.screenshots.first.thumbnail.url }}
 						{% else %}
-							<img class="card-img-top" src="{% static '/384x216.svg' %}" alt="">
+							{% static '/384x216.svg' %}
 						{% endif %}
+						" alt="" loading="lazy">
 					</a>
 					<div class="card-body">
 						<h5 class="card-text">
@@ -66,7 +27,7 @@
 						</h5>
 
 						<p class="card-text">
-							{% for author in package.authors.all %}
+							{% for author in package.created_by.all %}
 								{% if author.slug in filtered_authors %}<mark>{% endif %}<a href="?{% qs_update request author=author.slug %}" title="{% trans 'Show only this user\'s maps' %}">{{ author }}</a>{% if author.slug in filtered_authors %}</mark>{% endif %}{% if not forloop.last %}, {% endif %}
 							{% empty %}
 								{% trans 'Unknown' %}
@@ -78,12 +39,12 @@
 								<div class="btn-group btn-group-sm mb-1">
 									{% if tag.slug in filtered_tags %}
 										<a href="?{% filter_del_tag request tag.slug %}"
-										   class="btn btn-warning">
+										   class="btn btn-primary btn-sm">
 											{% icon 'times' %} {{ tag }}
 										</a>
 									{% else %}
 										<a href="?{% filter_add_tag request tag.slug %}"
-										   class="btn btn-primary">
+										   class="btn btn-secondary btn-sm">
 											{% icon 'plus' %} {{ tag }}
 										</a>
 									{% endif %}
@@ -92,15 +53,13 @@
 						</p>
 					</div>
 					<div class="card-footer">
-						<div class="row">
+						<div class="row justify-content-between">
 							<div class="col">
-								<time datetime="{{ package.created }}">{{ package.created }}</time>
+								<time datetime="{{ package.created_at | date:'c' }}">{{ package.created_at | date:"DATE_FORMAT" }}</time>
 							</div>
 						{% if package.rating %}
-							<div class="col">
-								<span class="float-right">
-									{% rating_stars package.rating %}
-								</span>
+							<div class="col text-end">
+								{% rating_stars package.rating %}
 							</div>
 						{% endif %}
 						</div>
@@ -109,20 +68,6 @@
 			</div>
 {%     endfor %}
 		</div>
-
-		{% include 'packages/package_pagination.html' %}
-	</div>
-</section>
-
-
-{%     else %}
-<section class="section">
-	<div class="container">
-		<p>{% trans 'No packages available' %}</p>
-	</div>
-</section>
-{%     endif %}
-
 {% endblock %}
 
 

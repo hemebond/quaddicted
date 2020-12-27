@@ -1,0 +1,227 @@
+//
+// Color system
+//
+
+$white:    #fff;
+$gray-100: #f8f9fa;
+$gray-200: #ebebeb;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #888;
+$gray-700: #444;
+$gray-800: #303030;
+$gray-900: #222;
+$black:    #000;
+
+$blue:    #375a7f;
+$indigo:  #6610f2;
+$purple:  #6f42c1;
+$pink:    #e83e8c;
+$red:     #e74c3c;
+$orange:  #fd7e14;
+$yellow:  #f39c12;
+$green:   #00bc8c;
+$teal:    #20c997;
+$cyan:    #3498db;
+$brown:   #201810;
+$light-brown: lighten($brown, 5%);
+$pink:        #ae356b;
+$light-pink:  lighten($pink, 5%);
+$pink-100:    darken($pink, 5%);
+$pink-200:    darken($pink, 10%);
+
+
+$primary:       $pink;
+$secondary:     $gray-700;
+$success:       $green;
+$info:          $cyan;
+$warning:       $yellow;
+$danger:        $red;
+$light:         $gray-500;
+$dark:          $gray-800;
+
+
+
+$rating-colors: (
+	"5": #00ff00,
+	"4": #a0d600,
+	"3": #d7a700,
+	"2": #f66d00,
+	"1": #ff0000
+);
+
+$yiq-contrasted-threshold:  175;
+
+// Body
+
+$body-bg:                   darken($brown, 5%);
+$body-color:                $gray-200;
+
+// Links
+
+$link-color:       $primary;
+$link-hover-color: $light-pink;
+
+// Fonts
+
+$headings-color:            $pink;
+
+// Tables
+
+$table-bg:                    darken($brown, 5%);
+$table-accent-bg:             $gray-800;
+$table-border-color:          $gray-700;
+$table-head-bg:               $pink-100;
+
+// Forms
+
+$input-color:                       $black;
+$input-border-color:                $body-bg;
+$input-group-addon-color:           $gray-500;
+$input-group-addon-bg:              $gray-700;
+$custom-file-color:                 $gray-500;
+$custom-file-border-color:          $body-bg;
+
+// Dropdowns
+
+$dropdown-bg:                       $gray-900;
+$dropdown-border-color:             $gray-700;
+$dropdown-divider-bg:               $gray-700;
+$dropdown-link-color:               $gray-200;
+$dropdown-link-hover-color:         $gray-200;
+$dropdown-link-hover-bg:            $primary;
+
+// Navs
+
+$nav-link-padding-x:                2rem;
+$nav-link-disabled-color:           $gray-500;
+$nav-tabs-border-color:             $gray-700;
+$nav-tabs-link-hover-border-color:  $nav-tabs-border-color $nav-tabs-border-color transparent;
+$nav-tabs-link-active-color:        $white;
+$nav-tabs-link-active-border-color: $nav-tabs-border-color $nav-tabs-border-color transparent;
+
+// Navbar
+$navbar-padding-y:                  1rem;
+$navbar-dark-color:                 $pink;
+$navbar-dark-hover-color:           $white;
+$navbar-light-color:                rgba($gray-900, .7);
+$navbar-light-hover-color:          $gray-900;
+$navbar-light-active-color:         $gray-900;
+$navbar-light-toggler-border-color: rgba($gray-900, .1);
+
+// Pagination
+
+$pagination-color:                  $gray-200;
+$pagination-bg:                     $pink;
+$pagination-border-color:           $pink;
+$pagination-focus-color:            $black;
+$pagination-focus-bg:               lighten($pink, 5%);
+$pagination-hover-color:            $black;
+$pagination-hover-bg:               lighten($pink, 5%);
+$pagination-hover-border-color:     $black;
+$pagination-active-bg:              $pagination-hover-bg;
+$pagination-active-border-color:    $black;
+$pagination-disabled-color:         $white;
+$pagination-disabled-bg:            rgba($pink, .6);
+$pagination-disabled-border-color:  rgba($pink, .6);
+
+// Jumbotron
+
+$jumbotron-bg:                      $gray-800;
+
+// Cards
+
+$card-cap-bg:                       $light-brown;
+$card-bg:                           transparent;
+$card-border-color:                 $light-brown;
+
+// Popovers
+
+$popover-bg:                        $gray-800;
+$popover-header-bg:                 $gray-700;
+
+// Toasts
+
+$toast-background-color:            $gray-700;
+$toast-header-background-color:     $gray-800;
+
+// Modals
+
+$modal-content-bg:                  $gray-800;
+$modal-content-border-color:        $gray-700;
+$modal-header-border-color:         $gray-700;
+
+// Progress bars
+
+$progress-bg:                       $gray-700;
+
+// List group
+
+$list-group-bg:                     transparent;
+$list-group-border-color:           $light-brown;
+$list-group-hover-bg:               $gray-700;
+
+// Close
+
+$close-color:                       $white;
+$close-text-shadow:                 none;
+
+// Code
+
+$pre-color:                         inherit;
+
+
+$mark-bg:                     $gray-900;
+$mark-color:                  $pink;
+
+
+// Carousel
+
+$carousel-indicator-height: 6px;
+
+
+@import "../bootstrap-5.0.0-beta1/scss/bootstrap";
+
+.navbar.bg-dark {
+  background-color: darken($brown, 5%) !important;
+  font-weight: bold;
+}
+
+/* Table sort indicators */
+
+th {
+	background-color: $pink-100;
+	color: $white;
+}
+th a {
+	color: $white;
+}
+th.sortable a {
+	color: $gray-100;
+	position: relative;
+	cursor: pointer;
+}
+.table > thead > tr > th {
+	background-color: $pink-200;
+}
+.table > thead > tr > th.sortable:hover {
+	background-color: $pink-100;
+}
+
+mark {
+	color: $mark-color;
+}
+
+
+@each $rating, $value in $rating-colors {
+  .rating-bg-#{$rating} {
+    background-color: $value;
+    color: $black;
+  }
+}
+@each $rating, $value in $rating-colors {
+  .rating-#{$rating} {
+    color: $value;
+  }
+}

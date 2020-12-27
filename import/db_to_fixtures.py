@@ -94,7 +94,7 @@ with sqlite3.connect(os.path.join(SCRIPT_DIR, 'quaddicted.sqlite')) as con:
 			"fields": {
 				"base_dir": r['zipbasedir'],
 				"command_line": r['commandline'],
-				"created": (datetime.strptime(r['date'], "%d.%m.%Y")).replace(tzinfo=timezone.utc),
+				"created_at": (datetime.strptime(r['date'], "%d.%m.%Y")).replace(tzinfo=timezone.utc),
 				"description": r['description'],
 				"file": "packages/{}/{}/{}.zip".format(sha256hash[0], sha256hash, zipname),
 				"file_hash": sha256hash,
@@ -105,7 +105,7 @@ with sqlite3.connect(os.path.join(SCRIPT_DIR, 'quaddicted.sqlite')) as con:
 				"published": True, # publish them all
 				"type": r['type'],
 				"uploaded_by": 1, # uploaded by the admin
-				"uploaded_on": datetime.fromtimestamp(r['timestamp'], timezone.utc),
+				"uploaded_at": datetime.fromtimestamp(r['timestamp'], timezone.utc),
 			}
 		})
 
@@ -169,7 +169,7 @@ with sqlite3.connect(os.path.join(SCRIPT_DIR, 'quaddicted.sqlite')) as con:
 		for pkg_pk in author['packages']:
 			fixtures.append({
 				"pk": author_pkg_pk,
-				"model": "quaddicted_packages.package_authors",
+				"model": "quaddicted_packages.package_created_by",
 				"fields": {
 					"package": pkg_pk,
 					"packageauthor": author_pk,

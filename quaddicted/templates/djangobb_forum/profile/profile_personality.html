@@ -90,7 +90,7 @@
 					          rows="{{ f.field.widget.attrs.rows }}"
 					          name="{{ f.html_name }}">{{ f.value|default_if_none:'' }}</textarea>
 					<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-					{% include 'packages/field_errors.html' %}
+					{% include 'packages/includes/field_errors.html' %}
 
 					<small id="{{ f.id_for_label }}_help" class="form-text text-muted">
 						Note: A list of all supported source code highlighter for [code <strong>XXX</strong>]...[/code] can be found here: <a href="http://pygments.org/docs/lexers/">pygments.org</a> (Use 'Short name')

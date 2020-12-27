@@ -6,5 +6,5 @@
 	       name="{{ f.html_name }}"
 	       {% if f.field.required %}required="required"{% endif %}>
 	<small id="{{ f.id_for_label }}_help" class="form-text text-muted">{{ f.help_text }}</small>
-	{% include 'packages/field_errors.html' %}
+	{% include 'packages/includes/field_errors.html' %}
 </div>
